@@ -929,7 +929,7 @@ p math {
   align-items: center;
   justify-content: center;
   padding: 0 8px;
-  background: var(--subtle);
+  background: var(--surface);
   border-left: 1px solid var(--code-border);
   border-right: 1px solid var(--code-border);
   color: var(--accent);
@@ -941,7 +941,7 @@ p math {
   width: 28px;
   height: 28px;
   border-radius: 999px;
-  background: var(--accent-soft);
+  background: transparent;
   border: 1px solid var(--accent-border);
   color: var(--accent);
   display: inline-flex;
