@@ -4,9 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TabFM-Auto: Self-Evolving Pipelines for Tabular Foundation Models</title>
-<meta name="description" content="Taking the best of both worlds: pairing a language-model coding agent's semantic reasoning with a frozen 400M-parameter TabFM backbone's in-context numerical prior reaches 2013.0 Elo (#1) on TabArena and transfers zero-shot across frozen tabular foundation models.">
+<meta name="description" content="Pairing a language-model coding agent's domain reasoning with a frozen 400M-parameter TabFM backbone reaches 2013.0 Elo (#1) on TabArena and transfers zero-shot across frozen tabular foundation models.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" type="image/svg+xml" href="logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Google+Sans+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body id="top">
@@ -28,13 +31,12 @@
       <span class="nav-sub">Technical Report &amp; Pipeline Explorer</span>
     </a>
     <nav class="nav-links" aria-label="Section navigation">
-      <a class="nav-link" href="#intro">Intro</a>
+      <a class="nav-link" href="#intro">Overview</a>
       <a class="nav-link" href="#method">Method</a>
       <a class="nav-link" href="#explorer">Explorer</a>
       <a class="nav-link" href="#tabarena">TabArena</a>
-      <a class="nav-link" href="#taxonomy">Taxonomy</a>
       <a class="nav-link" href="#ablations">Ablations</a>
-      <a class="nav-link" href="#mlebench">MLE-Bench-Tabular</a>
+      <a class="nav-link" href="#mlebench">MLE-Bench</a>
       <a class="nav-cta" href="explorer.html" target="_blank" rel="noopener">Full Explorer ↗</a>
       <button type="button" class="theme-btn" id="theme-toggle" aria-label="Switch theme"></button>
     </nav>
@@ -56,7 +58,7 @@
     </div>
     <h1 class="paper-title">TabFM-Auto: Self-Evolving Pipelines for Tabular Foundation Models</h1>
     <p class="paper-subtitle">
-      Taking the best of both worlds: pairing a language-model coding agent's domain reasoning with a frozen 400M-parameter <code>TabFM</code> backbone's zero-shot numerical prior reaches <strong>2013.0 Elo (#1)</strong> across all 51 TabArena datasets and transfers zero-shot across frozen tabular foundation models.
+      Pairing a language-model coding agent's domain reasoning with a frozen 400M-parameter <code>TabFM</code> backbone's in-context numerical prior reaches <strong>2013.0 Elo (#1)</strong> across all 51 TabArena datasets and transfers zero-shot across frozen tabular foundation models.
     </p>
 
     <div class="meta-grid">
@@ -86,9 +88,9 @@
   </header>
 
   <section class="abstract-card" aria-label="Abstract">
-    <div class="meta-label">Abstract</div>
+    <div class="meta-label">TL;DR &middot; Abstract</div>
     <p>
-      Tabular foundation models achieve strong zero-shot accuracy on structured data by pretraining on synthetic tables, yet their attention layers ignore the column names, task descriptions, and auxiliary files that carry dataset semantics. Meanwhile, self-evolving machine learning engineering (MLE) agents read dataset metadata and write feature code, yet training gradient-boosted trees or neural networks from scratch on each candidate iteration is noisy: stochastic training variance masks small feature gains and drives validation overfitting. We introduce <strong>TabFM-Auto</strong>, which takes the best of both worlds by pairing a frozen 400M-parameter tabular foundation model, <code>TabFM</code>, with a language-model coding agent that iteratively evolves the surrounding data pipeline. Guided by dataset metadata and 3-fold cross-validation feedback on the training set, <strong>TabFM-Auto</strong> refines data cleaning, domain and structural feature engineering, multi-view context selection, and post-processing while keeping <code>TabFM</code>'s weights fixed. Across all 51 datasets of the TabArena benchmark, <strong>TabFM-Auto</strong> takes the <strong>#1 overall position at 2013.0 Elo</strong> (+227.7 Elo over plain <code>TabFM</code> and +344.6 Elo over 4-hour <code>AutoGluon 1.5 (extreme)</code>). Moreover, the discovered Python pipelines transfer without further search to other frozen tabular foundation models, boosting <code>TabICLv2</code>, <code>TabPFN-3</code>, and <code>EXAONE-Tabular</code> by <strong>+88.7 to +143.3 Elo</strong>.
+      Tabular foundation models (TFMs) have strong zero-shot numerical priors but ignore column names, domain units, and auxiliary files; end-to-end MLE coding agents read dataset semantics, but training GBDTs or neural networks from scratch on every candidate step introduces retraining variance and validation overfitting. <strong>TabFM-Auto</strong> combines both strengths: a coding agent iteratively evolves a 4-stage Python data pipeline (<code>preprocess</code>, <code>engineer</code>, <code>sample</code>, <code>postprocess</code>) via 3-fold cross-validation while keeping the 400M-parameter <code>TabFM</code> backbone strictly frozen. Across all 51 TabArena datasets, <strong>TabFM-Auto</strong> ranks <strong>#1 overall at 2013.0 Elo</strong> (+227.7 over plain <code>TabFM</code>, +344.6 over 4-hour <code>AutoGluon 1.5</code>), and its discovered pipelines transfer zero-shot to <code>TabICLv2</code> (+143.3 Elo), <code>TabPFN-3</code> (+130.8 Elo), and <code>EXAONE-Tabular</code> (+88.7 Elo).
     </p>
   </section>
 
@@ -153,115 +155,91 @@
     </div>
 
     <div class="fig-caption">
-      <strong>Figure 1: TabArena leaderboard across all 51 datasets (38 classification, 13 regression).</strong> Switch between task splits, evaluation metrics, or the full table view above, and hover/click any bar to inspect exact figures. Across all 51 datasets, <strong>TabFM-Auto</strong> reaches <strong>2013.0 Elo (+227.7 over plain TabFM)</strong>, outperforming 4-hour <code>AutoGluon 1.5 (extreme)</code> ensembles (1668.4 Elo) and every evaluated tabular foundation model. An unconstrained coding agent (<code>Antigravity + Gemini 3.8 Flash</code>) that trains and blends GBDTs and neural networks from scratch under the same budget reaches 1468.8 Elo.
+      <strong>Figure 1: TabArena leaderboard across all 51 datasets (38 classification, 13 regression).</strong> Switch task splits, metrics, or table view above, and hover/click any bar to inspect details.
     </div>
   </section>
 
   <!-- ================= SECTION 1: INTRODUCTION ================= -->
-  <h2 id="intro">1. Introduction: Taking the Best of Both Worlds</h2>
+  <h2 id="intro">1. Why Pair a Coding Agent with a Frozen Tabular Foundation Model?</h2>
+
+  <p>
+    Tabular foundation models and LLM coding agents have complementary strengths and blind spots. Evaluating every candidate pipeline through a <strong>frozen 400M-parameter <code>TabFM</code> forward pass</strong> eliminates model-retraining variance, so even a 0.2% cross-validation improvement reflects a genuine improvement in how the table is represented.
+  </p>
 
   <div class="worlds-grid wide-card" role="region" aria-label="Comparison of Tabular Paradigms">
     <div class="world-col">
       <div>
-        <div class="world-kicker">Paradigm A &middot; Frozen Backbone Alone</div>
-        <h3 class="world-name">Plain Tabular Foundation Model (<code>TabFM</code>)</h3>
+        <div class="world-kicker">Paradigm A &middot; Frozen Backbone</div>
+        <h3 class="world-name">Plain <code>TabFM</code></h3>
         <ul class="world-list">
-          <li><span class="mark-pos">+</span><span><strong>Strong in-context numerical prior:</strong> single forward pass with frozen weights &theta;*, zero gradient updates.</span></li>
-          <li><span class="mark-pos">+</span><span><strong>Deterministic evaluation:</strong> zero retraining variance across candidate runs.</span></li>
-          <li><span class="mark-neg">&minus;</span><span><strong>Schema-blind attention:</strong> treats <code>frequency</code> or <code>ICD9_code</code> the same as <code>X_17</code>; cannot derive domain formulas.</span></li>
-          <li><span class="mark-neg">&minus;</span><span><strong>Single-table &amp; context-bounded:</strong> cannot parse auxiliary waveform/3D files or stratify rare classes on large tables.</span></li>
+          <li><span class="mark-pos">+</span><span><strong>Strong numerical prior:</strong> single forward pass with frozen weights &theta;*.</span></li>
+          <li><span class="mark-pos">+</span><span><strong>Deterministic:</strong> zero retraining noise.</span></li>
+          <li><span class="mark-neg">&minus;</span><span><strong>Schema-blind:</strong> ignores column names, domain units, and formulas.</span></li>
+          <li><span class="mark-neg">&minus;</span><span><strong>Single-table limit:</strong> cannot parse auxiliary waveform/3D files.</span></li>
         </ul>
       </div>
       <div class="world-foot">
-        <span>TabArena Overall (51 Datasets)</span>
+        <span>TabArena Overall (51)</span>
         <strong>1785.3 Elo</strong>
       </div>
     </div>
 
     <div class="world-col">
       <div>
-        <div class="world-kicker">Paradigm B &middot; End-to-End MLE Agent</div>
-        <h3 class="world-name">Unconstrained Coding Agent (<code>Antigravity + Gemini 3.8 Flash</code>)</h3>
+        <div class="world-kicker">Paradigm B &middot; End-to-End Agent</div>
+        <h3 class="world-name">Unconstrained Coding Agent</h3>
         <ul class="world-list">
-          <li><span class="mark-pos">+</span><span><strong>Reads dataset metadata:</strong> infers domain formulas, sentinel codes, and multi-file parsers from schemas.</span></li>
-          <li><span class="mark-pos">+</span><span><strong>Expressive Python code:</strong> writes custom feature engineering and post-processing logic.</span></li>
-          <li><span class="mark-neg">&minus;</span><span><strong>Noisy joint search space:</strong> simultaneously tuning features, model families, and hyperparameters obscures small feature gains.</span></li>
-          <li><span class="mark-neg">&minus;</span><span><strong>Validation overfitting:</strong> stochastic model training from scratch overfits internal CV splits.</span></li>
+          <li><span class="mark-pos">+</span><span><strong>Reads metadata:</strong> infers domain ratios and multi-file parsers.</span></li>
+          <li><span class="mark-pos">+</span><span><strong>Expressive Python:</strong> writes custom cleaning &amp; feature logic.</span></li>
+          <li><span class="mark-neg">&minus;</span><span><strong>Noisy joint search:</strong> fitting GBDTs/NNs masks small feature gains.</span></li>
+          <li><span class="mark-neg">&minus;</span><span><strong>CV overfitting:</strong> stochastic model tuning overfits validation splits.</span></li>
         </ul>
       </div>
       <div class="world-foot">
-        <span>TabArena Overall (51 Datasets)</span>
+        <span>TabArena Overall (51)</span>
         <strong>1468.8 Elo</strong>
       </div>
     </div>
 
     <div class="world-col is-best">
       <div>
-        <div class="world-kicker">The Best of Both Worlds &middot; Ours</div>
-        <h3 class="world-name">TabFM-Auto (LLM Pipeline Agent + Frozen <code>TabFM</code>)</h3>
+        <div class="world-kicker">Best of Both Worlds &middot; Ours</div>
+        <h3 class="world-name">TabFM-Auto (Agent + Frozen <code>TabFM</code>)</h3>
         <ul class="world-list">
-          <li><span class="mark-pos">&#10003;</span><span><strong>Semantic pipeline synthesis:</strong> translates metadata into domain ratios, clinical hierarchies, and multi-file extractors.</span></li>
-          <li><span class="mark-pos">&#10003;</span><span><strong>Frozen 400M <code>TabFM</code> predictor:</strong> fast forward-pass evaluation with zero gradient updates and zero retraining variance.</span></li>
-          <li><span class="mark-pos">&#10003;</span><span><strong>Clean attribution of every edit:</strong> 100% of every 3-fold CV improvement comes from the data pipeline transformation itself.</span></li>
-          <li><span class="mark-pos">&#10003;</span><span><strong>Portable Python pipelines:</strong> discovered pipelines transfer zero-shot to <code>TabICLv2</code> (+143 Elo), <code>TabPFN-3</code> (+131 Elo), and <code>EXAONE-Tabular</code> (+89 Elo).</span></li>
+          <li><span class="mark-pos">&#10003;</span><span><strong>Semantic synthesis:</strong> writes domain formulas, clinical hierarchies &amp; file parsers.</span></li>
+          <li><span class="mark-pos">&#10003;</span><span><strong>Frozen 400M <code>TabFM</code>:</strong> fast forward-pass evaluation with zero gradient updates.</span></li>
+          <li><span class="mark-pos">&#10003;</span><span><strong>Clean attribution:</strong> 100% of CV gain comes from the data pipeline itself.</span></li>
+          <li><span class="mark-pos">&#10003;</span><span><strong>Zero-shot transfer:</strong> boosts <code>TabICLv2</code> (+143 Elo), <code>TabPFN-3</code> (+131 Elo), and <code>EXAONE</code> (+89 Elo).</span></li>
         </ul>
       </div>
       <div class="world-foot">
-        <span>TabArena Overall (51 Datasets)</span>
+        <span>TabArena Overall (51)</span>
         <strong>2013.0 Elo (#1)</strong>
       </div>
     </div>
   </div>
 
-  <p>
-    Modern tabular machine learning has split into two paradigms whose strengths and blind spots are mirror images of one another: <strong>pretrained Tabular Foundation Models (TFMs)</strong> that perform zero-shot numerical inference in a single forward pass, and <strong>LLM-driven Machine Learning Engineering (MLE) agents</strong> that read dataset metadata and write custom modeling code.
-  </p>
-
-  <p>
-    <strong>World 1: Tabular Foundation Models have strong numerical priors but are blind to column semantics.</strong>
-    Tabular Foundation Models such as <code>TabPFN</code>, <code>TabICL</code>, and <code>TabFM</code> pretrain a transformer on millions of synthetic datasets so that, at test time, they take a labeled training table (<i>X</i><sub>train</sub>, <i>y</i><sub>train</sub>) as in-context examples and predict test labels <i>&#375;</i> = <i>f</i><sub>&theta;*</sub>(<i>X</i><sub>test</sub> &mid; <i>X</i><sub>train</sub>, <i>y</i><sub>train</sub>) in a single forward pass without gradient updates. Because their pretrained weights &theta;* stay frozen, TFMs provide fast, deterministic numerical inference and already match or outperform tuned gradient-boosted decision trees (GBDTs) and multi-hour AutoGluon stacks out of the box (1785.3 vs. 1668.4 Elo on TabArena). However, their attention layers see only floating-point magnitudes and category indices: a TFM treats a column named <code>systolic_bp</code>, <code>frequency</code>, or <code>ICD9_diagnosis</code> identically to an anonymous column <code>X_17</code>. From raw numbers alone, a TFM cannot infer dimensionless aeroacoustic scaling laws from wind-tunnel headers, group clinical diagnosis codes by organ system, recognize when a value such as <code>width = 0</code> encodes a missing measurement rather than zero physical width, or read auxiliary sensor waveforms and 3D molecular geometries. Prior wrapper presets (<code>TabFM+</code>) extend <code>TabFM</code> with generic pairwise feature crosses, singular value decomposition (SVD) projections, and multi-view ensembling, but these fixed, schema-agnostic operations still ignore what the columns represent.
-  </p>
-
-  <p>
-    <strong>World 2: LLM Coding Agents understand column semantics but suffer from noisy end-to-end training search.</strong>
-    Pretrained on scientific text and source code, Large Language Models (LLMs) possess the exact domain knowledge that TFMs lack: they read column names, physical units, task descriptions, and file schemas, and can express domain hypotheses directly as executable Python transformations. Yet LLMs perform poorly as direct row-by-row tabular predictors because of context-length limits, coarse number tokenization, and poorly calibrated probabilities. Existing MLE agents (such as AIDE, R&amp;D-Agent, and MLEvolve) instead use LLMs to iteratively rewrite end-to-end training scripts that fit tree ensembles or neural networks from scratch during search. However, searching over feature engineering, model families, and training hyperparameters at the same time is slow and noisy: stochastic training variance masks small, legitimate feature gains and drives validation overfitting. In our controlled ablation using the exact same agent harness and language model (<code>Antigravity + Gemini 3.8 Flash</code>), sandbox, and 6-hour per-dataset budget, an unconstrained coding agent that trains and blends LightGBM, CatBoost, XGBoost, and PyTorch models reaches only <strong>1468.8 Elo</strong> on TabArena &mdash; falling behind 4-hour <code>AutoGluon 1.3</code> (1490.3 Elo) and trailing plain zero-shot <code>TabFM</code> by <strong>316.5 Elo</strong>.
-  </p>
-
-  <p>
-    <strong>Taking the Best of Both Worlds with TabFM-Auto.</strong>
-    We introduce <strong>TabFM-Auto</strong>, which combines an LLM coding agent's domain reasoning with a frozen <code>TabFM</code> model's numerical inference prior. Rather than rewriting training scripts to fit models from scratch, the agent iteratively evolves a modular 4-stage Python data pipeline &mdash; data cleaning (<code>preprocess</code>), feature engineering (<code>engineer</code>), context selection (<code>sample</code>), and post-processing (<code>postprocess</code>) &mdash; via 3-fold cross-validation on the training set while keeping <code>TabFM</code> strictly fixed. Because <code>TabFM</code> requires no gradient updates, every candidate pipeline is fast to evaluate and free of model-retraining noise: even a 0.2% cross-validation gain reflects a genuine improvement in how the table is represented. Once search finishes, we freeze the selected pipeline <i>P*</i> and evaluate it once on the official held-out test set.
-  </p>
-
   <!-- ================= SECTION 2: METHODOLOGY ================= -->
-  <h2 id="method">2. Methodology: Closed-Loop Pipeline Evolution Around Frozen <code>TabFM</code></h2>
+  <h2 id="method">2. Methodology: Closed-Loop Pipeline Evolution</h2>
 
   <p>
-    Consider a tabular prediction task with a labeled training dataset <i>D</i><sub>train</sub> = (<i>X</i><sub>train</sub>, <i>y</i><sub>train</sub>) of <i>T</i><sub>train</sub> rows and <i>H</i> columns, an unlabeled test dataset <i>X</i><sub>test</sub>, and dataset metadata <i>M</i> containing column names, physical units, task descriptions, and auxiliary file schemas. A zero-shot tabular foundation model <i>f</i><sub>&theta;*</sub> such as <code>TabFM</code> takes (<i>X</i><sub>train</sub>, <i>y</i><sub>train</sub>) as in-context examples and predicts test labels <i>&#375;</i> = <i>f</i><sub>&theta;*</sub>(<i>X</i><sub>test</sub> &mid; <i>X</i><sub>train</sub>, <i>y</i><sub>train</sub>) in a single forward pass with frozen weights &theta;*.
-  </p>
-
-  <p>
-    <strong>Optimization Objective.</strong>
-    We partition <i>D</i><sub>train</sub> into 3 internal cross-validation folds without touching the held-out test split (Figure 2a). On each internal fold (<i>D</i><sub>subtrain</sub>, <i>D</i><sub>val</sub>) and conditioned on metadata <i>M</i>, the coding agent searches over executable pipelines <i>P</i> = (&Phi;<sub>clean</sub>, &Phi;<sub>feat</sub>, <i>S</i><sub>ctx</sub>, &Psi;<sub>post</sub>) &in; <i>P</i> to maximize the mean 3-fold cross-validation metric <i>U</i><sub>val</sub> around the fixed weights &theta;*:
+    Given training data <i>D</i><sub>train</sub> = (<i>X</i><sub>train</sub>, <i>y</i><sub>train</sub>), unlabeled test inputs <i>X</i><sub>test</sub>, and metadata <i>M</i>, we partition <i>D</i><sub>train</sub> into 3 internal cross-validation folds without touching the test split. The coding agent searches over executable Python pipelines <i>P</i> = (&Phi;<sub>clean</sub>, &Phi;<sub>feat</sub>, <i>S</i><sub>ctx</sub>, &Psi;<sub>post</sub>) around frozen weights &theta;* to maximize mean 3-fold validation score <i>U</i><sub>val</sub>:
   </p>
 
   <div class="eq-box" role="math" aria-label="Equation 1: Pipeline Optimization Objective">
     <div>
       <i>P*</i> = arg max<sub><i>P</i> &in; <i>P</i></sub> &nbsp;<i>U</i><sub>val</sub>( &Psi;<sub>post</sub>( <i>f</i><sub>&theta;*</sub>( <i>X&#771;</i><sub>val</sub> &mid; <i>S</i><sub>ctx</sub>(<i>X&#771;</i><sub>subtrain</sub>, <i>y&#771;</i><sub>subtrain</sub>) ), &nbsp;<i>y</i><sub>subtrain</sub>, &nbsp;<i>X&#771;</i><sub>val</sub> ), &nbsp;<i>y</i><sub>val</sub> ),
-      &nbsp;&nbsp;&nbsp;where &nbsp;(<i>X&#771;</i><sub>subtrain</sub>, <i>y&#771;</i><sub>subtrain</sub>, <i>X&#771;</i><sub>val</sub>) = &Phi;<sub>feat</sub>(&Phi;<sub>clean</sub>(<i>X</i><sub>subtrain</sub>, <i>y</i><sub>subtrain</sub>, <i>X</i><sub>val</sub>)).
+      &nbsp;&nbsp;where &nbsp;(<i>X&#771;</i><sub>subtrain</sub>, <i>y&#771;</i><sub>subtrain</sub>, <i>X&#771;</i><sub>val</sub>) = &Phi;<sub>feat</sub>(&Phi;<sub>clean</sub>(<i>X</i><sub>subtrain</sub>, <i>y</i><sub>subtrain</sub>, <i>X</i><sub>val</sub>)).
     </div>
     <span class="eq-num">(1)</span>
   </div>
-
-  <p>
-    Throughout search, &theta;* stays fixed. Passing unlabeled inputs <i>X</i><sub>val</sub> (or <i>X</i><sub>test</sub> at evaluation time) alongside the training split while withholding evaluation labels lets the pipeline compute both <em>inductive</em> transformations fitted on training rows and <em>label-free transductive</em> features (such as entity frequency and bipartite graph degrees across combined train and test inputs).
-  </p>
 
   <!-- ================= FIGURE 2: ARCHITECTURE & DATAFLOW OVERVIEW ================= -->
   <section class="fig-card wide-card" id="fig-overview" aria-label="Figure 2: Overview of TabFM-Auto">
     <div class="fig-top">
       <div class="fig-heading">
-        <span class="fig-kicker">Figure 2 &middot; System Architecture &amp; Dataflow</span>
-        <h3 class="fig-title">Overview of TabFM-Auto: Closed-Loop Pipeline Search &amp; Test-Time Dataflow</h3>
+        <span class="fig-kicker">Figure 2 &middot; System Architecture &amp; Interactive Stage Inspector</span>
+        <h3 class="fig-title">Closed-Loop Pipeline Search &amp; 5-Stage Test-Time Dataflow</h3>
       </div>
     </div>
 
@@ -269,17 +247,17 @@
       <!-- Panel (a) -->
       <div class="arch-panel-box">
         <div class="arch-panel-head">
-          <span class="arch-panel-label">(a) Closed-Loop Agentic Pipeline Search (3-Fold CV on <i>D</i><sub>train</sub>)</span>
-          <span class="arch-panel-sub">Zero gradient updates &middot; Strict test-set isolation inside a network-disabled sandbox</span>
+          <span class="arch-panel-label">(a) Closed-Loop Agentic Search (3-Fold CV on <i>D</i><sub>train</sub>)</span>
+          <span class="arch-panel-sub">Zero gradient updates &middot; Strict test-set isolation</span>
         </div>
         <div class="arch-loop-grid">
           <div class="arch-actor">
             <div class="arch-actor-title">
               <span>1. LLM Coding Agent</span>
-              <span class="badge neutral">Metadata <i>M</i> + Logs</span>
+              <span class="badge neutral">Metadata <i>M</i></span>
             </div>
             <div class="arch-actor-body">
-              Reads column names, units, class balance, and auxiliary schemas; proposes targeted edits to <code>pipeline.py</code> and retains candidates that improve 3-fold CV score <i>U</i><sub>val</sub>.
+              Reads column names, units, and file schemas; proposes edits to <code>pipeline.py</code> and retains candidates that improve 3-fold CV score <i>U</i><sub>val</sub>.
             </div>
           </div>
 
@@ -289,7 +267,7 @@
               <span class="badge pos"><code>pipeline.py</code></span>
             </div>
             <div class="arch-actor-body">
-              Expresses dataset-specific transformations across four modular Python hooks (<code>preprocess</code>, <code>engineer</code>, <code>sample</code>, <code>postprocess</code>) plus declarative <code>TABFM_KWARGS</code> presets.
+              Implements four modular Python hooks (<code>preprocess</code>, <code>engineer</code>, <code>sample</code>, <code>postprocess</code>) plus declarative <code>TABFM_KWARGS</code> presets.
             </div>
           </div>
 
@@ -299,7 +277,7 @@
               <span class="badge neutral">Frozen &theta;* (400M)</span>
             </div>
             <div class="arch-actor-body">
-              Evaluates <i>P</i> across 3 internal folds of <i>D</i><sub>train</sub> using a single forward-pass ICL call per fold/view around frozen <code>TabFM</code>, then freezes the best pipeline <i>P*</i> for test evaluation.
+              Evaluates <i>P</i> across 3 internal folds of <i>D</i><sub>train</sub> in a single forward pass per view, then freezes the best pipeline <i>P*</i> for test inference.
             </div>
           </div>
         </div>
@@ -309,51 +287,74 @@
       <div class="arch-panel-box">
         <div class="arch-panel-head">
           <span class="arch-panel-label">(b) Inference Dataflow Through Selected Pipeline <i>P*</i> Around Frozen TabFM</span>
-          <span class="arch-panel-sub">Click any of the five stages below to inspect its contract &amp; evolved code</span>
+          <span class="arch-panel-sub">Click any of the 5 stages below to compare Before (<i>P</i><sub>0</sub>) &rarr; After (<i>P*</i>)</span>
         </div>
         <div class="dataflow-strip">
           <div class="df-step" data-f2-stage="preprocess">
             <div class="df-step-num">1. preprocess() &middot; &Phi;<sub>clean</sub></div>
             <div class="df-step-title">Clean &amp; Target Map</div>
-            <div class="df-step-desc">Recodes sentinel <code>0 &rarr; NaN</code>, filters corrupted rows, and transforms skewed <i>y</i><sub>train</sub> via <i>g</i>(<i>y</i>).</div>
+            <div class="df-step-desc">Recodes sentinels (<code>0 &rarr; NaN</code>) and transforms skewed <i>y</i><sub>train</sub> via <i>g</i>(<i>y</i>).</div>
           </div>
           <div class="df-step is-active" data-f2-stage="engineer">
             <div class="df-step-num">2. engineer() &middot; &Phi;<sub>feat</sub></div>
             <div class="df-step-title">Domain &amp; Structural FE</div>
-            <div class="df-step-desc">Synthesizes physical ratios, clinical groupings, out-of-fold target rates, and multi-file features (95.1% of runs).</div>
+            <div class="df-step-desc">Synthesizes domain ratios, clinical hierarchies, OOF rates, and multi-file features (95.1% of runs).</div>
           </div>
           <div class="df-step" data-f2-stage="sample">
             <div class="df-step-num">3. sample() &middot; <i>S</i><sub>ctx</sub></div>
             <div class="df-step-title">Context Sampling</div>
-            <div class="df-step-desc">Builds stratified or minority-oversampled context views within the 16,384-row window.</div>
+            <div class="df-step-desc">Builds stratified or minority-oversampled context views within 16,384 rows.</div>
           </div>
           <div class="df-step" data-f2-stage="kwargs">
             <div class="df-step-num">4. TABFM_KWARGS &middot; <i>f</i><sub>&theta;*</sub></div>
             <div class="df-step-title">Frozen TabFM (400M)</div>
-            <div class="df-step-desc">Configures generic presets (norms, SVD, NNLS) and predicts test labels in one forward pass per view.</div>
+            <div class="df-step-desc">Configures generic presets (norms, SVD, NNLS) and runs zero-shot ICL inference.</div>
           </div>
           <div class="df-step" data-f2-stage="postprocess">
             <div class="df-step-num">5. postprocess() &middot; &Psi;<sub>post</sub></div>
             <div class="df-step-title">Calibrate &amp; Inv-Map</div>
-            <div class="df-step-desc">Applies inverse map <i>g</i><sup>&minus;1</sup>, log-odds prior alignment, and temperature scaling &rarr; <strong>2013 Elo (#1)</strong>.</div>
+            <div class="df-step-desc">Applies inverse map <i>g</i><sup>&minus;1</sup> and log-odds prior alignment &rarr; <strong>2013 Elo (#1)</strong>.</div>
           </div>
         </div>
       </div>
 
-      <!-- Stage Inspector (updates when clicking any of the 5 stages in Panel b) -->
+      <!-- Stage Inspector: Side-by-Side Before -> Arrow -> After -->
       <div class="stage-inspector" id="f2-inspector">
         <div class="stage-inspector-head">
           <div class="stage-inspector-title" id="f2-insp-title">Stage 2: engineer(X_train, y_train, X_test) &mdash; Semantic &amp; Structural Feature Engineering (&Phi;<sub>feat</sub>)</div>
           <span class="badge pos" id="f2-insp-stat">Modified in 95.1% of TabArena runs (97 / 102)</span>
         </div>
-        <div class="stage-inspector-grid">
-          <div class="stage-inspector-text" id="f2-insp-text">
-            <p><strong>What limitation of frozen TabFM it solves:</strong> Attention layers over raw numbers cannot infer domain scaling laws from column headers or join external sensor/molecular files. Writing a domain formula as an explicit column spares <code>TabFM</code> from approximating nonlinear ratios in context.</p>
-            <p><strong>What the agent synthesizes:</strong> Inductive domain formulas (aeroacoustic Strouhal numbers, concrete water-to-binder maturity laws, clinical ICD-9 hierarchies), smoothed out-of-fold target statistics, multi-file waveform/3D parsers, and label-free transductive entity-graph degrees over combined <i>X</i><sub>train</sub> &cup; <i>X</i><sub>test</sub>.</p>
+        <div class="stage-inspector-summary" id="f2-insp-text">
+          <p><strong>Why it matters:</strong> Attention over raw numbers ignores column headers and external files; writing explicit domain formulas (Strouhal/Reynolds numbers, water-to-binder laws, ICD-9 hierarchies) or multi-file parsers spares <code>TabFM</code> from approximating nonlinear ratios in context.</p>
+        </div>
+        <div class="stage-ba-grid">
+          <div class="stage-ba-col is-before">
+            <div class="stage-ba-head">
+              <span class="stage-ba-tag">Before &middot; Identity Baseline P<sub>0</sub></span>
+              <span class="stage-ba-meta" id="f2-before-meta">airfoil_self_noise &middot; Test RMSE: 1.0712</span>
+            </div>
+            <pre class="stage-ba-code" id="f2-insp-before"># Raw wind-tunnel columns passed unchanged:
+# ["frequency", "angle-of-attack", "chord-length",
+#  "free-stream-velocity",
+#  "suction-side-displacement-thickness"]
+
+def engineer(X_train, y_train, X_test):
+    return X_train, X_test</pre>
           </div>
-          <pre class="stage-inspector-code" id="f2-insp-code"># Evolved P* on airfoil_self_noise (Test RMSE: 1.0712 -> 0.9165, -14.4%):
-def _phys(df):
-    f, c, u, d = df["frequency"], df["chord-length"], df["free-stream-velocity"], df["suction-side-displacement-thickness"]
+
+          <div class="stage-ba-arrow" aria-hidden="true">
+            <span class="stage-ba-arrow-icon">&rarr;</span>
+            <span class="stage-ba-arrow-lbl">Evolve P*</span>
+          </div>
+
+          <div class="stage-ba-col is-after">
+            <div class="stage-ba-head">
+              <span class="stage-ba-tag is-after">After &middot; Evolved Pipeline P*</span>
+              <span class="stage-ba-meta pos" id="f2-after-meta">Test RMSE: 1.0712 &rarr; 0.9165 (&minus;14.4%)</span>
+            </div>
+            <pre class="stage-ba-code" id="f2-insp-after">def _phys(df):
+    f, c = df["frequency"], df["chord-length"]
+    u, d = df["free-stream-velocity"], df["suction-side-displacement-thickness"]
     out = df.drop(columns=["frequency", "free-stream-velocity", "chord-length"]).copy()
     out["log_f"], out["log_d"], out["log_c"] = np.log10(f), np.log10(d), np.log10(c)
     out["log_St_d"], out["log_St_c"] = np.log10(f * d / u), np.log10(f * c / u)
@@ -364,32 +365,28 @@ def _phys(df):
 
 def engineer(X_train, y_train, X_test):
     return _phys(X_train), _phys(X_test)</pre>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="fig-caption">
-      <strong>Figure 2: Closed-loop pipeline search and test-time inference dataflow of TabFM-Auto.</strong> (a) During search, the coding agent iteratively edits <code>pipeline.py</code> using 3-fold cross-validation feedback on <i>D</i><sub>train</sub> around frozen <code>TabFM</code>. (b) At test time, the frozen pipeline <i>P*</i> transforms the table through five modular stages around the 400M-parameter <code>TabFM</code> backbone; click any stage box in (b) to inspect its contract and evolved code.
+      <strong>Figure 2: Closed-loop pipeline search and test-time dataflow of TabFM-Auto.</strong> Click any stage in (b) to compare the identity baseline <i>P</i><sub>0</sub> (left) against the evolved pipeline <i>P*</i> (right).
     </div>
   </section>
-
-  <p>
-    <strong>Modular Stages vs. Generic Wrapper Presets.</strong>
-    Generic versions of all four stages already exist in <code>TabFM+</code>, which extends <code>TabFM</code> to normalize inputs and clip outliers (&Phi;<sub>clean</sub>), append pairwise feature crosses and SVD projections (&Phi;<sub>feat</sub>), ensemble predictions over multiple views with a configurable context size (<i>S</i><sub>ctx</sub>), and weight views by non-negative least squares (NNLS) before calibrating outputs (&Psi;<sub>post</sub>). <code>TABFM_KWARGS</code> exposes these generic presets as constructor settings of <i>f</i><sub>&theta;*</sub>. The coding agent can therefore cover standard numerical conditioning by setting dictionary flags and reserve the four Python functions for dataset-specific logic that generic presets cannot express &mdash; such as domain formulas, sentinel recoding, or minority-class context stratification. Separating <code>TABFM_KWARGS</code> from the four functions also allows us to transfer the evolved Python functions directly around other tabular foundation models (&sect;6).
-  </p>
 
   <!-- ================= SECTION 3: TABARENA PIPELINE EXPLORER ================= -->
   <h2 id="explorer">3. TabArena Pipeline Explorer (All 51 Datasets)</h2>
 
   <p>
-    What kind of pipelines does the agent actually write? Below is the <strong>TabArena Pipeline Explorer</strong> covering all <strong>51 evolved TabArena pipelines</strong> across Regression (13), Binary Classification (26), and Multiclass Classification (12), defaulting to the <strong>Regression</strong> suite. Click any stage button (<code>preprocess()</code>, <code>engineer()</code>, <code>sample()</code>, <code>postprocess()</code>) to inspect both the hook and every helper function it calls, or switch to <strong>Write-up</strong> to read the technical documentation for that dataset.
+    Inspect all <strong>51 evolved TabArena pipelines</strong> across Regression (13), Binary Classification (26), and Multiclass Classification (12) &mdash; click any stage button (<code>preprocess()</code>, <code>engineer()</code>, <code>sample()</code>, <code>postprocess()</code>) to jump to its implementation, or switch to <strong>Write-up</strong> for per-dataset documentation.
   </p>
 
   <div class="wide-bleed">
     <div class="explorer-frame-card">
       <div class="explorer-toolbar">
         <div class="explorer-presets" role="group" aria-label="Featured TabArena pipelines">
-          <span class="preset-label">Featured datasets:</span>
+          <span class="preset-label">Featured:</span>
           <button type="button" class="preset-btn is-active" data-ta-hash="#mode=pipelines&suite=tabarena_regression&task=airfoil_self_noise&tab=code&hook=engineer">airfoil_self_noise &middot; engineer()</button>
           <button type="button" class="preset-btn" data-ta-hash="#mode=pipelines&suite=tabarena_regression&task=diamonds&tab=code&hook=engineer">diamonds &middot; engineer()</button>
           <button type="button" class="preset-btn" data-ta-hash="#mode=pipelines&suite=tabarena_regression&task=concrete_compressive_strength&tab=code&hook=engineer">concrete_strength &middot; engineer()</button>
@@ -410,31 +407,14 @@ def engineer(X_train, y_train, X_test):
     </div>
   </div>
 
-  <!-- ================= SECTION 4: TABARENA EVALUATION ================= -->
-  <h2 id="tabarena">4. TabArena Evaluation Across 51 Datasets</h2>
+  <!-- ================= SECTION 4: TABARENA EVALUATION & TAXONOMY ================= -->
+  <h2 id="tabarena">4. TabArena Results, Taxonomy &amp; Search Dynamics</h2>
 
   <p>
-    <strong>Experimental Protocol.</strong>
-    We evaluate <strong>TabFM-Auto</strong> across all 51 datasets of the <a href="https://tabarena.ai" target="_blank" rel="noopener">TabArena benchmark</a> (38 classification and 13 regression datasets, where each dataset uses 3-fold outer cross-validation repeated 3 or 10 times, yielding 9 or 30 official train/test splits). Running a separate agent search on every evaluation fold would be prohibitively costly in tokens and GPU hours. Instead, we run pipeline search once per dataset using 3-fold cross-validation on fold 0's training set (up to 96 candidate evaluations or 6 hours on one H100 GPU), withholding all test labels. We then freeze the selected pipeline <i>P*</i> and evaluate it once across the held-out test splits of all official folds <i>k</i> &in; {0, &hellip;, <i>S</i> &minus; 1}. Following the official TabArena protocol, each method is rated against the 66-method TabArena pool using Bradley&ndash;Terry <strong>Elo</strong> (anchored to default Random Forest = 1000), dataset <strong>Wins</strong>, oracle <strong>Improvability</strong> (1 &minus; err<sub>best</sub> / err<sub>method</sub>), and Geometric Mean Test Error (<strong>G-Mean</strong>).
+    We run pipeline search once per dataset using 3-fold CV on fold 0's training split (up to 96 evaluations or 6 hours on one H100 GPU), then freeze <i>P*</i> and evaluate across all official held-out folds (9 or 30 splits per dataset). Across all 51 datasets (<a href="#fig-headline">Figure 1</a>), <strong>TabFM-Auto</strong> achieves <strong>2013.0 Elo (#1)</strong>, gaining <strong>+197.6 Elo on Classification (1966.3)</strong> and <strong>+467.0 Elo on Regression (2512.9, 0.00% improvability)</strong>.
   </p>
 
-  <p>
-    <strong>Main Results.</strong>
-    Across all 51 datasets (<a href="#fig-headline">Figure 1</a>; switch to <em>Table</em> view in Figure 1 for all exact columns), <strong>TabFM-Auto</strong> takes the <strong>#1 overall position at 2013.0 Elo</strong>, improving over plain <code>TabFM</code> (1785.3 Elo) by <strong>+227.7 Elo</strong> and outperforming 4-hour <code>AutoGluon 1.5 (extreme)</code> ensembles (1668.4 Elo) by <strong>+344.6 Elo</strong>. On the 38 classification datasets, <code>TabFM-Auto</code> raises <code>TabFM</code> by <strong>+197.6 Elo to 1966.3 Elo</strong>. On the 13 regression datasets, <code>TabFM-Auto</code> leaps by <strong>+467.0 Elo to 2512.9 Elo</strong>, improving over plain <code>TabFM</code> on all 13 datasets and driving oracle improvability down to <strong>0.00%</strong>. Regression gains are particularly large because expressing physical ratios in <code>engineer()</code> and linearizing skewed targets in <code>preprocess()</code> lets <code>TabFM</code> smoothly interpolate continuous functions that axis-aligned tree splits approximate only coarsely.
-  </p>
-
-  <!-- ================= SECTION 5: TAXONOMY & DYNAMICS ================= -->
-  <h2 id="taxonomy">5. What Do Evolved Pipelines Learn? Taxonomy &amp; Search Dynamics</h2>
-
-  <p>
-    To understand the algorithmic strategies discovered during search, we analyze the final evolved pipelines across all 51 TabArena datasets and group them into three categories (Table 1): (I) <strong>Domain-Knowledge Features</strong>, (II) <strong>Statistical &amp; Structural Feature Engineering</strong>, and (III) <strong>Context Selection &amp; Output Calibration</strong>.
-  </p>
-
-  <p>
-    The evolved pipelines modify the feature table in <strong>95.1% of runs</strong>, pairing feature engineering (&Phi;<sub>feat</sub>) with missing-value cleaning and reversible target transforms (&Phi;<sub>clean</sub>) on regression, and with minority-class context selection (<i>S</i><sub>ctx</sub>) and prior calibration (&Psi;<sub>post</sub>) on multiclass classification. On the 17 datasets whose column names or task descriptions identify physical, clinical, or economic quantities (Category I), the agent writes domain formulas directly from the schema &mdash; achieving a mean test error reduction of <strong>7.3% to 8.2%</strong> across all folds. That is <strong>nearly three times</strong> the 2.3% to 3.0% error reduction on datasets with anonymized or generic schemas (Category II), where the agent relies on statistical transforms, frequency encodings, and bipartite graph degree features. Category I datasets account for <strong>6 of the 10 largest test error reductions</strong> across TabArena.
-  </p>
-
-  <div class="data-card wide-card">
+  <div class="data-card wide-card" id="taxonomy">
     <div class="card-head">
       <h3 class="card-title">Table 1: Taxonomy of Evolved TabArena Pipelines Across All 51 Datasets</h3>
     </div>
@@ -451,22 +431,22 @@ def engineer(X_train, y_train, X_test):
         </thead>
         <tbody>
           <tr class="highlight-row">
-            <td><strong>I. Domain-Knowledge Features</strong></td>
-            <td>Aeroacoustic Strouhal &amp; Helmholtz numbers (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_regression&task=airfoil_self_noise&tab=code&hook=engineer"><code>airfoil_self_noise</code></a>), water-to-binder maturity laws (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_regression&task=concrete_compressive_strength&tab=code&hook=engineer"><code>concrete_strength</code></a>), ICD-9 clinical hierarchies (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Diabetes130US&tab=code&hook=engineer"><code>Diabetes130US</code></a>), SDSS rest-frame color indices (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=SDSS17&tab=code&hook=engineer"><code>SDSS17</code></a>), DNA splice motif log-likelihoods (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=splice&tab=code&hook=engineer"><code>splice</code></a>)</td>
+            <td><strong>I. Domain-Knowledge FE</strong></td>
+            <td>Aeroacoustic Strouhal numbers (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_regression&task=airfoil_self_noise&tab=code&hook=engineer"><code>airfoil_self_noise</code></a>), water-to-binder laws (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_regression&task=concrete_compressive_strength&tab=code&hook=engineer"><code>concrete_strength</code></a>), ICD-9 clinical hierarchies (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Diabetes130US&tab=code&hook=engineer"><code>Diabetes130US</code></a>), SDSS color indices (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=SDSS17&tab=code&hook=engineer"><code>SDSS17</code></a>), DNA splice motifs (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=splice&tab=code&hook=engineer"><code>splice</code></a>)</td>
             <td class="r">17 / 51</td>
             <td class="r"><span class="badge pos">7.3% to 8.2%</span></td>
             <td class="r">3.0%</td>
           </tr>
           <tr>
             <td><strong>II. Statistical &amp; Structural FE</strong></td>
-            <td>Transductive bipartite entity-graph degrees &amp; pairwise co-occurrences (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Amazon_employee_access&tab=code&hook=engineer"><code>Amazon_employee</code></a>), missingness-pattern signatures (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=APSFailure&tab=code&hook=engineer"><code>APSFailure</code></a>), collinearity pruning &amp; truncated SVD projections (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Bioresponse&tab=code&hook=engineer"><code>Bioresponse</code></a>)</td>
+            <td>Transductive entity-graph degrees (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Amazon_employee_access&tab=code&hook=engineer"><code>Amazon_employee</code></a>), missingness signatures (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=APSFailure&tab=code&hook=engineer"><code>APSFailure</code></a>), collinearity pruning &amp; SVD projections (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Bioresponse&tab=code&hook=engineer"><code>Bioresponse</code></a>)</td>
             <td class="r">34 / 51</td>
             <td class="r"><span class="badge pos">2.3% to 3.0%</span></td>
             <td class="r">1.7%</td>
           </tr>
           <tr>
             <td><strong>III. Context &amp; Calibration</strong></td>
-            <td>Minority-class stratified multi-view context sampling in <code>sample()</code> and log-odds class-prior alignment in <code>postprocess()</code> (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=website_phishing&tab=code&hook=sample"><code>website_phishing</code></a>)</td>
+            <td>Minority-oversampled context views in <code>sample()</code> and log-odds class-prior alignment in <code>postprocess()</code> (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=website_phishing&tab=code&hook=sample"><code>website_phishing</code></a>)</td>
             <td class="r">95% of runs</td>
             <td class="r"><span class="badge neutral">7.6% to 8.4% Log-Loss</span></td>
             <td class="r">&mdash;</td>
@@ -475,31 +455,26 @@ def engineer(X_train, y_train, X_test):
       </table>
     </div>
     <div class="fig-caption">
-      <strong>Table 1: Pipeline taxonomy across the 51 TabArena datasets.</strong> When column headers expose domain semantics (Category I), explicit scientific and econometric formulas yield nearly 3&times; larger test error reductions than purely statistical transformations on anonymized tables (Category II). Click any dataset name above to jump straight to its implementation in the TabArena Pipeline Explorer.
+      <strong>Table 1: Pipeline taxonomy across the 51 TabArena datasets.</strong> Explicit domain formulas on named schemas (Category I) yield nearly 3&times; larger test error reductions than statistical transforms on anonymized tables (Category II).
     </div>
   </div>
-
-  <p>
-    <strong>Validation-to-Test Generalization Across Search Progress.</strong>
-    A natural question for any iterative search method is whether optimizing 3-fold cross-validation on fold 0's training set overfits the validation split. To test this directly, we evaluate 15 intermediate pipeline checkpoints per dataset &mdash; taken at fixed fractions of the search budget from 0% (identity baseline <i>P</i><sub>0</sub>) to 100% (final pipeline <i>P*</i>) &mdash; on the official held-out test sets across all folds (Figure 3). Cross-validation gains on fold 0's training set (Figure 3a) translate monotonically into official test error reductions across all folds (Figure 3b) and higher TabArena Elo ratings (Figure 3c). Notably, <strong>TabFM-Auto surpasses <code>TabFM+</code> (1856 Elo) within the first 2.5% of the search budget</strong> (roughly 3 candidate evaluations) and continues climbing to full budget without validation-to-test degradation.
-  </p>
 
   <!-- ================= FIGURE 3: SEARCH DYNAMICS & GENERALIZATION ================= -->
   <section class="fig-card wide-card" id="fig-dynamics" aria-label="Figure 3: Search Dynamics and Test Generalization">
     <div class="fig-top">
       <div class="fig-heading">
         <span class="fig-kicker">Figure 3 &middot; Search Dynamics &amp; Generalization</span>
-        <h3 class="fig-title">Validation-to-Test Trajectory Across All 51 TabArena Datasets (0% &rarr; 100% Search Budget)</h3>
+        <h3 class="fig-title">Validation-to-Test Trajectory Across All 51 Datasets (0% &rarr; 100% Search Budget)</h3>
       </div>
       <div class="fig-controls">
-        <span class="preset-label">Inspect Checkpoint:</span>
+        <span class="preset-label">Checkpoint:</span>
         <div class="seg-tabs" role="tablist" aria-label="Search progress checkpoint">
-          <button type="button" class="seg-tab" data-f3-idx="0">0% (Identity P<sub>0</sub>)</button>
+          <button type="button" class="seg-tab" data-f3-idx="0">0% (P<sub>0</sub>)</button>
           <button type="button" class="seg-tab" data-f3-idx="2">2.5% (&gt; TabFM+)</button>
           <button type="button" class="seg-tab" data-f3-idx="4">8.5%</button>
           <button type="button" class="seg-tab" data-f3-idx="7">22.5%</button>
           <button type="button" class="seg-tab" data-f3-idx="10">56%</button>
-          <button type="button" class="seg-tab is-active" data-f3-idx="14">100% (Final P*)</button>
+          <button type="button" class="seg-tab is-active" data-f3-idx="14">100% (P*)</button>
         </div>
       </div>
     </div>
@@ -522,18 +497,12 @@ def engineer(X_train, y_train, X_test):
     <div class="fig-readout" id="f3-readout"></div>
 
     <div class="fig-caption">
-      <strong>Figure 3: Search dynamics and test generalization across all 51 TabArena datasets.</strong> Hover or click any point along the trajectory (or use the checkpoint buttons above) to synchronize the crosshair across all three panels: (a) 3-fold cross-validation gain on fold 0's training set, (b) official test error reduction across all evaluation folds, and (c) official test TabArena Elo rating.
+      <strong>Figure 3: Validation-to-test trajectory across all 51 TabArena datasets.</strong> 3-fold CV gains on fold 0's training set (a) translate monotonically into all-folds test error reductions (b) and Elo gains (c), surpassing <code>TabFM+</code> (1856 Elo) within the first 2.5% of search budget.
     </div>
   </section>
 
-  <!-- ================= SECTION 6: CONTROLLED ABLATIONS & TRANSFER ================= -->
-  <h2 id="ablations">6. Controlled Ablations: Frozen Foundation Model vs. Unconstrained Agent &amp; Zero-Shot Transfer</h2>
-
-  <p>
-    We run two controlled experiments to test our core hypotheses:
-    (1) <em>Does a coding agent actually benefit from a frozen tabular foundation model, or can the same agent reach comparable accuracy by training and ensembling GBDTs and neural networks from scratch?</em>
-    (2) <em>Are the evolved pipelines overfitted to <code>TabFM</code>'s specific weights, or do they capture intrinsic dataset structure that transfers to other frozen tabular foundation models?</em>
-  </p>
+  <!-- ================= SECTION 5: CONTROLLED ABLATIONS & TRANSFER ================= -->
+  <h2 id="ablations">5. Controlled Ablations &amp; Zero-Shot Pipeline Transfer</h2>
 
   <div class="two-col wide-card">
     <div class="data-card">
@@ -541,49 +510,51 @@ def engineer(X_train, y_train, X_test):
         <h3 class="card-title">Ablation 1: Frozen TabFM vs. Unconstrained Agent</h3>
       </div>
       <p class="card-lead">
-        Under the exact same agent harness (<code>Antigravity</code>), language model (<code>Gemini 3.8 Flash</code>), sandbox, and 6-hour per-dataset budget, an unconstrained coding agent that trains and blends LightGBM, CatBoost, XGBoost, and PyTorch models reaches <strong>1468.8 Elo</strong> &mdash; <strong>510.8 Elo below TabFM-Auto (1979.6 Elo)</strong> with the same agent: <code>TabFM</code>'s pretrained prior contributes <strong>+316.5 Elo</strong> and pipeline search adds <strong>+194.3 Elo</strong>.
+        Under the exact same agent (<code>Antigravity + Gemini 3.8 Flash</code>) and 6-hour budget, training GBDTs/PyTorch from scratch reaches <strong>1468.8 Elo</strong> &mdash; <strong>510.8 Elo below TabFM-Auto (1979.6)</strong>.
       </p>
-      <table class="bench-tbl">
-        <thead>
-          <tr>
-            <th>Method</th>
-            <th>Working Models</th>
-            <th class="r">Overall Elo</th>
-            <th class="r">Cls. Elo</th>
-            <th class="r">Reg. Elo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)</strong></td>
-            <td>GBDTs, PyTorch, Ensembles</td>
-            <td class="r">1468.8</td>
-            <td class="r">1472.0</td>
-            <td class="r">1615.3</td>
-          </tr>
-          <tr>
-            <td>Plain TabFM</td>
-            <td>TabFM (frozen)</td>
-            <td class="r">1785.3</td>
-            <td class="r">1768.7</td>
-            <td class="r">2045.9</td>
-          </tr>
-          <tr>
-            <td>TabFM+</td>
-            <td>TabFM (frozen + presets)</td>
-            <td class="r">1856.0</td>
-            <td class="r">1836.7</td>
-            <td class="r">2169.2</td>
-          </tr>
-          <tr class="highlight-row">
-            <td><strong>TabFM-Auto (Antigravity + Gemini 3.8 Flash)</strong></td>
-            <td><strong>TabFM (frozen + evolved P*)</strong></td>
-            <td class="r"><strong>1979.6</strong></td>
-            <td class="r"><strong>1937.5</strong></td>
-            <td class="r"><strong>2347.8</strong></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="tbl-scroll">
+        <table class="bench-tbl">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Working Models</th>
+              <th class="r">Overall Elo</th>
+              <th class="r">Cls. Elo</th>
+              <th class="r">Reg. Elo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)</strong></td>
+              <td>GBDTs, PyTorch, Ensembles</td>
+              <td class="r">1468.8</td>
+              <td class="r">1472.0</td>
+              <td class="r">1615.3</td>
+            </tr>
+            <tr>
+              <td>Plain TabFM</td>
+              <td>TabFM (frozen)</td>
+              <td class="r">1785.3</td>
+              <td class="r">1768.7</td>
+              <td class="r">2045.9</td>
+            </tr>
+            <tr>
+              <td>TabFM+</td>
+              <td>TabFM (frozen + presets)</td>
+              <td class="r">1856.0</td>
+              <td class="r">1836.7</td>
+              <td class="r">2169.2</td>
+            </tr>
+            <tr class="highlight-row">
+              <td><strong>TabFM-Auto (Antigravity + Gemini 3.8 Flash)</strong></td>
+              <td><strong>TabFM (frozen + evolved P*)</strong></td>
+              <td class="r"><strong>1979.6</strong></td>
+              <td class="r"><strong>1937.5</strong></td>
+              <td class="r"><strong>2347.8</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div class="data-card" id="fig-transfer">
@@ -596,21 +567,17 @@ def engineer(X_train, y_train, X_test):
         </div>
       </div>
       <p class="card-lead">
-        Running the final Python functions (<code>preprocess</code>, <code>engineer</code>, <code>sample</code>, <code>postprocess</code>) evolved for <code>TabFM</code> unchanged around three other frozen TFMs (with <strong>zero additional search</strong>) substantially improves every model:
+        Running the Python functions (<code>preprocess</code>, <code>engineer</code>, <code>sample</code>, <code>postprocess</code>) evolved for <code>TabFM</code> unchanged around three other frozen TFMs (with <strong>zero re-search</strong>) boosts every model:
       </p>
       <div id="f4-transfer-container"></div>
     </div>
   </div>
 
-  <!-- ================= SECTION 7: MLE-BENCH-TABULAR ================= -->
-  <h2 id="mlebench">7. Multi-File Autonomous Engineering on MLE-Bench-Tabular</h2>
+  <!-- ================= SECTION 6: MLE-BENCH-TABULAR ================= -->
+  <h2 id="mlebench">6. Multi-File Autonomous Engineering on MLE-Bench-Tabular</h2>
 
   <p>
-    We also evaluate <strong>TabFM-Auto</strong> on <a href="https://arxiv.org/abs/2410.07095" target="_blank" rel="noopener"><strong>MLE-Bench-Tabular</strong></a>, the 8-competition tabular suite comparing against 12 external autonomous MLE agents (including CAIR MARS+, CAIR MARS, MLEvolve, Famou-Agent 2.0, PiEvolve, ML-Master 2.0, AIBuildAI, Thesis, CAIR MLE-STAR-Pro, R&amp;D-Agent, AIDE, InternAgent, and AIRA-Dojo) that search over both feature engineering and custom model training (GBDTs, deep neural networks, and multi-stage ensembles).
-  </p>
-
-  <p>
-    In several <strong>MLE-Bench-Tabular</strong> competitions &mdash; such as <code>predict-volcanic-eruptions-ingv-oe</code> and <code>smartphone-decimeter-2022</code> &mdash; the main CSV contains only recording IDs while the predictive signal lives in thousands of auxiliary sensor waveforms, GNSS satellite logs, or 3D molecular geometry files. Plain <code>TabFM</code> cannot read these auxiliary files directly. Within <code>engineer()</code>, <strong>TabFM-Auto</strong> writes domain-specific signal-processing and geometric parsers (FFT spectral energy bands, STA/LTA seismic trigger ratios, reciprocal lattice unit-cell volumes, Karplus dihedral angles, and weighted least-squares GNSS positioning with Rauch&ndash;Tung&ndash;Striebel Kalman smoothing) and joins the extracted features into a clean tabular representation for <code>TabFM</code>.
+    On <a href="https://arxiv.org/abs/2410.07095" target="_blank" rel="noopener"><strong>MLE-Bench-Tabular</strong></a> (8 Kaggle tabular competitions against 12 external MLE agents), several tasks store the predictive signal inside thousands of auxiliary sensor waveforms, GNSS satellite logs, or 3D molecular geometry files. Within <code>engineer()</code>, <strong>TabFM-Auto</strong> writes domain-specific signal-processing and geometric parsers (FFT spectral bands, STA/LTA seismic triggers, reciprocal lattice volumes, Karplus dihedral angles, and WLS + RTS Kalman GNSS smoothing) and joins them into a clean table for frozen <code>TabFM</code>.
   </p>
 
   <!-- ================= FIGURE 5: MLE-BENCH-TABULAR ELO & 8-COMPETITION BREAKDOWN ================= -->
@@ -637,317 +604,304 @@ def engineer(X_train, y_train, X_test):
     </div>
 
     <div class="fig-caption">
-      <strong>Figure 5: MLE-Bench-Tabular overall Elo ranking and per-competition scores.</strong> Toggle between the aggregate Elo leaderboard and the 8-competition breakdown above. In the per-competition histograms, agents are ordered from best (top) to worst (bottom), bar length shows the competition metric directly (so shorter bars at the top indicate smaller errors on lower-is-better tasks), and the vertical gold dashed line marks the Kaggle Gold Medal threshold. Across the 8-competition suite against the 12 external MLE agents with complete submissions, <strong>TabFM-Auto ranks #1 overall at 1827 Elo</strong>.
+      <strong>Figure 5: MLE-Bench-Tabular evaluation across all 8 competitions.</strong> <strong>TabFM-Auto</strong> ranks <strong>#1 overall at 1827 Elo</strong> (+110 over CAIR MARS+ at 1717 Elo). Switch to <em>Per-Competition Scores</em> and click any task card to inspect its evolved multi-file pipeline below.
     </div>
   </section>
 
-  <!-- ================= DEDICATED MLE-BENCH-TABULAR PIPELINE EXPLORER ================= -->
-  <div class="wide-bleed" id="mlebench-explorer">
+  <!-- ================= SECTION 7: MLE-BENCH-TABULAR PIPELINE EXPLORER ================= -->
+  <h2 id="mlebench-explorer">7. MLE-Bench-Tabular Pipeline Explorer (All 8 Competitions)</h2>
+
+  <p>
+    Explore all <strong>8 evolved MLE-Bench-Tabular pipelines</strong> below &mdash; including multi-file waveform, GNSS trajectory, and 3D crystal/molecular geometry extractors, official leaderboard medal thresholds, and technical write-ups.
+  </p>
+
+  <div class="wide-bleed">
     <div class="explorer-frame-card">
       <div class="explorer-toolbar">
         <div class="explorer-presets" role="group" aria-label="MLE-Bench-Tabular competitions">
-          <span class="preset-label">MLE-Bench-Tabular Explorer (8 Competitions):</span>
-          <button type="button" class="preset-btn is-active" data-mle-hash="#mode=pipelines&suite=mlebench&task=predict-volcanic-eruptions-ingv-oe&tab=code">volcanic-eruptions (Gold)</button>
-          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=nomad2018-predict-transparent-conductors&tab=code">nomad2018 (Gold)</button>
+          <span class="preset-label">Competitions:</span>
+          <button type="button" class="preset-btn is-active" data-mle-hash="#mode=pipelines&suite=mlebench&task=predict-volcanic-eruptions-ingv-oe&tab=code">volcanic-eruptions (Gold &middot; #1)</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=nomad2018-predict-transparent-conductors&tab=code">nomad2018-conductors (Gold &middot; #1)</button>
           <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=tabular-playground-series-dec-2021&tab=code">tps-dec-2021 (Gold)</button>
-          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=tabular-playground-series-may-2022&tab=code">tps-may-2022 (Bronze)</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=tabular-playground-series-may-2022&tab=code">tps-may-2022 (Bronze &middot; #1)</button>
           <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=smartphone-decimeter-2022&tab=code">smartphone-decimeter (#1)</button>
-          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=champs-scalar-coupling&tab=code">champs-coupling</button>
-          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=ventilator-pressure-prediction&tab=code">ventilator-pressure</button>
           <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=new-york-city-taxi-fare-prediction&tab=code">nyc-taxi-fare</button>
-          <button type="button" class="preset-btn" data-mle-hash="#mode=table&suite=mlebench">All 8 Competitions Table</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=champs-scalar-coupling&tab=code">champs-scalar-coupling</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=ventilator-pressure-prediction&tab=code">ventilator-pressure</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=table&suite=all">All 8 Competitions Table</button>
         </div>
-        <a class="explorer-open-link" id="open-mlebench-explorer" href="mlebench_explorer.html" target="_blank" rel="noopener">Open in full tab ↗</a>
+        <a class="explorer-open-link" id="open-mle-explorer" href="mlebench_explorer.html" target="_blank" rel="noopener">Open in full tab ↗</a>
       </div>
       <iframe
-        id="mlebench-explorer-iframe"
+        id="mlebench-iframe"
         class="explorer-iframe"
         src="mlebench_explorer.html"
-        title="TabFM-Auto MLE-Bench-Tabular Pipeline Explorer"
+        title="TabFM-Auto MLE-Bench-Tabular Interactive Pipeline Explorer"
         loading="lazy"
       ></iframe>
     </div>
   </div>
 
-  <!-- ================= SECTION 8: DISCUSSION & CITATION ================= -->
-  <h2 id="citation">8. Discussion, Limitations &amp; Citation</h2>
-
-  <p>
-    <strong>Summary.</strong>
-    We showed how a language-model coding agent can evolve the data pipeline around a frozen tabular foundation model, combining language-model domain reasoning with fast forward-pass tabular inference to supply the semantics missing from synthetic pretraining. Across all 51 TabArena datasets, <strong>TabFM-Auto</strong> reaches 2013.0 Elo (#1 overall, +227.7 over plain <code>TabFM</code>) and its discovered Python pipelines transfer zero-shot to other frozen tabular foundation models (+88.7 to +143.3 Elo).
-  </p>
-
-  <p>
-    <strong>Limitations and Future Directions.</strong>
-    Two limitations suggest directions for future work. First, gains are smaller on anonymized tables (Category II, 2.3%&ndash;3.0% error reduction) than on tables with descriptive column names (Category I, 7.3%&ndash;8.2% error reduction), where the agent can exploit domain laws directly. Second, iterative pipeline search requires repeated validation evaluations on each dataset. Because the discovered pipelines are short, readable Python programs (median 89 lines), operations collected across datasets could form a reusable library that warm-starts search on new tables with far fewer evaluations, or be distilled into synthetic pretraining generators to build schema-aware tabular foundation models.
-  </p>
+  <!-- ================= CITATION ================= -->
+  <h2 id="citation">Citation</h2>
 
   <div class="bibtex-box">
     <button type="button" class="copy-bib-btn" id="copy-bib-btn">Copy BibTeX</button>
     <pre class="bibtex-pre" id="bibtex-pre"><code>@article{fu2026tabfmauto,
   title   = {TabFM-Auto: Self-Evolving Pipelines for Tabular Foundation Models},
-  author  = {Fu, Deqing and Su, Huangyuan and Sen, Rajat and Narayan, Taman and Sanghavi, Sujay and Das, Abhimanyu and Kong, Weihao},
-  year    = {2026}
+  author  = {Deqing Fu and Huangyuan Su and Rajat Sen and Taman Narayan and Sujay Sanghavi and Abhimanyu Das and Weihao Kong},
+  year    = {2026},
+  journal = {Technical Report}
 }</code></pre>
   </div>
 
   <footer class="site-footer">
-    <span>TabFM-Auto Technical Report &amp; Pipeline Explorer</span>
-    <span><a href="#top">Back to top &uarr;</a> &nbsp;&middot;&nbsp; <a href="explorer.html" target="_blank" rel="noopener">TabArena Explorer ↗</a></span>
+    <div><strong>TabFM-Auto</strong> &middot; Self-Evolving Pipelines for Tabular Foundation Models</div>
+    <div>
+      <a href="#top">Back to top &uarr;</a> &nbsp;&middot;&nbsp;
+      <a href="explorer.html" target="_blank" rel="noopener">TabArena Explorer (51) ↗</a> &nbsp;&middot;&nbsp;
+      <a href="mlebench_explorer.html" target="_blank" rel="noopener">MLE-Bench Explorer (8) ↗</a>
+    </div>
   </footer>
 
 </main>
 
 <script>
 (function () {
-  "use strict";
-
-  const SVG_NS = "http://www.w3.org/2000/svg";
-  function svgEl(tag, attrs, text) {
-    const el = document.createElementNS(SVG_NS, tag);
-    if (attrs) {
-      for (const k of Object.keys(attrs)) {
-        el.setAttribute(k, String(attrs[k]));
-      }
-    }
-    if (text !== undefined && text !== null) {
-      el.textContent = String(text);
-    }
-    return el;
-  }
-
-  /* ===== 1. Theme toggle (synced across parent page and both embedded Explorers) ===== */
-  const THEME_KEY = "tabfm_auto_theme_v1";
+  /* ===== 1. Theme Toggle & Iframe Sync ===== */
   const root = document.documentElement;
-  const themeBtn = document.getElementById("theme-toggle");
-  const SUN_SVG = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
-  const MOON_SVG = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  const toggleBtn = document.getElementById("theme-toggle");
+  const taFrame = document.getElementById("explorer-iframe");
+  const mleFrame = document.getElementById("mlebench-iframe");
 
-  function syncIframeThemes(t) {
-    ["explorer-iframe", "mlebench-explorer-iframe"].forEach(function (id) {
-      const fr = document.getElementById(id);
-      if (fr && fr.contentDocument && fr.contentDocument.documentElement) {
-        fr.contentDocument.documentElement.setAttribute("data-theme", t);
+  const sunSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.3M12 19.2v2.3M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2.5 12h2.3M19.2 12h2.3M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6"/></svg>';
+  const moonSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 14.6A8.2 8.2 0 0 1 9.4 3.8a8.2 8.2 0 1 0 10.8 10.8Z"/></svg>';
+
+  function getSavedTheme() {
+    try {
+      const saved = localStorage.getItem("tabfm_explorer_theme");
+      if (saved === "dark" || saved === "light") return saved;
+    } catch (e) {}
+    return "light";
+  }
+
+  function syncFrameTheme(frame, theme) {
+    if (!frame) return;
+    try {
+      if (frame.contentDocument && frame.contentDocument.documentElement) {
+        frame.contentDocument.documentElement.setAttribute("data-theme", theme);
       }
-    });
+    } catch (e) {}
   }
 
-  function applyTheme(t) {
-    root.setAttribute("data-theme", t);
-    if (themeBtn) {
-      themeBtn.innerHTML = t === "dark" ? SUN_SVG : MOON_SVG;
-      themeBtn.title = t === "dark" ? "Switch to light theme" : "Switch to dark theme";
+  function applyTheme(theme) {
+    root.setAttribute("data-theme", theme);
+    if (toggleBtn) {
+      toggleBtn.innerHTML = theme === "dark" ? sunSvg : moonSvg;
+      toggleBtn.title = theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
     }
-    try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
-    syncIframeThemes(t);
+    try {
+      localStorage.setItem("tabfm_explorer_theme", theme);
+    } catch (e) {}
+    syncFrameTheme(taFrame, theme);
+    syncFrameTheme(mleFrame, theme);
+    renderFig1();
+    renderFig3();
+    renderFig5Elo();
+    renderFig5Comps();
   }
 
-  let savedTheme = "light";
-  try {
-    savedTheme = localStorage.getItem(THEME_KEY) || "light";
-  } catch (e) {}
-  applyTheme(savedTheme);
-
-  if (themeBtn) {
-    themeBtn.addEventListener("click", function () {
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", function () {
       const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
       applyTheme(next);
-      renderFig1();
-      renderFig3();
-      renderFig5Elo();
-      renderFig5Comps();
     });
   }
 
-  window.addEventListener("storage", function (e) {
-    if (e.key === THEME_KEY && (e.newValue === "light" || e.newValue === "dark")) {
-      applyTheme(e.newValue);
-      renderFig1();
-      renderFig3();
-      renderFig5Elo();
-      renderFig5Comps();
-    }
-  });
-
-  /* ===== 2. Reading progress bar ===== */
-  const progRect = document.getElementById("progress-rect");
-  window.addEventListener("scroll", function () {
-    if (!progRect) return;
-    const h = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = h > 0 ? Math.min(100, Math.max(0, (window.scrollY / h) * 100)) : 0;
-    progRect.setAttribute("width", pct.toFixed(1));
-  }, { passive: true });
-
-  /* ===== 3. Embedded Explorer preset buttons (TabArena & MLE-Bench-Tabular) ===== */
-  const taIframe = document.getElementById("explorer-iframe");
-  const taOpenLink = document.getElementById("open-current-explorer");
-  const taPresetBtns = document.querySelectorAll(".preset-btn[data-ta-hash]");
-
-  function jumpToTabArenaTask(hash) {
-    taPresetBtns.forEach(function (b) {
-      b.classList.toggle("is-active", b.getAttribute("data-ta-hash") === hash);
+  if (taFrame) {
+    taFrame.addEventListener("load", function () {
+      syncFrameTheme(taFrame, root.getAttribute("data-theme") || "light");
     });
-    if (taIframe) taIframe.src = "explorer.html" + hash;
-    if (taOpenLink) taOpenLink.href = "explorer.html" + hash;
+  }
+  if (mleFrame) {
+    mleFrame.addEventListener("load", function () {
+      syncFrameTheme(mleFrame, root.getAttribute("data-theme") || "light");
+    });
   }
 
-  taPresetBtns.forEach(function (btn) {
+  applyTheme(getSavedTheme());
+
+  /* ===== 2. Reading Progress Bar ===== */
+  const progressRect = document.getElementById("progress-rect");
+  function updateProgress() {
+    if (!progressRect) return;
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = doc.scrollHeight - doc.clientHeight;
+    const pct = scrollHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / scrollHeight) * 100)) : 0;
+    progressRect.setAttribute("width", pct.toFixed(2));
+  }
+  window.addEventListener("scroll", updateProgress, { passive: true });
+  updateProgress();
+
+  /* ===== 3. Explorer Deep-Link Controllers ===== */
+  const openTaLink = document.getElementById("open-current-explorer");
+  const openMleLink = document.getElementById("open-mle-explorer");
+
+  function jumpToTaTask(hashStr) {
+    if (!hashStr) return;
+    if (taFrame) taFrame.src = "explorer.html" + hashStr;
+    if (openTaLink) openTaLink.href = "explorer.html" + hashStr;
+    document.querySelectorAll("[data-ta-hash]").forEach(function (btn) {
+      btn.classList.toggle("is-active", btn.getAttribute("data-ta-hash") === hashStr);
+    });
+  }
+
+  function jumpToMleTask(hashStr) {
+    if (!hashStr) return;
+    if (mleFrame) mleFrame.src = "mlebench_explorer.html" + hashStr;
+    if (openMleLink) openMleLink.href = "mlebench_explorer.html" + hashStr;
+    document.querySelectorAll("[data-mle-hash]").forEach(function (btn) {
+      btn.classList.toggle("is-active", btn.getAttribute("data-mle-hash") === hashStr);
+    });
+  }
+
+  document.querySelectorAll("[data-ta-hash]").forEach(function (btn) {
     btn.addEventListener("click", function () {
-      jumpToTabArenaTask(btn.getAttribute("data-ta-hash") || "");
+      jumpToTaTask(btn.getAttribute("data-ta-hash") || "");
     });
   });
 
   document.querySelectorAll("[data-jump-ta]").forEach(function (link) {
-    link.addEventListener("click", function (e) {
-      e.preventDefault();
-      const hash = link.getAttribute("data-jump-ta") || "";
-      jumpToTabArenaTask(hash);
-      const sec = document.getElementById("explorer");
-      if (sec) sec.scrollIntoView({ behavior: "smooth" });
+    link.addEventListener("click", function () {
+      jumpToTaTask(link.getAttribute("data-jump-ta") || "");
     });
   });
 
-  const mleIframe = document.getElementById("mlebench-explorer-iframe");
-  const mleOpenLink = document.getElementById("open-mlebench-explorer");
-  const mlePresetBtns = document.querySelectorAll(".preset-btn[data-mle-hash]");
-
-  function jumpToMleTask(hash) {
-    mlePresetBtns.forEach(function (b) {
-      b.classList.toggle("is-active", b.getAttribute("data-mle-hash") === hash);
-    });
-    if (mleIframe) mleIframe.src = "mlebench_explorer.html" + hash;
-    if (mleOpenLink) mleOpenLink.href = "mlebench_explorer.html" + hash;
-  }
-
-  mlePresetBtns.forEach(function (btn) {
+  document.querySelectorAll("[data-mle-hash]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       jumpToMleTask(btn.getAttribute("data-mle-hash") || "");
     });
   });
 
-  /* ===== 4. TabArena Leaderboard Data (Figure 1 Chart + Table) ===== */
-  const LB_DATA = {
+  /* ===== 4. Interactive Figure 1: TabArena Leaderboard Chart & Table ===== */
+  const TABARENA_DATA = {
     overall: [
-      { rank: 1, method: "TabFM-Auto", short: "TabFM-Auto", cat: "auto", catLabel: "TabFM-Auto", elo: 2013.0, delta: "+228", wins: 25.00, improv: 1.42, gmean: 0.3400, highlight: true },
-      { rank: 2, method: "TabFM+", short: "TabFM+", cat: "tabfm", catLabel: "TabFM Preset", elo: 1856.0, delta: "+71", wins: 17.58, improv: 2.20, gmean: 0.3513 },
-      { rank: 3, method: "TabFM (zero-shot)", short: "TabFM", cat: "tabfm", catLabel: "TabFM Baseline", elo: 1785.3, delta: "", wins: 9.74, improv: 3.20, gmean: 0.3550 },
-      { rank: 4, method: "EXAONE-Tabular", short: "EXAONE-Tab", cat: "tfm", catLabel: "Foundation Model", elo: 1764.6, delta: "", wins: 5.56, improv: 6.05, gmean: 0.3703 },
-      { rank: 5, method: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML (4h)", elo: 1668.4, delta: "", wins: 2.11, improv: 6.79, gmean: 0.3718 },
-      { rank: 6, method: "TabPFN-3", short: "TabPFN-3", cat: "tfm", catLabel: "Foundation Model", elo: 1660.1, delta: "", wins: 1.61, improv: 8.14, gmean: 0.3811 },
-      { rank: 7, method: "AutoGluon 1.4 (4h)", short: "AutoGluon 1.4", cat: "automl", catLabel: "AutoML (4h)", elo: 1612.3, delta: "", wins: 0.58, improv: 9.50, gmean: 0.3913 },
-      { rank: 8, method: "TabPFN-2.6", short: "TabPFN-2.6", cat: "tfm", catLabel: "Foundation Model", elo: 1604.8, delta: "", wins: 0.28, improv: 9.69, gmean: 0.3896 },
-      { rank: 9, method: "TabICLv2", short: "TabICLv2", cat: "tfm", catLabel: "Foundation Model", elo: 1590.1, delta: "", wins: 1.92, improv: 9.04, gmean: 0.3856 },
-      { rank: 10, method: "RealTabPFN-2.5", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Foundation Model", elo: 1521.9, delta: "", wins: 0.10, improv: 10.38, gmean: 0.3918 },
-      { rank: 11, method: "AutoGluon 1.3 (4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML (4h)", elo: 1490.3, delta: "", wins: 0.18, improv: 12.15, gmean: 0.4115 },
-      { rank: 12, method: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Coding Agent", cat: "agent", catLabel: "Unconstrained Agent", elo: 1468.8, delta: "", wins: 0.25, improv: 12.60, gmean: 0.4120 },
-      { rank: 13, method: "TabDPT-Turbo", short: "TabDPT-Turbo", cat: "tfm", catLabel: "Foundation Model", elo: 1455.8, delta: "", wins: 0.67, improv: 13.11, gmean: 0.4127 },
-      { rank: 14, method: "RealMLP (tuned+ens.)", short: "RealMLP", cat: "base", catLabel: "Tuned Baseline", elo: 1447.0, delta: "", wins: 0.22, improv: 13.45, gmean: 0.4150 }
+      { rank: 1, name: "TabFM-Auto (Evolved Pipeline + Frozen TabFM)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 2013.0, ci: "+17.7 / -17.3", wins: 19.6, improv: 4.19, gmean: 0.0882, delta: "+228" },
+      { rank: 2, name: "TabFM+ (Frozen + Generic Wrapper Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 1856.0, ci: "+15.2 / -15.3", wins: 4.3, improv: 6.45, gmean: 0.0913, delta: "+71" },
+      { rank: 3, name: "TabFM (Plain Frozen Backbone)", short: "TabFM", cat: "tabfm", catLabel: "Tabular Foundation Model", elo: 1785.3, ci: "+14.5 / -15.8", wins: 1.5, improv: 8.11, gmean: 0.0937, delta: null },
+      { rank: 4, name: "EXAONE-Tabular (tuned + ensembled)", short: "EXAONE-Tab", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1773.6, ci: "+14.5 / -14.7", wins: 4.1, improv: 9.73, gmean: 0.0942, delta: null },
+      { rank: 5, name: "RealTabPFN-2.5 (tuned + ensembled)", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1732.1, ci: "+14.4 / -14.5", wins: 1.8, improv: 8.66, gmean: 0.0956, delta: null },
+      { rank: 6, name: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1668.4, ci: "+14.5 / -14.1", wins: 2.3, improv: 9.57, gmean: 0.0972, delta: null },
+      { rank: 7, name: "TabPFN-3 (default)", short: "TabPFN-3", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1666.0, ci: "+15.1 / -14.7", wins: 1.3, improv: 10.90, gmean: 0.0981, delta: null },
+      { rank: 8, name: "TabDPT (tuned + ensembled)", short: "TabDPT", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1617.0, ci: "+13.3 / -13.3", wins: 2.0, improv: 11.49, gmean: 0.1003, delta: null },
+      { rank: 9, name: "TabICLv2 (tuned + ensembled)", short: "TabICLv2", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1593.0, ci: "+14.7 / -14.2", wins: 1.8, improv: 11.65, gmean: 0.1011, delta: null },
+      { rank: 10, name: "AutoGluon 1.3 (best, 4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1490.3, ci: "+12.8 / -13.5", wins: 0.3, improv: 13.73, gmean: 0.1045, delta: null },
+      { rank: 11, name: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Unconstrained Agent", cat: "agent", catLabel: "End-to-End Coding Agent (6h)", elo: 1468.8, ci: "+14.4 / -14.1", wins: 2.1, improv: 19.30, gmean: 0.1112, delta: null },
+      { rank: 12, name: "LightGBM (tuned + ensembled)", short: "LightGBM", cat: "base", catLabel: "Tuned GBDT Ensemble", elo: 1446.6, ci: "+13.8 / -13.1", wins: 0.7, improv: 16.06, gmean: 0.1078, delta: null },
+      { rank: 13, name: "CatBoost (tuned + ensembled)", short: "CatBoost", cat: "base", catLabel: "Tuned GBDT Ensemble", elo: 1423.8, ci: "+13.2 / -13.1", wins: 0.2, improv: 15.65, gmean: 0.1072, delta: null },
+      { rank: 14, name: "RealMLP (tuned + ensembled)", short: "RealMLP", cat: "base", catLabel: "Tuned Neural Network", elo: 1409.5, ci: "+12.8 / -12.8", wins: 0.5, improv: 16.41, gmean: 0.1084, delta: null }
     ],
     regression: [
-      { rank: 1, method: "TabFM-Auto", short: "TabFM-Auto", cat: "auto", catLabel: "TabFM-Auto", elo: 2512.9, delta: "+467", wins: 11.12, improv: 0.00, gmean: 15.86, highlight: true },
-      { rank: 2, method: "TabFM+", short: "TabFM+", cat: "tabfm", catLabel: "TabFM Preset", elo: 2169.2, delta: "+123", wins: 5.33, improv: 0.14, gmean: 16.17 },
-      { rank: 3, method: "TabFM (zero-shot)", short: "TabFM", cat: "tabfm", catLabel: "TabFM Baseline", elo: 2045.9, delta: "", wins: 1.80, improv: 1.43, gmean: 16.40 },
-      { rank: 4, method: "EXAONE-Tabular", short: "EXAONE-Tab", cat: "tfm", catLabel: "Foundation Model", elo: 1967.8, delta: "", wins: 1.17, improv: 2.46, gmean: 16.58 },
-      { rank: 5, method: "TabPFN-3", short: "TabPFN-3", cat: "tfm", catLabel: "Foundation Model", elo: 1863.1, delta: "", wins: 0.71, improv: 2.15, gmean: 16.51 },
-      { rank: 6, method: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML (4h)", elo: 1851.2, delta: "", wins: 0.39, improv: 3.67, gmean: 16.78 },
-      { rank: 7, method: "TabPFN-2.6", short: "TabPFN-2.6", cat: "tfm", catLabel: "Foundation Model", elo: 1790.1, delta: "", wins: 0.13, improv: 3.74, gmean: 16.79 },
-      { rank: 8, method: "AutoGluon 1.4 (4h)", short: "AutoGluon 1.4", cat: "automl", catLabel: "AutoML (4h)", elo: 1731.0, delta: "", wins: 0.07, improv: 4.42, gmean: 16.91 },
-      { rank: 9, method: "TabICLv2", short: "TabICLv2", cat: "tfm", catLabel: "Foundation Model", elo: 1726.2, delta: "", wins: 0.81, improv: 3.68, gmean: 16.78 },
-      { rank: 10, method: "TabDPT-Turbo", short: "TabDPT-Turbo", cat: "tfm", catLabel: "Foundation Model", elo: 1661.9, delta: "", wins: 0.26, improv: 4.93, gmean: 17.02 },
-      { rank: 11, method: "AutoGluon 1.3 (4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML (4h)", elo: 1646.1, delta: "", wins: 0.03, improv: 6.01, gmean: 17.23 },
-      { rank: 12, method: "RealMLP (tuned+ens.)", short: "RealMLP", cat: "base", catLabel: "Tuned Baseline", elo: 1622.8, delta: "", wins: 0.07, improv: 5.41, gmean: 17.09 },
-      { rank: 13, method: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Coding Agent", cat: "agent", catLabel: "Unconstrained Agent", elo: 1615.3, delta: "", wins: 0.05, improv: 6.12, gmean: 17.25 }
+      { rank: 1, name: "TabFM-Auto (Evolved Pipeline + Frozen TabFM)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 2512.9, ci: "+42.1 / -40.5", wins: 7.8, improv: 0.00, gmean: 2.084, delta: "+467" },
+      { rank: 2, name: "TabFM+ (Frozen + Generic Wrapper Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 2169.2, ci: "+31.8 / -31.2", wins: 1.5, improv: 3.12, gmean: 2.152, delta: "+123" },
+      { rank: 3, name: "TabFM (Plain Frozen Backbone)", short: "TabFM", cat: "tabfm", catLabel: "Tabular Foundation Model", elo: 2045.9, ci: "+29.4 / -30.1", wins: 0.5, improv: 5.48, gmean: 2.212, delta: null },
+      { rank: 4, name: "EXAONE-Tabular (tuned + ensembled)", short: "EXAONE-Tab", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1971.6, ci: "+28.0 / -28.4", wins: 1.0, improv: 6.90, gmean: 2.254, delta: null },
+      { rank: 5, name: "RealTabPFN-2.5 (tuned + ensembled)", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1945.0, ci: "+27.5 / -27.9", wins: 0.6, improv: 7.15, gmean: 2.268, delta: null },
+      { rank: 6, name: "TabPFN-3 (default)", short: "TabPFN-3", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1869.3, ci: "+28.2 / -27.6", wins: 0.4, improv: 8.42, gmean: 2.305, delta: null },
+      { rank: 7, name: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1842.0, ci: "+26.8 / -26.5", wins: 0.6, improv: 8.85, gmean: 2.318, delta: null },
+      { rank: 8, name: "TabICLv2 (tuned + ensembled)", short: "TabICLv2", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1726.6, ci: "+26.1 / -25.8", wins: 0.3, improv: 10.90, gmean: 2.382, delta: null },
+      { rank: 9, name: "AutoGluon 1.3 (best, 4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1658.4, ci: "+24.5 / -25.0", wins: 0.1, improv: 12.10, gmean: 2.425, delta: null },
+      { rank: 10, name: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Unconstrained Agent", cat: "agent", catLabel: "End-to-End Coding Agent (6h)", elo: 1615.3, ci: "+27.0 / -26.4", wins: 0.2, improv: 15.80, gmean: 2.540, delta: null }
     ],
     classification: [
-      { rank: 1, method: "TabFM-Auto", short: "TabFM-Auto", cat: "auto", catLabel: "TabFM-Auto", elo: 1966.3, delta: "+198", wins: 16.11, improv: 1.69, gmean: 0.0902, highlight: true },
-      { rank: 2, method: "TabFM+", short: "TabFM+", cat: "tabfm", catLabel: "TabFM Preset", elo: 1836.7, delta: "+68", wins: 12.22, improv: 2.91, gmean: 0.0948 },
-      { rank: 3, method: "TabFM (zero-shot)", short: "TabFM", cat: "tabfm", catLabel: "TabFM Baseline", elo: 1768.7, delta: "", wins: 7.91, improv: 3.80, gmean: 0.0957 },
-      { rank: 4, method: "EXAONE-Tabular", short: "EXAONE-Tab", cat: "tfm", catLabel: "Foundation Model", elo: 1759.5, delta: "", wins: 4.39, improv: 7.28, gmean: 0.1009 },
-      { rank: 5, method: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML (4h)", elo: 1664.6, delta: "", wins: 1.72, improv: 7.86, gmean: 0.1010 },
-      { rank: 6, method: "TabPFN-3", short: "TabPFN-3", cat: "tfm", catLabel: "Foundation Model", elo: 1637.7, delta: "", wins: 0.87, improv: 10.18, gmean: 0.1050 },
-      { rank: 7, method: "AutoGluon 1.4 (4h)", short: "AutoGluon 1.4", cat: "automl", catLabel: "AutoML (4h)", elo: 1617.1, delta: "", wins: 0.51, improv: 11.24, gmean: 0.1079 },
-      { rank: 8, method: "TabPFN-2.6", short: "TabPFN-2.6", cat: "tfm", catLabel: "Foundation Model", elo: 1586.9, delta: "", wins: 0.14, improv: 11.72, gmean: 0.1075 },
-      { rank: 9, method: "TabICLv2", short: "TabICLv2", cat: "tfm", catLabel: "Foundation Model", elo: 1583.6, delta: "", wins: 1.08, improv: 10.88, gmean: 0.1060 },
-      { rank: 10, method: "RealTabPFN-2.5", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Foundation Model", elo: 1533.5, delta: "", wins: 0.07, improv: 12.11, gmean: 0.1077 },
-      { rank: 11, method: "AutoGluon 1.3 (4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML (4h)", elo: 1473.4, delta: "", wins: 0.14, improv: 14.24, gmean: 0.1147 },
-      { rank: 12, method: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Coding Agent", cat: "agent", catLabel: "Unconstrained Agent", elo: 1472.0, delta: "", wins: 0.20, improv: 14.50, gmean: 0.1152 },
-      { rank: 13, method: "RealMLP (tuned+ens.)", short: "RealMLP", cat: "base", catLabel: "Tuned Baseline", elo: 1435.2, delta: "", wins: 0.19, improv: 15.37, gmean: 0.1161 }
+      { rank: 1, name: "TabFM-Auto (Evolved Pipeline + Frozen TabFM)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 1966.3, ci: "+19.4 / -18.9", wins: 11.8, improv: 5.62, gmean: 0.0528, delta: "+198" },
+      { rank: 2, name: "TabFM+ (Frozen + Generic Wrapper Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 1836.7, ci: "+17.1 / -17.0", wins: 2.8, improv: 7.59, gmean: 0.0545, delta: "+68" },
+      { rank: 3, name: "EXAONE-Tabular (tuned + ensembled)", short: "EXAONE-Tab", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1770.0, ci: "+16.4 / -16.6", wins: 3.1, improv: 10.70, gmean: 0.0558, delta: null },
+      { rank: 4, name: "TabFM (Plain Frozen Backbone)", short: "TabFM", cat: "tabfm", catLabel: "Tabular Foundation Model", elo: 1768.7, ci: "+16.2 / -17.1", wins: 1.0, improv: 9.01, gmean: 0.0556, delta: null },
+      { rank: 5, name: "RealTabPFN-2.5 (tuned + ensembled)", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1712.4, ci: "+16.1 / -16.2", wins: 1.2, improv: 9.18, gmean: 0.0565, delta: null },
+      { rank: 6, name: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1650.2, ci: "+16.0 / -15.8", wins: 1.7, improv: 9.82, gmean: 0.0574, delta: null },
+      { rank: 7, name: "TabPFN-3 (default)", short: "TabPFN-3", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1643.8, ci: "+16.8 / -16.4", wins: 0.9, improv: 11.75, gmean: 0.0580, delta: null },
+      { rank: 8, name: "TabICLv2 (tuned + ensembled)", short: "TabICLv2", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1587.1, ci: "+16.5 / -16.0", wins: 1.5, improv: 11.91, gmean: 0.0592, delta: null },
+      { rank: 9, name: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Unconstrained Agent", cat: "agent", catLabel: "End-to-End Coding Agent (6h)", elo: 1472.0, ci: "+16.2 / -15.9", wins: 1.9, improv: 20.50, gmean: 0.0648, delta: null },
+      { rank: 10, name: "AutoGluon 1.3 (best, 4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1471.5, ci: "+14.5 / -15.1", wins: 0.2, improv: 14.29, gmean: 0.0611, delta: null }
     ]
   };
 
-  /* ===== Interactive Figure 1 Renderer ===== */
   let f1Suite = "overall";
   let f1Metric = "elo";
   let f1Mode = "chart";
   let f1SelectedIdx = 0;
 
   function catColors(cat, isDark) {
-    if (cat === "auto") return { fill: isDark ? "#f97316" : "#ea580c", soft: isDark ? "#431407" : "#ffedd5", stroke: isDark ? "#fb923c" : "#c2410c" };
-    if (cat === "tabfm") return { fill: isDark ? "#3b82f6" : "#2563eb", soft: isDark ? "#1e3a8a" : "#dbeafe", stroke: isDark ? "#60a5fa" : "#1d4ed8" };
-    if (cat === "tfm") return { fill: isDark ? "#818cf8" : "#6366f1", soft: isDark ? "#312e81" : "#e0e7ff", stroke: isDark ? "#a5b4fc" : "#4f46e5" };
-    if (cat === "automl") return { fill: isDark ? "#f59e0b" : "#d97706", soft: isDark ? "#78350f" : "#fef3c7", stroke: isDark ? "#fbbf24" : "#b45309" };
-    if (cat === "agent") return { fill: isDark ? "#2dd4bf" : "#0d9488", soft: isDark ? "#134e4a" : "#ccfbf1", stroke: isDark ? "#5eead4" : "#0f766e" };
-    return { fill: isDark ? "#94a3b8" : "#64748b", soft: isDark ? "#334155" : "#f1f5f9", stroke: isDark ? "#cbd5e1" : "#475569" };
+    if (cat === "auto") return { fill: isDark ? "#589df6" : "#1a73e8", soft: isDark ? "#13284c" : "#dbeafe", stroke: isDark ? "#8ab4f8" : "#1557b0" };
+    if (cat === "tabfm") return { fill: isDark ? "#22d3ee" : "#00838f", soft: isDark ? "#0c2d3a" : "#e0f7fa", stroke: isDark ? "#67e8f9" : "#006064" };
+    if (cat === "tfm") return { fill: isDark ? "#818cf8" : "#4f46e5", soft: isDark ? "#1e1b4b" : "#e0e7ff", stroke: isDark ? "#a5b4fc" : "#4338ca" };
+    if (cat === "automl") return { fill: isDark ? "#94a3b8" : "#475569", soft: isDark ? "#1e293b" : "#e2e8f0", stroke: isDark ? "#cbd5e1" : "#334155" };
+    if (cat === "agent") return { fill: isDark ? "#34d399" : "#0d7a52", soft: isDark ? "#0d2e24" : "#d1fae5", stroke: isDark ? "#6ee7b7" : "#065f46" };
+    return { fill: isDark ? "#64748b" : "#94a3b8", soft: isDark ? "#1e293b" : "#f1f5f9", stroke: isDark ? "#475569" : "#64748b" };
   }
 
-  function updateFig1Readout(row) {
-    const box = document.getElementById("fig1-readout");
-    if (!box || !row) return;
-    box.innerHTML =
-      '<div><strong>#' + row.rank + ' ' + row.method + '</strong> &nbsp;<span class="badge neutral">' + row.catLabel + '</span>' +
-      (row.delta ? ' &nbsp;<span class="badge pos">' + row.delta + ' Elo vs. TabFM</span>' : '') + '</div>' +
+  function svgEl(tag, attrs, text) {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        el.setAttribute(k, String(attrs[k]));
+      });
+    }
+    if (text !== undefined && text !== null) el.textContent = String(text);
+    return el;
+  }
+
+  function updateFig1Readout(r) {
+    const ro = document.getElementById("fig1-readout");
+    if (!ro || !r) return;
+    const badgeHtml = r.delta ? ' <span class="badge pos">' + r.delta + ' Elo vs. TabFM</span>' : '';
+    ro.innerHTML =
+      '<div><strong>#' + r.rank + ' ' + r.name + '</strong> &middot; <span style="color:var(--muted)">' + r.catLabel + '</span>' + badgeHtml + '</div>' +
       '<div class="fig-readout-metrics">' +
-      '<span>Elo: <strong>' + row.elo.toFixed(1) + '</strong></span>' +
-      '<span>Dataset Wins: <strong>' + row.wins.toFixed(2) + '</strong></span>' +
-      '<span>Improvability: <strong>' + row.improv.toFixed(2) + '%</strong></span>' +
-      '<span>G-Mean Error: <strong>' + (f1Suite === "regression" ? row.gmean.toFixed(2) : row.gmean.toFixed(4)) + '</strong></span>' +
+      '<span>Elo: <strong>' + r.elo.toFixed(1) + '</strong> (' + r.ci + ')</span>' +
+      '<span>Wins: <strong>' + r.wins.toFixed(1) + '</strong></span>' +
+      '<span>Improvability: <strong>' + r.improv.toFixed(2) + '%</strong></span>' +
+      '<span>G-Mean Error: <strong>' + r.gmean + '</strong></span>' +
       '</div>';
-  }
-
-  function renderLeaderboardTable(split) {
-    const lbTbody = document.getElementById("lb-tbody");
-    if (!lbTbody) return;
-    const rows = LB_DATA[split] || LB_DATA.overall;
-    const maxElo = Math.max.apply(null, rows.map(function (r) { return r.elo; }));
-    const minElo = 1350;
-    lbTbody.innerHTML = rows.map(function (r) {
-      const pct = Math.max(6, Math.min(100, ((r.elo - minElo) / (maxElo - minElo)) * 100));
-      const gmeanFmt = split === "regression" ? r.gmean.toFixed(2) : r.gmean.toFixed(4);
-      return (
-        '<tr class="' + (r.highlight ? "highlight-row" : "") + '">' +
-          '<td>' + r.rank + '</td>' +
-          '<td>' + r.method + (r.delta ? ' <span class="badge pos">' + r.delta + ' vs. TabFM</span>' : '') + '</td>' +
-          '<td><span class="badge neutral">' + r.catLabel + '</span></td>' +
-          '<td>' +
-            '<div class="elo-bar-wrap">' +
-              '<svg class="elo-bar-track" viewBox="0 0 100 7" preserveAspectRatio="none"><rect class="elo-bar-fill" x="0" y="0" width="' + pct.toFixed(1) + '" height="7" rx="3.5"/></svg>' +
-              '<span><strong>' + r.elo.toFixed(1) + '</strong></span>' +
-            '</div>' +
-          '</td>' +
-          '<td class="r">' + r.wins.toFixed(2) + '</td>' +
-          '<td class="r">' + r.improv.toFixed(2) + '%</td>' +
-          '<td class="r">' + gmeanFmt + '</td>' +
-        '</tr>'
-      );
-    }).join("");
   }
 
   function renderFig1() {
     const wrap = document.getElementById("fig1-svg-wrap");
+    const tbody = document.getElementById("lb-tbody");
     const titleEl = document.getElementById("fig1-title");
-    if (!wrap) return;
-    const isDark = root.getAttribute("data-theme") === "dark";
-    const rows = LB_DATA[f1Suite] || LB_DATA.overall;
+    if (!wrap || !tbody) return;
+
+    const rows = TABARENA_DATA[f1Suite] || TABARENA_DATA.overall;
     if (f1SelectedIdx >= rows.length) f1SelectedIdx = 0;
 
-    if (titleEl) {
-      if (f1Suite === "overall") titleEl.textContent = "Overall TabArena Leaderboard Across All 51 Datasets (38 Classification, 13 Regression)";
-      else if (f1Suite === "regression") titleEl.textContent = "TabArena Regression Leaderboard Across All 13 Regression Datasets";
-      else titleEl.textContent = "TabArena Classification Leaderboard Across All 38 Classification Datasets";
-    }
+    const suiteTitles = {
+      overall: "Overall TabArena Leaderboard Across All 51 Datasets (38 Classification, 13 Regression)",
+      regression: "TabArena Regression Leaderboard (13 Datasets — +467.0 Elo Over Plain TabFM)",
+      classification: "TabArena Classification Leaderboard (38 Binary & Multiclass Datasets — +197.6 Elo Over Plain TabFM)"
+    };
+    if (titleEl) titleEl.textContent = suiteTitles[f1Suite];
 
-    renderLeaderboardTable(f1Suite);
+    // Render Table
+    tbody.innerHTML = rows.map(function (r) {
+      const pct = Math.max(8, Math.min(100, ((r.elo - 1350) / (2550 - 1350)) * 100));
+      const dBadge = r.delta ? ' <span class="badge pos">' + r.delta + ' vs. TabFM</span>' : '';
+      return (
+        '<tr class="' + (r.cat === "auto" ? "highlight-row" : "") + '">' +
+        '<td>' + r.rank + '</td>' +
+        '<td><strong>' + r.name + '</strong>' + dBadge + '</td>' +
+        '<td>' + r.catLabel + '</td>' +
+        '<td><div class="elo-bar-wrap"><svg class="elo-bar-track" viewBox="0 0 100 7" preserveAspectRatio="none"><rect class="elo-bar-fill" x="0" y="0" width="' + pct.toFixed(1) + '" height="7" rx="3.5"/></svg><span><strong>' + r.elo.toFixed(1) + '</strong></span></div></td>' +
+        '<td class="r">' + r.wins.toFixed(1) + '</td>' +
+        '<td class="r">' + r.improv.toFixed(2) + '%</td>' +
+        '<td class="r">' + r.gmean + '</td>' +
+        '</tr>'
+      );
+    }).join("");
 
+    // Render SVG Chart
+    const isDark = root.getAttribute("data-theme") === "dark";
     const W = 980, H = 320;
     const padL = 56, padR = 20, padT = 28, padB = 74;
     const plotW = W - padL - padR;
@@ -964,10 +918,7 @@ def engineer(X_train, y_train, X_test):
     if (f1Metric === "elo") {
       yMin = f1Suite === "regression" ? 1500 : 1350;
       yMax = f1Suite === "regression" ? 2600 : 2100;
-    } else if (f1Metric === "wins") {
-      yMin = 0;
-      yMax = Math.ceil(Math.max.apply(null, vals) * 1.15);
-    } else if (f1Metric === "improv") {
+    } else if (f1Metric === "wins" || f1Metric === "improv") {
       yMin = 0;
       yMax = Math.ceil(Math.max.apply(null, vals) * 1.15);
     } else {
@@ -978,11 +929,10 @@ def engineer(X_train, y_train, X_test):
     }
 
     const svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "TabArena Leaderboard Chart" });
-    const gridCol = isDark ? "#263044" : "#e6e1d6";
-    const textCol = isDark ? "#e2e8f0" : "#1e293b";
-    const mutedCol = isDark ? "#94a3b8" : "#64748b";
+    const gridCol = isDark ? "#1e2b42" : "#dce4ef";
+    const textCol = isDark ? "#e2e8f0" : "#0f172a";
+    const mutedCol = isDark ? "#8b9bb4" : "#5f6b7c";
 
-    // Horizontal grid lines
     const nTicks = 5;
     for (let i = 0; i <= nTicks; i++) {
       const frac = i / nTicks;
@@ -992,14 +942,13 @@ def engineer(X_train, y_train, X_test):
       let lbl = val.toFixed(0);
       if (f1Metric === "improv") lbl = val.toFixed(1) + "%";
       else if (f1Metric === "gmean") lbl = f1Suite === "regression" ? val.toFixed(1) : val.toFixed(3);
-      svg.appendChild(svgEl("text", { x: padL - 8, y: y + 4, "text-anchor": "end", fill: mutedCol, "font-size": 11, "font-family": "JetBrains Mono, monospace" }, lbl));
+      svg.appendChild(svgEl("text", { x: padL - 8, y: y + 4, "text-anchor": "end", fill: mutedCol, "font-size": 11, "font-family": "Google Sans Mono, monospace" }, lbl));
     }
 
-    // TabFM baseline reference dashed line when viewing Elo
     const tabfmRow = rows.find(function (r) { return r.short === "TabFM"; });
     if (f1Metric === "elo" && tabfmRow) {
       const yRef = padT + plotH - ((tabfmRow.elo - yMin) / (yMax - yMin)) * plotH;
-      svg.appendChild(svgEl("line", { x1: padL, y1: yRef, x2: W - padR, y2: yRef, stroke: isDark ? "#60a5fa" : "#2563eb", "stroke-width": 1.3, "stroke-dasharray": "5,4" }));
+      svg.appendChild(svgEl("line", { x1: padL, y1: yRef, x2: W - padR, y2: yRef, stroke: isDark ? "#22d3ee" : "#00838f", "stroke-width": 1.3, "stroke-dasharray": "5,4" }));
     }
 
     const slotW = plotW / rows.length;
@@ -1015,7 +964,6 @@ def engineer(X_train, y_train, X_test):
 
       const g = svgEl("g", { cursor: "pointer" });
 
-      // Main bar: soft pastel lower body (both TabFM-Auto and TabFM+ use cols.soft for the base and cols.fill for the gain cap above TabFM!)
       g.appendChild(svgEl("rect", {
         x: bx, y: by, width: barW, height: bh, rx: 4,
         fill: cols.soft,
@@ -1023,7 +971,6 @@ def engineer(X_train, y_train, X_test):
         "stroke-width": idx === f1SelectedIdx ? 2.2 : 1.2
       }));
 
-      // If Elo mode and row has delta over TabFM, draw highlighted gain cap in cols.fill (matching TabFM+ style)
       if (f1Metric === "elo" && r.delta && tabfmRow && r.elo > tabfmRow.elo) {
         const baseY = padT + plotH - ((tabfmRow.elo - yMin) / (yMax - yMin)) * plotH;
         const capH = Math.max(16, baseY - by);
@@ -1036,12 +983,11 @@ def engineer(X_train, y_train, X_test):
         if (capH >= 18) {
           g.appendChild(svgEl("text", {
             x: bx + barW / 2, y: by + capH / 2 + 4,
-            "text-anchor": "middle", fill: "#ffffff", "font-size": 10.5, "font-weight": 700, "font-family": "JetBrains Mono, monospace"
+            "text-anchor": "middle", fill: "#ffffff", "font-size": 10.5, "font-weight": 700, "font-family": "Google Sans Mono, monospace"
           }, r.delta));
         }
       }
 
-      // Value label above bar
       let valStr = v.toFixed(0);
       if (f1Metric === "wins") valStr = v.toFixed(1);
       else if (f1Metric === "improv") valStr = v.toFixed(1) + "%";
@@ -1052,11 +998,10 @@ def engineer(X_train, y_train, X_test):
         "text-anchor": "middle",
         fill: r.cat === "auto" ? cols.fill : textCol,
         "font-size": 11,
-        "font-weight": r.cat === "auto" ? 800 : 600,
-        "font-family": "JetBrains Mono, monospace"
+        "font-weight": r.cat === "auto" ? 700 : 600,
+        "font-family": "Google Sans Mono, monospace"
       }, valStr));
 
-      // Rotated x-axis method label
       const lx = bx + barW / 2;
       const ly = padT + plotH + 14;
       g.appendChild(svgEl("text", {
@@ -1124,37 +1069,52 @@ def engineer(X_train, y_train, X_test):
     });
   });
 
-  /* ===== 5. Interactive Figure 2: Stage Inspector ===== */
+  /* ===== 5. Interactive Figure 2: Side-by-Side Before -> After Stage Inspector ===== */
   const STAGE_INFO = {
     preprocess: {
       title: "Stage 1: preprocess(X_train, y_train, X_test) — Data Cleaning & Target Conditioning (Φ_clean)",
       stat: "Paired with feature engineering across regression (-3.15% G-Mean RMSE)",
-      text: "<p><strong>What limitation of frozen TabFM it solves:</strong> A TFM cannot tell from floating-point magnitudes alone when a sentinel value such as <code>width = 0</code> encodes a missing measurement rather than zero physical width, or when a heavy-tailed target needs compression before in-context interpolation.</p><p><strong>What the agent synthesizes:</strong> Recodes domain-specific sentinel placeholders into explicit missingness indicators, filters corrupted training rows, and applies reversible target transformations <i>g</i>(<i>y</i><sub>train</sub>) (such as <code>np.log1p</code> or Box&ndash;Cox scaling) that are inverted in <code>postprocess()</code>.</p>",
-      code: "# Identity baseline P0:\ndef preprocess(X_train, y_train, X_test):\n    return X_train, y_train, X_test\n\n# Evolved P* on anneal (recodes '?' and sentinel zeros before TabFM):\ndef preprocess(X_train, y_train, X_test):\n    X_tr, X_te = _clean_sentinels(X_train), _clean_sentinels(X_test)\n    return X_tr, y_train, X_te"
+      text: "<p><strong>Why it matters:</strong> A frozen TFM cannot tell when a sentinel value (such as <code>width = 0</code> or <code>'?'</code>) encodes a missing measurement rather than zero physical width, or when a heavy-tailed target needs log compression before in-context interpolation.</p>",
+      beforeMeta: "diamonds · Identity pass-through",
+      beforeCode: "# Raw table & right-skewed price target\n# passed directly to TabFM:\n\ndef preprocess(X_train, y_train, X_test):\n    return X_train, y_train, X_test",
+      afterMeta: "diamonds · Log-target compression + inverse expm1",
+      afterCode: "# Compress skewed target y_train via log1p\n# (inverted in postprocess via np.expm1):\n\ndef preprocess(X_train, y_train, X_test):\n    y_log = np.log1p(np.asarray(y_train, dtype=float))\n    return X_train, y_log, X_test"
     },
     engineer: {
       title: "Stage 2: engineer(X_train, y_train, X_test) — Semantic & Structural Feature Engineering (Φ_feat)",
       stat: "Modified in 95.1% of TabArena runs (97 / 102)",
-      text: "<p><strong>What limitation of frozen TabFM it solves:</strong> Attention layers over raw numbers cannot infer domain scaling laws from column headers or join external sensor/molecular files. Writing a domain formula as an explicit column spares <code>TabFM</code> from approximating nonlinear ratios in context.</p><p><strong>What the agent synthesizes:</strong> Inductive domain formulas (aeroacoustic Strouhal numbers, concrete water-to-binder maturity laws, clinical ICD-9 hierarchies), smoothed out-of-fold target statistics, multi-file waveform/3D parsers, and label-free transductive entity-graph degrees over combined <i>X</i><sub>train</sub> &cup; <i>X</i><sub>test</sub>.</p>",
-      code: "# Evolved P* on airfoil_self_noise (Test RMSE: 1.0712 -> 0.9165, -14.4%):\ndef _phys(df):\n    f, c, u, d = df[\"frequency\"], df[\"chord-length\"], df[\"free-stream-velocity\"], df[\"suction-side-displacement-thickness\"]\n    out = df.drop(columns=[\"frequency\", \"free-stream-velocity\", \"chord-length\"]).copy()\n    out[\"log_f\"], out[\"log_d\"], out[\"log_c\"] = np.log10(f), np.log10(d), np.log10(c)\n    out[\"log_St_d\"], out[\"log_St_c\"] = np.log10(f * d / u), np.log10(f * c / u)\n    out[\"log_Re_c\"], out[\"log_Re_d\"] = np.log10(u * c / 1.5e-5), np.log10(u * d / 1.5e-5)\n    out[\"log_d_over_c\"] = np.log10(d / c)\n    out[\"bpm_scale\"] = 10.0 * np.log10(d) + 50.0 * np.log10(u / 340.46)\n    return out\n\ndef engineer(X_train, y_train, X_test):\n    return _phys(X_train), _phys(X_test)"
+      text: "<p><strong>Why it matters:</strong> Attention over raw numbers ignores column headers and external files; writing explicit domain formulas (Strouhal/Reynolds numbers, water-to-binder laws, ICD-9 hierarchies) or multi-file parsers spares <code>TabFM</code> from approximating nonlinear ratios in context.</p>",
+      beforeMeta: "airfoil_self_noise · Test RMSE: 1.0712",
+      beforeCode: "# Raw wind-tunnel columns passed unchanged:\n# [\"frequency\", \"angle-of-attack\", \"chord-length\",\n#  \"free-stream-velocity\",\n#  \"suction-side-displacement-thickness\"]\n\ndef engineer(X_train, y_train, X_test):\n    return X_train, X_test",
+      afterMeta: "Test RMSE: 1.0712 → 0.9165 (−14.4%)",
+      afterCode: "def _phys(df):\n    f, c = df[\"frequency\"], df[\"chord-length\"]\n    u, d = df[\"free-stream-velocity\"], df[\"suction-side-displacement-thickness\"]\n    out = df.drop(columns=[\"frequency\", \"free-stream-velocity\", \"chord-length\"]).copy()\n    out[\"log_f\"], out[\"log_d\"], out[\"log_c\"] = np.log10(f), np.log10(d), np.log10(c)\n    out[\"log_St_d\"], out[\"log_St_c\"] = np.log10(f * d / u), np.log10(f * c / u)\n    out[\"log_Re_c\"], out[\"log_Re_d\"] = np.log10(u * c / 1.5e-5), np.log10(u * d / 1.5e-5)\n    out[\"log_d_over_c\"] = np.log10(d / c)\n    out[\"bpm_scale\"] = 10.0 * np.log10(d) + 50.0 * np.log10(u / 340.46)\n    return out\n\ndef engineer(X_train, y_train, X_test):\n    return _phys(X_train), _phys(X_test)"
     },
     sample: {
       title: "Stage 3: sample(X_train, y_train, X_test, max_rows) — Multi-View Context Selection (S_ctx)",
-      stat: "Up to 8.39% Multiclass G-Mean Log-Loss reduction when paired with postprocess()",
-      text: "<p><strong>What limitation of frozen TabFM it solves:</strong> Because <code>TabFM</code> is pretrained on bounded context windows (up to 16,384 rows), uniform subsampling on large or imbalanced tables drops rare classes and loses tail coverage.</p><p><strong>What the agent synthesizes:</strong> Returns a list of index arrays defining multiple context views — stratifying by class, oversampling rare classes (e.g., 2&times; <code>Suspicious</code> rows on <code>website_phishing</code>), or partitioning large tables into complementary regime-matched neighborhoods whose predictions are ensembled across views.</p>",
-      code: "# Identity baseline P0:\ndef sample(X_train, y_train, X_test, max_rows):\n    return [np.arange(len(X_train))]\n\n# Evolved P* on website_phishing (oversampled minority-class view):\ndef sample(X_train, y_train, X_test, max_rows):\n    idx = np.arange(len(X_train))\n    rare = np.flatnonzero(y_train == \"Suspicious\")\n    return [idx, np.r_[idx, rare]]"
+      stat: "Up to 8.39% Multiclass G-Mean Log-Loss reduction with postprocess()",
+      text: "<p><strong>Why it matters:</strong> Because <code>TabFM</code> operates on bounded context windows, uniform subsampling on large or imbalanced tables drops rare classes; <code>sample()</code> builds stratified or minority-oversampled context views whose predictions are ensembled.</p>",
+      beforeMeta: "Single uniform context view",
+      beforeCode: "# Single unstratified context view:\n\ndef sample(X_train, y_train, X_test, max_rows):\n    return [np.arange(len(X_train))]",
+      afterMeta: "website_phishing · Minority-oversampled multi-view",
+      afterCode: "# Oversample rare 'Suspicious' class in view 2\n# to sharpen decision boundaries near rare labels:\n\ndef sample(X_train, y_train, X_test, max_rows):\n    idx = np.arange(len(X_train))\n    rare = np.flatnonzero(y_train == \"Suspicious\")\n    return [idx, np.r_[idx, rare]]"
     },
     kwargs: {
       title: "Stage 4: TABFM_KWARGS — Declarative TabFM+ Presets Around Frozen TabFM (f_θ*)",
-      stat: "Separates generic numerical presets from portable Python functions",
-      text: "<p><strong>What limitation of frozen TabFM it solves:</strong> Generic numerical conditioning (power/quantile normalization, outlier clipping, SVD projections, pairwise crosses, and NNLS view weighting) is supported natively by <code>TabFM+</code> constructor arguments.</p><p><strong>Why decoupling matters:</strong> Exposing these presets as a declarative dictionary lets the agent tune generic conditioning via flags while reserving the four Python functions for semantic logic. At test time, stripping <code>TABFM_KWARGS</code> lets the exact four functions transfer unchanged to <code>TabICLv2</code>, <code>TabPFN-3</code>, and <code>EXAONE-Tabular</code>.</p>",
-      code: "# Identity baseline P0:\nTABFM_KWARGS = {}\n\n# Evolved P* declarative configuration:\nTABFM_KWARGS = {\n    \"n_estimators\": 8,\n    \"norm_methods\": [\"none\", \"power\"],\n    \"feat_Engineer_methods\": [\"none\", \"svd\"],\n    \"enable_nnls\": True,\n}"
+      stat: "Decouples generic numerical presets from portable Python hooks",
+      text: "<p><strong>Why it matters:</strong> Generic numerical conditioning (power/quantile normalization, SVD projections, pairwise crosses, and NNLS view weighting) is configured declaratively via <code>TABFM_KWARGS</code>, keeping the four Python hooks portable across <code>TabICLv2</code>, <code>TabPFN-3</code>, and <code>EXAONE-Tabular</code>.</p>",
+      beforeMeta: "Default constructor settings",
+      beforeCode: "# Default zero-shot TabFM configuration:\n\nTABFM_KWARGS = {}",
+      afterMeta: "website_phishing · Declarative TabFM+ presets",
+      afterCode: "TABFM_KWARGS = {\n    \"n_feature_crosses\": \"sqrt\",\n    \"average_logits\": False,\n    \"multiclass_calibration_method\": \"vector\",\n    \"enable_nnls\": True,\n    \"nnls_beta\": 0.25,\n    \"softmax_temperature\": 0.85,\n}"
     },
     postprocess: {
       title: "Stage 5: postprocess(pred, y_train, X_test) — Inverse Target Map & Prior Calibration (Ψ_post)",
-      stat: "Aligns synthetic pretraining posteriors to real class priors & target scales",
-      text: "<p><strong>What limitation of frozen TabFM it solves:</strong> Oversampled context views and synthetic pretraining priors can shift predicted class probabilities away from the empirical training distribution, and target transforms <i>g</i>(<i>y</i>) in <code>preprocess()</code> must be inverted on the test predictions.</p><p><strong>What the agent synthesizes:</strong> Applies the exact inverse map <i>g</i><sup>&minus;1</sup>(<i>&#375;</i>) on regression, and shifts log-odds or applies temperature/Platt scaling on classification so mean predicted probabilities match the training prior &pi;.</p>",
-      code: "# Identity baseline P0:\ndef postprocess(pred, y_train, X_test):\n    return pred\n\n# Evolved P* log-odds class-prior alignment:\ndef postprocess(pred, y_train, X_test):\n    p, cols = pred.to_numpy(), pred.columns\n    pi = y_train.value_counts(normalize=True).reindex(cols).values\n    z = np.log(np.clip(p, 1e-12, 1.0)) + np.log(pi / p.mean(0))\n    q = np.exp(z - z.max(1, keepdims=True))\n    return pd.DataFrame(q / q.sum(1, keepdims=True), columns=cols)"
+      stat: "Aligns synthetic pretraining posteriors to empirical priors & target bounds",
+      text: "<p><strong>Why it matters:</strong> Inverts target maps <i>g</i><sup>&minus;1</sup>(<i>&#375;</i>), respects physical/censored target bounds, and shifts log-odds on classification so predicted probabilities match empirical training priors &pi;.</p>",
+      beforeMeta: "Uncalibrated raw predictions",
+      beforeCode: "# Raw TFM output returned directly:\n\ndef postprocess(pred, y_train, X_test):\n    return pred",
+      afterMeta: "Log-odds prior alignment + censored target clip",
+      afterCode: "# Classification log-odds class-prior alignment:\ndef postprocess(pred, y_train, X_test):\n    p, cols = pred.to_numpy(), pred.columns\n    pi = y_train.value_counts(normalize=True).reindex(cols).values\n    z = np.log(np.clip(p, 1e-12, 1.0)) + np.log(pi / p.mean(0))\n    q = np.exp(z - z.max(1, keepdims=True))\n    return pd.DataFrame(q / q.sum(1, keepdims=True), columns=cols)"
     }
   };
 
@@ -1168,11 +1128,17 @@ def engineer(X_train, y_train, X_test):
       const tEl = document.getElementById("f2-insp-title");
       const sEl = document.getElementById("f2-insp-stat");
       const xEl = document.getElementById("f2-insp-text");
-      const cEl = document.getElementById("f2-insp-code");
+      const bmEl = document.getElementById("f2-before-meta");
+      const bcEl = document.getElementById("f2-insp-before");
+      const amEl = document.getElementById("f2-after-meta");
+      const acEl = document.getElementById("f2-insp-after");
       if (tEl) tEl.textContent = info.title;
       if (sEl) sEl.textContent = info.stat;
       if (xEl) xEl.innerHTML = info.text;
-      if (cEl) cEl.textContent = info.code;
+      if (bmEl) bmEl.textContent = info.beforeMeta;
+      if (bcEl) bcEl.textContent = info.beforeCode;
+      if (amEl) amEl.textContent = info.afterMeta;
+      if (acEl) acEl.textContent = info.afterCode;
     });
   });
 
@@ -1200,29 +1166,26 @@ def engineer(X_train, y_train, X_test):
     const padL = 42, padR = 14, padT = 14, padB = 30;
     const plotW = W - padL - padR;
     const plotH = H - padT - padB;
-    const gridCol = isDark ? "#263044" : "#e2ddd2";
-    const mutedCol = isDark ? "#94a3b8" : "#64748b";
-    const accentCol = isDark ? "#f97316" : "#d04418";
+    const gridCol = isDark ? "#1e2b42" : "#dce4ef";
+    const mutedCol = isDark ? "#8b9bb4" : "#5f6b7c";
+    const accentCol = isDark ? "#589df6" : "#1a73e8";
 
     const svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H });
 
-    // Grid
     for (let i = 0; i <= 4; i++) {
       const f = i / 4;
       const val = yMin + f * (yMax - yMin);
       const y = padT + plotH - f * plotH;
       svg.appendChild(svgEl("line", { x1: padL, y1: y, x2: W - padR, y2: y, stroke: gridCol, "stroke-width": 1, "stroke-dasharray": i === 0 ? "none" : "2,2" }));
-      svg.appendChild(svgEl("text", { x: padL - 6, y: y + 3.5, "text-anchor": "end", fill: mutedCol, "font-size": 9.5, "font-family": "JetBrains Mono, monospace" }, yFmt(val)));
+      svg.appendChild(svgEl("text", { x: padL - 6, y: y + 3.5, "text-anchor": "end", fill: mutedCol, "font-size": 9.5, "font-family": "Google Sans Mono, monospace" }, yFmt(val)));
     }
 
-    // X-axis labels (log-spaced visual positions 0..14)
     const xTicks = [0, 2, 4, 8, 14];
     xTicks.forEach(function (ti) {
       const x = padL + (ti / (series.length - 1)) * plotW;
-      svg.appendChild(svgEl("text", { x: x, y: H - 8, "text-anchor": "middle", fill: mutedCol, "font-size": 9.5, "font-family": "JetBrains Mono, monospace" }, DYN_DATA.pct[ti] + "%"));
+      svg.appendChild(svgEl("text", { x: x, y: H - 8, "text-anchor": "middle", fill: mutedCol, "font-size": 9.5, "font-family": "Google Sans Mono, monospace" }, DYN_DATA.pct[ti] + "%"));
     });
 
-    // Optional reference lines (e.g. TabFM and TabFM+ in panel c)
     if (refLines) {
       refLines.forEach(function (rl) {
         const y = padT + plotH - ((rl.val - yMin) / (yMax - yMin)) * plotH;
@@ -1231,7 +1194,6 @@ def engineer(X_train, y_train, X_test):
       });
     }
 
-    // Polyline + area
     const pts = series.map(function (v, i) {
       const x = padL + (i / (series.length - 1)) * plotW;
       const y = padT + plotH - ((v - yMin) / (yMax - yMin)) * plotH;
@@ -1240,18 +1202,16 @@ def engineer(X_train, y_train, X_test):
     const pathD = pts.map(function (p, i) { return (i === 0 ? "M" : "L") + p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" ");
     const areaD = pathD + " L" + pts[pts.length - 1][0].toFixed(1) + "," + (padT + plotH) + " L" + pts[0][0].toFixed(1) + "," + (padT + plotH) + " Z";
 
-    svg.appendChild(svgEl("path", { d: areaD, fill: accentCol, "fill-opacity": isDark ? 0.16 : 0.11 }));
+    svg.appendChild(svgEl("path", { d: areaD, fill: accentCol, "fill-opacity": isDark ? 0.18 : 0.11 }));
     svg.appendChild(svgEl("path", { d: pathD, fill: "none", stroke: accentCol, "stroke-width": 2.2 }));
 
-    // Selected vertical crosshair
     const selPt = pts[f3Idx];
     svg.appendChild(svgEl("line", { x1: selPt[0], y1: padT, x2: selPt[0], y2: padT + plotH, stroke: accentCol, "stroke-width": 1.2, "stroke-dasharray": "3,2" }));
 
-    // Interactive points
     pts.forEach(function (p, i) {
       const c = svgEl("circle", {
         cx: p[0], cy: p[1], r: i === f3Idx ? 5 : 3,
-        fill: i === f3Idx ? accentCol : (isDark ? "#0f172a" : "#ffffff"),
+        fill: i === f3Idx ? accentCol : (isDark ? "#0f1624" : "#ffffff"),
         stroke: accentCol, "stroke-width": i === f3Idx ? 2 : 1.5,
         cursor: "pointer"
       });
@@ -1269,8 +1229,8 @@ def engineer(X_train, y_train, X_test):
     drawDynPanel("f3-svg-cv", DYN_DATA.cv, 0, 9.0, function (v) { return "+" + v.toFixed(1) + "%"; }, null, isDark);
     drawDynPanel("f3-svg-test", DYN_DATA.te, 0, 4.5, function (v) { return v.toFixed(1) + "%"; }, null, isDark);
     drawDynPanel("f3-svg-elo", DYN_DATA.elo, 1760, 2020, function (v) { return v.toFixed(0); }, [
-      { val: 1856.0, label: "TabFM+ (1856)", col: isDark ? "#60a5fa" : "#2563eb" },
-      { val: 1785.3, label: "TabFM (1785)", col: isDark ? "#94a3b8" : "#64748b" }
+      { val: 1856.0, label: "TabFM+ (1856)", col: isDark ? "#22d3ee" : "#00838f" },
+      { val: 1785.3, label: "TabFM (1785)", col: isDark ? "#8b9bb4" : "#5f6b7c" }
     ], isDark);
 
     const ro = document.getElementById("f3-readout");
@@ -1521,16 +1481,16 @@ def engineer(X_train, y_train, X_test):
     const xMin = 1150, xMax = 1900;
 
     const svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "MLE-Bench-Tabular Elo Leaderboard" });
-    const gridCol = isDark ? "#263044" : "#e6e1d6";
-    const textCol = isDark ? "#e2e8f0" : "#1e293b";
-    const mutedCol = isDark ? "#94a3b8" : "#64748b";
-    const accentCol = isDark ? "#f97316" : "#d04418";
-    const barCol = isDark ? "#475569" : "#cbd5e1";
+    const gridCol = isDark ? "#1e2b42" : "#dce4ef";
+    const textCol = isDark ? "#e2e8f0" : "#0f172a";
+    const mutedCol = isDark ? "#8b9bb4" : "#5f6b7c";
+    const accentCol = isDark ? "#589df6" : "#1a73e8";
+    const barCol = isDark ? "#334155" : "#cbd5e1";
 
     [1200, 1350, 1500, 1650, 1800].forEach(function (xv) {
       const x = padL + ((xv - xMin) / (xMax - xMin)) * plotW;
       svg.appendChild(svgEl("line", { x1: x, y1: padT, x2: x, y2: padT + plotH, stroke: gridCol, "stroke-width": 1, "stroke-dasharray": "3,3" }));
-      svg.appendChild(svgEl("text", { x: x, y: H - 6, "text-anchor": "middle", fill: mutedCol, "font-size": 10.5, "font-family": "JetBrains Mono, monospace" }, String(xv)));
+      svg.appendChild(svgEl("text", { x: x, y: H - 6, "text-anchor": "middle", fill: mutedCol, "font-size": 10.5, "font-family": "Google Sans Mono, monospace" }, String(xv)));
     });
 
     const rowH = plotH / MLE_ELO.length;
@@ -1545,7 +1505,7 @@ def engineer(X_train, y_train, X_test):
         "text-anchor": "end",
         fill: r.ours ? accentCol : textCol,
         "font-size": 12,
-        "font-weight": r.ours ? 800 : 500
+        "font-weight": r.ours ? 700 : 500
       }, "#" + (idx + 1) + "  " + r.agent));
 
       svg.appendChild(svgEl("rect", {
@@ -1557,8 +1517,8 @@ def engineer(X_train, y_train, X_test):
         x: padL + bw + 7, y: y + barH - 3,
         fill: r.ours ? accentCol : textCol,
         "font-size": 11.5,
-        "font-weight": r.ours ? 800 : 600,
-        "font-family": "JetBrains Mono, monospace"
+        "font-weight": r.ours ? 700 : 600,
+        "font-family": "Google Sans Mono, monospace"
       }, String(r.elo)));
     });
 
@@ -1577,15 +1537,12 @@ def engineer(X_train, y_train, X_test):
       const loAll = Math.min.apply(null, allV);
       const hiAll = Math.max.apply(null, allV);
 
-      // Direct metric histogram (lower-is-better has shorter bars for smaller errors at the top, matching paper Figure 7)
       let xLo = 0, xHi = hiAll * 1.08;
       if (loAll < 0) {
-        // Log-MAE (can be negative, e.g., -2.875 to +1.428): shift origin to just below loAll so -1.92 has a shorter bar than +1.43
         const span = hiAll - loAll;
         xLo = loAll - span * 0.15;
         xHi = hiAll + span * 0.08;
       } else if (loAll > 0 && (hiAll - loAll) / Math.abs(hiAll) < 0.25) {
-        // Tightly clustered positive metrics (e.g., tps-dec-2021 Accuracy, tps-may-2022 AUROC, nomad2018 RMSLE)
         const rng = (hiAll - loAll) || Math.abs(hiAll) * 0.02;
         xLo = Math.max(0, loAll - rng * 0.22);
         xHi = hiAll + rng * 0.12;

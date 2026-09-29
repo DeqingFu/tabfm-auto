@@ -1,7 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect x="3" y="3" width="26" height="6.5" rx="2.2" fill="#2563eb"/>
-  <rect x="3" y="12.5" width="6.5" height="16.5" rx="2.2" fill="#2563eb" fill-opacity="0.32"/>
-  <rect x="12.5" y="12.5" width="6.5" height="16.5" rx="2.2" fill="#2563eb"/>
-  <rect x="22" y="12.5" width="7" height="6.5" rx="2.2" fill="#ea580c"/>
-  <rect x="22" y="22.5" width="7" height="6.5" rx="2.2" fill="#2563eb" fill-opacity="0.32"/>
+  <!-- Top shared header bar (T crossbar + F top bar) -->
+  <rect x="3" y="3" width="26" height="6.5" rx="2.2" fill="#1a73e8"/>
+  <!-- Left column (T stem / frozen foundation) -->
+  <rect x="3" y="12.5" width="6.5" height="16.5" rx="2.2" fill="#1a73e8" fill-opacity="0.38"/>
+  <!-- Center column (shared vertical spine of T and F) -->
+  <rect x="12.5" y="12.5" width="6.5" height="16.5" rx="2.2" fill="#1a73e8"/>
+  <!-- Right middle cell (F middle bar / evolved agent spark in DeepMind Cyan) -->
+  <rect x="22" y="12.5" width="7" height="6.5" rx="2.2" fill="#00b4d8"/>
+  <!-- Right bottom cell (tabular grid completion) -->
+  <rect x="22" y="22.5" width="7" height="6.5" rx="2.2" fill="#1a73e8" fill-opacity="0.38"/>
 </svg>
