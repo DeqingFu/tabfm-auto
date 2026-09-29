@@ -145,20 +145,6 @@
   <!-- ================= SECTION 1: INTRODUCTION ================= -->
   <h2 id="intro">1. Introduction: Taking the Best of Both Worlds</h2>
 
-  <p>
-    Modern tabular machine learning has split into two paradigms whose strengths and blind spots are mirror images of one another: <strong>pretrained Tabular Foundation Models (TFMs)</strong> that perform zero-shot numerical inference in a single forward pass, and <strong>LLM-driven Machine Learning Engineering (MLE) agents</strong> that read dataset metadata and write custom modeling code.
-  </p>
-
-  <p>
-    <strong>World 1: Tabular Foundation Models have strong numerical priors but are blind to column semantics.</strong>
-    Tabular Foundation Models such as <code>TabPFN</code>, <code>TabICL</code>, and <code>TabFM</code> pretrain a transformer on millions of synthetic datasets so that, at test time, they take a labeled training table (<i>X</i><sub>train</sub>, <i>y</i><sub>train</sub>) as in-context examples and predict test labels <i>&#375;</i> = <i>f</i><sub>&theta;*</sub>(<i>X</i><sub>test</sub> &mid; <i>X</i><sub>train</sub>, <i>y</i><sub>train</sub>) in a single forward pass without gradient updates. Because their pretrained weights &theta;* stay frozen, TFMs provide fast, deterministic numerical inference and already match or outperform tuned gradient-boosted decision trees (GBDTs) and multi-hour AutoGluon stacks out of the box (1785.3 vs. 1668.4 Elo on TabArena). However, their attention layers see only floating-point magnitudes and category indices: a TFM treats a column named <code>systolic_bp</code>, <code>frequency</code>, or <code>ICD9_diagnosis</code> identically to an anonymous column <code>X_17</code>. From raw numbers alone, a TFM cannot infer dimensionless aeroacoustic scaling laws from wind-tunnel headers, group clinical diagnosis codes by organ system, recognize when a value such as <code>width = 0</code> encodes a missing measurement rather than zero physical width, or read auxiliary sensor waveforms and 3D molecular geometries. Prior wrapper presets (<code>TabFM+</code>) extend <code>TabFM</code> with generic pairwise feature crosses, singular value decomposition (SVD) projections, and multi-view ensembling, but these fixed, schema-agnostic operations still ignore what the columns represent.
-  </p>
-
-  <p>
-    <strong>World 2: LLM Coding Agents understand column semantics but suffer from noisy end-to-end training search.</strong>
-    Pretrained on scientific text and source code, Large Language Models (LLMs) possess the exact domain knowledge that TFMs lack: they read column names, physical units, task descriptions, and file schemas, and can express domain hypotheses directly as executable Python transformations. Yet LLMs perform poorly as direct row-by-row tabular predictors because of context-length limits, coarse number tokenization, and poorly calibrated probabilities. Existing MLE agents (such as AIDE, R&amp;D-Agent, and MLEvolve) instead use LLMs to iteratively rewrite end-to-end training scripts that fit tree ensembles or neural networks from scratch during search. However, searching over feature engineering, model families, and training hyperparameters at the same time is slow and noisy: stochastic training variance masks small, legitimate feature gains and drives validation overfitting. In our controlled ablation using the exact same agent harness and language model (<code>Antigravity + Gemini 3.8 Flash</code>), sandbox, and 6-hour per-dataset budget, an unconstrained coding agent that trains and blends LightGBM, CatBoost, XGBoost, and PyTorch models reaches only <strong>1468.8 Elo</strong> on TabArena &mdash; falling behind 4-hour <code>AutoGluon 1.3</code> (1490.3 Elo) and trailing plain zero-shot <code>TabFM</code> by <strong>316.5 Elo</strong>.
-  </p>
-
   <div class="worlds-grid wide-card" role="region" aria-label="Comparison of Tabular Paradigms">
     <div class="world-col">
       <div>
@@ -211,6 +197,20 @@
       </div>
     </div>
   </div>
+
+  <p>
+    Modern tabular machine learning has split into two paradigms whose strengths and blind spots are mirror images of one another: <strong>pretrained Tabular Foundation Models (TFMs)</strong> that perform zero-shot numerical inference in a single forward pass, and <strong>LLM-driven Machine Learning Engineering (MLE) agents</strong> that read dataset metadata and write custom modeling code.
+  </p>
+
+  <p>
+    <strong>World 1: Tabular Foundation Models have strong numerical priors but are blind to column semantics.</strong>
+    Tabular Foundation Models such as <code>TabPFN</code>, <code>TabICL</code>, and <code>TabFM</code> pretrain a transformer on millions of synthetic datasets so that, at test time, they take a labeled training table (<i>X</i><sub>train</sub>, <i>y</i><sub>train</sub>) as in-context examples and predict test labels <i>&#375;</i> = <i>f</i><sub>&theta;*</sub>(<i>X</i><sub>test</sub> &mid; <i>X</i><sub>train</sub>, <i>y</i><sub>train</sub>) in a single forward pass without gradient updates. Because their pretrained weights &theta;* stay frozen, TFMs provide fast, deterministic numerical inference and already match or outperform tuned gradient-boosted decision trees (GBDTs) and multi-hour AutoGluon stacks out of the box (1785.3 vs. 1668.4 Elo on TabArena). However, their attention layers see only floating-point magnitudes and category indices: a TFM treats a column named <code>systolic_bp</code>, <code>frequency</code>, or <code>ICD9_diagnosis</code> identically to an anonymous column <code>X_17</code>. From raw numbers alone, a TFM cannot infer dimensionless aeroacoustic scaling laws from wind-tunnel headers, group clinical diagnosis codes by organ system, recognize when a value such as <code>width = 0</code> encodes a missing measurement rather than zero physical width, or read auxiliary sensor waveforms and 3D molecular geometries. Prior wrapper presets (<code>TabFM+</code>) extend <code>TabFM</code> with generic pairwise feature crosses, singular value decomposition (SVD) projections, and multi-view ensembling, but these fixed, schema-agnostic operations still ignore what the columns represent.
+  </p>
+
+  <p>
+    <strong>World 2: LLM Coding Agents understand column semantics but suffer from noisy end-to-end training search.</strong>
+    Pretrained on scientific text and source code, Large Language Models (LLMs) possess the exact domain knowledge that TFMs lack: they read column names, physical units, task descriptions, and file schemas, and can express domain hypotheses directly as executable Python transformations. Yet LLMs perform poorly as direct row-by-row tabular predictors because of context-length limits, coarse number tokenization, and poorly calibrated probabilities. Existing MLE agents (such as AIDE, R&amp;D-Agent, and MLEvolve) instead use LLMs to iteratively rewrite end-to-end training scripts that fit tree ensembles or neural networks from scratch during search. However, searching over feature engineering, model families, and training hyperparameters at the same time is slow and noisy: stochastic training variance masks small, legitimate feature gains and drives validation overfitting. In our controlled ablation using the exact same agent harness and language model (<code>Antigravity + Gemini 3.8 Flash</code>), sandbox, and 6-hour per-dataset budget, an unconstrained coding agent that trains and blends LightGBM, CatBoost, XGBoost, and PyTorch models reaches only <strong>1468.8 Elo</strong> on TabArena &mdash; falling behind 4-hour <code>AutoGluon 1.3</code> (1490.3 Elo) and trailing plain zero-shot <code>TabFM</code> by <strong>316.5 Elo</strong>.
+  </p>
 
   <p>
     <strong>Taking the Best of Both Worlds with TabFM-Auto.</strong>
