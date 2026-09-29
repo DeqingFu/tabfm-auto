@@ -689,6 +689,26 @@ html[data-theme="dark"] .mark-neg {
   justify-content: space-between;
   gap: 14px;
 }
+.eq-lines {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.eq-box math,
+p math {
+  font-family: "STIX Two Math", "Latin Modern Math", "Cambria Math", math;
+}
+.eq-box math {
+  font-size: 1.14em;
+  margin: 2px 0;
+}
+.eq-box math + math {
+  margin-top: 8px;
+}
+p math {
+  font-size: 1.06em;
+}
 .eq-num {
   font-family: var(--font-mono);
   font-size: 12.5px;
