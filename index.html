@@ -111,7 +111,7 @@
         <span class="leg-item"><span class="leg-swatch sw-tabfm"></span><strong>TabFM / TabFM+</strong> (Frozen Backbone)</span>
         <span class="leg-item"><span class="leg-swatch sw-tfm"></span>Other Tabular Foundation Models</span>
         <span class="leg-item"><span class="leg-swatch sw-automl"></span>AutoML Ensembles (4h)</span>
-        <span class="leg-item"><span class="leg-swatch sw-agent"></span>Unconstrained Coding Agent (GBDT/NN)</span>
+        <span class="leg-item"><span class="leg-swatch sw-agent"></span>Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)</span>
         <span class="leg-item"><span class="leg-swatch sw-base"></span>Tuned Baselines</span>
       </div>
 
@@ -138,7 +138,7 @@
     </div>
 
     <div class="fig-caption">
-      <strong>Figure 1: Interactive TabArena leaderboard across all 51 datasets (38 classification, 13 regression).</strong> Switch between task splits, evaluation metrics, or the full table view above, and hover/click any bar to inspect exact figures. Across all 51 datasets, <strong>TabFM-Auto</strong> reaches <strong>2013.0 Elo (+227.7 over plain TabFM)</strong>, outperforming 4-hour <code>AutoGluon 1.5 (extreme)</code> ensembles (1668.4 Elo) and every evaluated tabular foundation model. An unconstrained coding agent that trains and blends GBDTs and neural networks from scratch under the same budget reaches 1468.8 Elo.
+      <strong>Figure 1: Interactive TabArena leaderboard across all 51 datasets (38 classification, 13 regression).</strong> Switch between task splits, evaluation metrics, or the full table view above, and hover/click any bar to inspect exact figures. Across all 51 datasets, <strong>TabFM-Auto</strong> reaches <strong>2013.0 Elo (+227.7 over plain TabFM)</strong>, outperforming 4-hour <code>AutoGluon 1.5 (extreme)</code> ensembles (1668.4 Elo) and every evaluated tabular foundation model. An unconstrained coding agent (<code>Antigravity + Gemini 3.8 Flash</code>) that trains and blends GBDTs and neural networks from scratch under the same budget reaches 1468.8 Elo.
     </div>
   </section>
 
@@ -156,7 +156,7 @@
 
   <p>
     <strong>World 2: LLM Coding Agents understand column semantics but suffer from noisy end-to-end training search.</strong>
-    Pretrained on scientific text and source code, Large Language Models (LLMs) possess the exact domain knowledge that TFMs lack: they read column names, physical units, task descriptions, and file schemas, and can express domain hypotheses directly as executable Python transformations. Yet LLMs perform poorly as direct row-by-row tabular predictors because of context-length limits, coarse number tokenization, and poorly calibrated probabilities. Existing MLE agents (such as AIDE, R&amp;D-Agent, and MLEvolve) instead use LLMs to iteratively rewrite end-to-end training scripts that fit tree ensembles or neural networks from scratch during search. However, searching over feature engineering, model families, and training hyperparameters at the same time is slow and noisy: stochastic training variance masks small, legitimate feature gains and drives validation overfitting. In our controlled ablation using the exact same agent harness, language model, sandbox, and 6-hour per-dataset budget, an unconstrained coding agent that trains and blends LightGBM, CatBoost, XGBoost, and PyTorch models reaches only <strong>1468.8 Elo</strong> on TabArena &mdash; falling behind 4-hour <code>AutoGluon 1.3</code> (1490.3 Elo) and trailing plain zero-shot <code>TabFM</code> by <strong>316.5 Elo</strong>.
+    Pretrained on scientific text and source code, Large Language Models (LLMs) possess the exact domain knowledge that TFMs lack: they read column names, physical units, task descriptions, and file schemas, and can express domain hypotheses directly as executable Python transformations. Yet LLMs perform poorly as direct row-by-row tabular predictors because of context-length limits, coarse number tokenization, and poorly calibrated probabilities. Existing MLE agents (such as AIDE, R&amp;D-Agent, and MLEvolve) instead use LLMs to iteratively rewrite end-to-end training scripts that fit tree ensembles or neural networks from scratch during search. However, searching over feature engineering, model families, and training hyperparameters at the same time is slow and noisy: stochastic training variance masks small, legitimate feature gains and drives validation overfitting. In our controlled ablation using the exact same agent harness and language model (<code>Antigravity + Gemini 3.8 Flash</code>), sandbox, and 6-hour per-dataset budget, an unconstrained coding agent that trains and blends LightGBM, CatBoost, XGBoost, and PyTorch models reaches only <strong>1468.8 Elo</strong> on TabArena &mdash; falling behind 4-hour <code>AutoGluon 1.3</code> (1490.3 Elo) and trailing plain zero-shot <code>TabFM</code> by <strong>316.5 Elo</strong>.
   </p>
 
   <div class="worlds-grid wide-card" role="region" aria-label="Comparison of Tabular Paradigms">
@@ -180,7 +180,7 @@
     <div class="world-col">
       <div>
         <div class="world-kicker">Paradigm B &middot; End-to-End MLE Agent</div>
-        <h3 class="world-name">Unconstrained Coding Agent (GBDT / NN Search)</h3>
+        <h3 class="world-name">Unconstrained Coding Agent (<code>Antigravity + Gemini 3.8 Flash</code>)</h3>
         <ul class="world-list">
           <li><span class="mark-pos">+</span><span><strong>Reads dataset metadata:</strong> infers domain formulas, sentinel codes, and multi-file parsers from schemas.</span></li>
           <li><span class="mark-pos">+</span><span><strong>Expressive Python code:</strong> writes custom feature engineering and post-processing logic.</span></li>
@@ -566,7 +566,7 @@ def engineer(X_train, y_train, X_test):
         <h3 class="card-title">Ablation 1: Frozen TabFM vs. Unconstrained Agent</h3>
       </div>
       <p class="card-lead">
-        Under the exact same agent harness, language model, sandbox, and 6-hour per-dataset budget, an unconstrained coding agent that trains and blends LightGBM, CatBoost, XGBoost, and PyTorch models reaches <strong>1468.8 Elo</strong> &mdash; <strong>510.8 Elo below TabFM-Auto (1979.6 Elo)</strong>: <code>TabFM</code>'s pretrained prior contributes <strong>+316.5 Elo</strong> and pipeline search adds <strong>+194.3 Elo</strong>.
+        Under the exact same agent harness (<code>Antigravity</code>), language model (<code>Gemini 3.8 Flash</code>), sandbox, and 6-hour per-dataset budget, an unconstrained coding agent that trains and blends LightGBM, CatBoost, XGBoost, and PyTorch models reaches <strong>1468.8 Elo</strong> &mdash; <strong>510.8 Elo below TabFM-Auto (1979.6 Elo)</strong> with the same agent: <code>TabFM</code>'s pretrained prior contributes <strong>+316.5 Elo</strong> and pipeline search adds <strong>+194.3 Elo</strong>.
       </p>
       <table class="bench-tbl">
         <thead>
@@ -594,7 +594,7 @@ def engineer(X_train, y_train, X_test):
             <td class="r">1511.7</td>
           </tr>
           <tr>
-            <td><strong>Unconstrained Coding Agent</strong></td>
+            <td><strong>Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)</strong></td>
             <td>GBDTs, PyTorch, Ensembles</td>
             <td class="r">1468.8</td>
             <td class="r">1472.0</td>
@@ -622,7 +622,7 @@ def engineer(X_train, y_train, X_test):
             <td class="r">2169.2</td>
           </tr>
           <tr class="highlight-row">
-            <td><strong>TabFM-Auto (Same Agent)</strong></td>
+            <td><strong>TabFM-Auto (Antigravity + Gemini 3.8 Flash)</strong></td>
             <td><strong>TabFM (frozen + evolved P*)</strong></td>
             <td class="r"><strong>1979.6</strong></td>
             <td class="r"><strong>1937.5</strong></td>
@@ -885,7 +885,7 @@ def engineer(X_train, y_train, X_test):
       { rank: 9, method: "TabICLv2", short: "TabICLv2", cat: "tfm", catLabel: "Foundation Model", elo: 1590.1, delta: "", wins: 1.92, improv: 9.04, gmean: 0.3856 },
       { rank: 10, method: "RealTabPFN-2.5", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Foundation Model", elo: 1521.9, delta: "", wins: 0.10, improv: 10.38, gmean: 0.3918 },
       { rank: 11, method: "AutoGluon 1.3 (4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML (4h)", elo: 1490.3, delta: "", wins: 0.18, improv: 12.15, gmean: 0.4115 },
-      { rank: 12, method: "Coding Agent (GBDT/NN)", short: "Coding Agent", cat: "agent", catLabel: "Unconstrained Agent", elo: 1468.8, delta: "", wins: 0.25, improv: 12.60, gmean: 0.4120 },
+      { rank: 12, method: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Coding Agent", cat: "agent", catLabel: "Unconstrained Agent", elo: 1468.8, delta: "", wins: 0.25, improv: 12.60, gmean: 0.4120 },
       { rank: 13, method: "TabDPT-Turbo", short: "TabDPT-Turbo", cat: "tfm", catLabel: "Foundation Model", elo: 1455.8, delta: "", wins: 0.67, improv: 13.11, gmean: 0.4127 },
       { rank: 14, method: "RealMLP (tuned+ens.)", short: "RealMLP", cat: "base", catLabel: "Tuned Baseline", elo: 1447.0, delta: "", wins: 0.22, improv: 13.45, gmean: 0.4150 }
     ],
@@ -902,7 +902,7 @@ def engineer(X_train, y_train, X_test):
       { rank: 10, method: "TabDPT-Turbo", short: "TabDPT-Turbo", cat: "tfm", catLabel: "Foundation Model", elo: 1661.9, delta: "", wins: 0.26, improv: 4.93, gmean: 17.02 },
       { rank: 11, method: "AutoGluon 1.3 (4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML (4h)", elo: 1646.1, delta: "", wins: 0.03, improv: 6.01, gmean: 17.23 },
       { rank: 12, method: "RealMLP (tuned+ens.)", short: "RealMLP", cat: "base", catLabel: "Tuned Baseline", elo: 1622.8, delta: "", wins: 0.07, improv: 5.41, gmean: 17.09 },
-      { rank: 13, method: "Coding Agent (GBDT/NN)", short: "Coding Agent", cat: "agent", catLabel: "Unconstrained Agent", elo: 1615.3, delta: "", wins: 0.05, improv: 6.12, gmean: 17.25 }
+      { rank: 13, method: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Coding Agent", cat: "agent", catLabel: "Unconstrained Agent", elo: 1615.3, delta: "", wins: 0.05, improv: 6.12, gmean: 17.25 }
     ],
     classification: [
       { rank: 1, method: "TabFM-Auto", short: "TabFM-Auto", cat: "auto", catLabel: "TabFM-Auto", elo: 1966.3, delta: "+198", wins: 16.11, improv: 1.69, gmean: 0.0902, highlight: true },
@@ -916,7 +916,7 @@ def engineer(X_train, y_train, X_test):
       { rank: 9, method: "TabICLv2", short: "TabICLv2", cat: "tfm", catLabel: "Foundation Model", elo: 1583.6, delta: "", wins: 1.08, improv: 10.88, gmean: 0.1060 },
       { rank: 10, method: "RealTabPFN-2.5", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Foundation Model", elo: 1533.5, delta: "", wins: 0.07, improv: 12.11, gmean: 0.1077 },
       { rank: 11, method: "AutoGluon 1.3 (4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML (4h)", elo: 1473.4, delta: "", wins: 0.14, improv: 14.24, gmean: 0.1147 },
-      { rank: 12, method: "Coding Agent (GBDT/NN)", short: "Coding Agent", cat: "agent", catLabel: "Unconstrained Agent", elo: 1472.0, delta: "", wins: 0.20, improv: 14.50, gmean: 0.1152 },
+      { rank: 12, method: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Coding Agent", cat: "agent", catLabel: "Unconstrained Agent", elo: 1472.0, delta: "", wins: 0.20, improv: 14.50, gmean: 0.1152 },
       { rank: 13, method: "RealMLP (tuned+ens.)", short: "RealMLP", cat: "base", catLabel: "Tuned Baseline", elo: 1435.2, delta: "", wins: 0.19, improv: 15.37, gmean: 0.1161 }
     ]
   };
