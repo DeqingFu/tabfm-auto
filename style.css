@@ -335,8 +335,8 @@ h1.paper-title {
 
 .meta-grid {
   display: grid;
-  grid-template-columns: 1.45fr 1fr;
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
   padding: 14px 18px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -375,9 +375,85 @@ h1.paper-title {
   margin-left: 1px;
 }
 
-.affils {
-  font-size: 13px;
-  color: var(--fg-2);
+/* Affiliation logo strip: white tiles in both themes so every brand colour reads as intended. */
+.affil-block {
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+}
+.affil-logos {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.affil-tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+  padding: 10px 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.affil-tile:hover,
+.affil-tile:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--accent-border);
+  box-shadow: 0 10px 22px -10px rgba(26, 115, 232, 0.45);
+}
+.affil-tile img {
+  display: block;
+  max-width: 100%;
+  object-fit: contain;
+}
+.affil-n {
+  position: absolute;
+  top: 6px;
+  left: 7px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: #e8f0fe;
+  color: #1a73e8;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+.affil-gr {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+}
+.affil-gr span {
+  font-family: var(--font-sans);
+  font-size: 16.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #5f6368;
+}
+.logo-google { height: 19px; position: relative; top: 3px; }
+.logo-gdm { height: 24px; }
+.logo-usc { height: 26px; }
+.logo-harvard { height: 36px; }
+.logo-ut { height: 38px; }
+html[data-theme="dark"] .affil-tile { border-color: transparent; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06); }
+@media (max-width: 1180px) {
+  .affil-logos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .affil-logos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .affil-logos li:first-child { grid-column: 1 / -1; }
+  .affil-tile { height: 60px; }
 }
 
 /* ===== Abstract Card ===== */

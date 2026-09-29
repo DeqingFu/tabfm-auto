@@ -71,15 +71,30 @@
           <a href="https://weihaokong.github.io/" target="_blank" rel="noopener"><strong>Weihao Kong</strong></a><sup>1</sup>
         </div>
       </div>
-      <div>
+      <div class="affil-block">
         <div class="meta-label">Affiliations</div>
-        <div class="meta-value affils">
-          <sup>1</sup>Google Research &nbsp;&middot;&nbsp;
-          <sup>2</sup>Google DeepMind &nbsp;&middot;&nbsp;
-          <sup>3</sup>USC &nbsp;&middot;&nbsp;
-          <sup>4</sup>Harvard &nbsp;&middot;&nbsp;
-          <sup>5</sup>UT Austin
-        </div>
+        <ul class="affil-logos">
+          <li><a class="affil-tile" href="https://research.google/" target="_blank" rel="noopener" title="Google Research">
+            <span class="affil-n">1</span>
+            <span class="affil-gr"><img src="assets/logos/google.svg" alt="Google" class="logo-google"><span>Research</span></span>
+          </a></li>
+          <li><a class="affil-tile" href="https://deepmind.google/" target="_blank" rel="noopener" title="Google DeepMind">
+            <span class="affil-n">2</span>
+            <img src="assets/logos/google-deepmind.svg" alt="Google DeepMind" class="logo-gdm">
+          </a></li>
+          <li><a class="affil-tile" href="https://www.usc.edu/" target="_blank" rel="noopener" title="University of Southern California">
+            <span class="affil-n">3</span>
+            <img src="assets/logos/usc.svg" alt="University of Southern California" class="logo-usc">
+          </a></li>
+          <li><a class="affil-tile" href="https://www.harvard.edu/" target="_blank" rel="noopener" title="Harvard University">
+            <span class="affil-n">4</span>
+            <img src="assets/logos/harvard.svg" alt="Harvard University" class="logo-harvard">
+          </a></li>
+          <li><a class="affil-tile" href="https://www.utexas.edu/" target="_blank" rel="noopener" title="The University of Texas at Austin">
+            <span class="affil-n">5</span>
+            <img src="assets/logos/ut-austin.svg" alt="The University of Texas at Austin" class="logo-ut">
+          </a></li>
+        </ul>
       </div>
     </div>
   </header>
@@ -856,7 +871,7 @@ def engineer(X_train, y_train, X_test):
       '</div>';
   }
 
-  function renderFig1() {
+  function renderFig1(animate) {
     const wrap = document.getElementById("fig1-svg-wrap");
     const tbody = document.getElementById("lb-tbody");
     const titleEl = document.getElementById("fig1-title");
@@ -942,6 +957,14 @@ def engineer(X_train, y_train, X_test):
 
     const slotW = plotW / rows.length;
     const barW = Math.min(44, slotW * 0.66);
+    const bottomY = padT + plotH;
+    const anim = [];
+    function fmtVal(x) {
+      if (f1Metric === "wins") return x.toFixed(1);
+      if (f1Metric === "improv") return x.toFixed(1) + "%";
+      if (f1Metric === "gmean") return f1Suite === "regression" ? x.toFixed(2) : x.toFixed(3);
+      return x.toFixed(0);
+    }
 
     rows.forEach(function (r, idx) {
       const v = vals[idx];
@@ -953,7 +976,8 @@ def engineer(X_train, y_train, X_test):
 
       const g = svgEl("g", { cursor: "pointer" });
 
-      g.appendChild(svgEl("rect", {
+      const a = { by: by, bh: bh, v: v, capBottom: null };
+      a.base = g.appendChild(svgEl("rect", {
         x: bx, y: by, width: barW, height: bh, rx: 4,
         fill: cols.soft,
         stroke: cols.stroke,
@@ -963,26 +987,24 @@ def engineer(X_train, y_train, X_test):
       if (f1Metric === "elo" && r.delta && tabfmRow && r.elo > tabfmRow.elo) {
         const baseY = padT + plotH - ((tabfmRow.elo - yMin) / (yMax - yMin)) * plotH;
         const capH = Math.max(16, baseY - by);
-        g.appendChild(svgEl("rect", {
+        a.capBottom = by + capH;
+        a.cap = g.appendChild(svgEl("rect", {
           x: bx, y: by, width: barW, height: capH, rx: 4,
           fill: cols.fill,
           stroke: cols.stroke,
           "stroke-width": idx === f1SelectedIdx ? 2.2 : 1.2
         }));
         if (capH >= 18) {
-          g.appendChild(svgEl("text", {
+          a.delta = g.appendChild(svgEl("text", {
             x: bx + barW / 2, y: by + capH / 2 + 4,
             "text-anchor": "middle", fill: "#ffffff", "font-size": 10.5, "font-weight": 700, "font-family": "Google Sans Mono, monospace"
           }, r.delta));
         }
       }
 
-      let valStr = v.toFixed(0);
-      if (f1Metric === "wins") valStr = v.toFixed(1);
-      else if (f1Metric === "improv") valStr = v.toFixed(1) + "%";
-      else if (f1Metric === "gmean") valStr = f1Suite === "regression" ? v.toFixed(2) : v.toFixed(3);
+      const valStr = fmtVal(v);
 
-      g.appendChild(svgEl("text", {
+      a.label = g.appendChild(svgEl("text", {
         x: bx + barW / 2, y: by - 6,
         "text-anchor": "middle",
         fill: r.cat === "auto" ? cols.fill : textCol,
@@ -990,6 +1012,7 @@ def engineer(X_train, y_train, X_test):
         "font-weight": r.cat === "auto" ? 700 : 600,
         "font-family": "Google Sans Mono, monospace"
       }, valStr));
+      anim.push(a);
 
       const lx = bx + barW / 2;
       const ly = padT + plotH + 14;
@@ -1017,6 +1040,46 @@ def engineer(X_train, y_train, X_test):
     wrap.innerHTML = "";
     wrap.appendChild(svg);
     updateFig1Readout(rows[f1SelectedIdx]);
+    if (animate) growFig1Bars(anim, bottomY, yMin, fmtVal);
+  }
+
+  // Bars rise from the axis one after another; labels ride on top and count up to the final value.
+  let f1AnimToken = 0;
+  function growFig1Bars(anim, bottomY, yMin, fmtVal) {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const token = ++f1AnimToken;
+    const DUR = 900, STAGGER = 70;
+    const ease = function (t) { return 1 - Math.pow(1 - t, 3); };
+    function frame(p, a) {
+      const top = bottomY - a.bh * p;
+      a.base.setAttribute("y", top);
+      a.base.setAttribute("height", Math.max(0, a.bh * p));
+      if (a.cap) {
+        const h = Math.max(0, Math.min(a.capBottom - a.by, a.capBottom - top));
+        a.cap.setAttribute("y", top);
+        a.cap.setAttribute("height", h);
+        a.cap.style.opacity = h > 0 ? 1 : 0;
+      }
+      if (a.delta) a.delta.style.opacity = Math.max(0, (p - 0.85) / 0.15);
+      a.label.setAttribute("y", top - 6);
+      a.label.textContent = fmtVal(yMin + (a.v - yMin) * p);
+      a.label.style.opacity = Math.min(1, p * 3);
+    }
+    anim.forEach(function (a) { frame(0, a); });
+    let t0 = null;
+    function step(ts) {
+      if (token !== f1AnimToken) return;
+      if (t0 === null) t0 = ts;
+      let done = true;
+      anim.forEach(function (a, i) {
+        const t = Math.max(0, Math.min(1, (ts - t0 - i * STAGGER) / DUR));
+        if (t < 1) done = false;
+        frame(ease(t), a);
+      });
+      if (!done) requestAnimationFrame(step);
+      else anim.forEach(function (a) { frame(1, a); a.label.textContent = fmtVal(a.v); });
+    }
+    requestAnimationFrame(step);
   }
 
   document.querySelectorAll("[data-f1-suite]").forEach(function (btn) {
@@ -1025,7 +1088,7 @@ def engineer(X_train, y_train, X_test):
       btn.classList.add("is-active");
       f1Suite = btn.getAttribute("data-f1-suite") || "overall";
       f1SelectedIdx = 0;
-      renderFig1();
+      renderFig1(true);
     });
   });
 
@@ -1034,7 +1097,7 @@ def engineer(X_train, y_train, X_test):
       document.querySelectorAll("[data-f1-metric]").forEach(function (b) { b.classList.remove("is-active"); });
       btn.classList.add("is-active");
       f1Metric = btn.getAttribute("data-f1-metric") || "elo";
-      renderFig1();
+      renderFig1(true);
     });
   });
 
@@ -1621,7 +1684,19 @@ def engineer(X_train, y_train, X_test):
   }
 
   /* ===== Initial Render ===== */
-  renderFig1();
+  // Figure 1 grows its bars on every page load, as soon as the chart is on screen.
+  (function () {
+    const fig1 = document.getElementById("fig1-svg-wrap");
+    if (!fig1 || !("IntersectionObserver" in window)) { renderFig1(true); return; }
+    renderFig1();
+    const io = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) {
+        io.disconnect();
+        renderFig1(true);
+      }
+    }, { threshold: 0.25 });
+    io.observe(fig1);
+  })();
   renderFig3();
   renderFig4();
   renderFig5Elo();
