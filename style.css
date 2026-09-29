@@ -1490,6 +1490,10 @@ table.bench-tbl {
   .explorer-iframe {
     height: 640px;
   }
+  #fig1-svg-wrap svg,
+  #f5-svg-wrap svg {
+    min-width: 760px;
+  }
 }
 
 @media (max-width: 520px) {
