@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-tOwVIfn2xscxU1ileLON0HruT0Axe3tFIdLlMyoRKMg='; style-src 'sha256-U990UpYN3k9LrhCyOoVzbNnj9UVDMRQuvF11uQto3JU='; font-src data:; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-SEceU6bRQ0/9Pv+QbP3DEPtQIYwoW7E6Nktilg8vlng='; style-src 'sha256-bW7trIPQiOrg2TdHaB4fv5bMN1lpNjasbg/UJCp6lAY='; font-src data:; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Interactive explorer for the 8 evolved TabFM-Auto pipelines across the MLE-Bench-Tabular competition suite.">
 <meta name="color-scheme" content="light dark">
@@ -32,6 +32,12 @@
   --neg-soft: hsla(352 76% 48% / 0.11);
   --medal: #b45309;
   --medal-soft: hsla(42 94% 48% / 0.16);
+  --gold: #b45309;
+  --gold-soft: hsla(42 94% 48% / 0.18);
+  --silver: #475569;
+  --silver-soft: hsla(215 20% 60% / 0.18);
+  --bronze: #9a3412;
+  --bronze-soft: hsla(22 90% 52% / 0.16);
   --shadow-sm: 0 1px 2px hsla(220 30% 10% / 0.04);
   --shadow-md: 0 8px 24px hsla(220 30% 10% / 0.08);
   --code-bg: #f3f6fb;
@@ -71,6 +77,12 @@
   --neg-soft: hsla(352 78% 54% / 0.15);
   --medal: #fbbf24;
   --medal-soft: hsla(44 92% 54% / 0.15);
+  --gold: #fbbf24;
+  --gold-soft: hsla(44 92% 54% / 0.16);
+  --silver: #cbd5e1;
+  --silver-soft: hsla(215 20% 70% / 0.16);
+  --bronze: #fb923c;
+  --bronze-soft: hsla(24 94% 60% / 0.16);
   --shadow-sm: 0 1px 2px hsla(0 0% 0% / 0.35);
   --shadow-md: 0 10px 28px hsla(0 0% 0% / 0.5);
   --code-bg: #050811;
@@ -325,6 +337,12 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
 .gain.neg { background: var(--neg-soft); color: var(--neg); }
 .gain.na { background: var(--subtle); color: var(--muted); }
 .gain.medal { background: var(--medal-soft); color: var(--medal); font-family: var(--font-sans); }
+.gain.medal.gold { background: var(--gold-soft); color: var(--gold); }
+.gain.medal.silver { background: var(--silver-soft); color: var(--silver); }
+.gain.medal.bronze { background: var(--bronze-soft); color: var(--bronze); }
+.gain.medal::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; margin-right: 5px; flex: none; }
+.badge-stack { display: inline-flex; flex-direction: column; align-items: flex-end; gap: 3px; flex: none; }
+.badge-stack.row { flex-direction: row; align-items: center; gap: 5px; }
 
 
 .main { min-width: 0; }
@@ -1023,11 +1041,18 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
   }
 
   /* ========================================================= small pieces */
-  const medalCls = (m) => (MEDALS.includes(m) ? "medal" : "na");
+  const medalCls = (m) => (MEDALS.includes(m) ? "medal " + m.toLowerCase() : "na");
+  function resultBadges(t, row) {
+    if (!(isMle(t) && MEDALS.includes(t.medal) && t.gain_pct != null)) return gainPill(t);
+    return h("span", { class: "badge-stack" + (row ? " row" : "") }, [
+      h("span", { class: "gain " + medalCls(t.medal), title: t.medal + " medal" }, t.medal),
+      gainPill(t),
+    ]);
+  }
   function gainPill(t) {
     const g = t.gain_pct;
     if (g == null && isMle(t) && t.medal) {
-      return h("span", { class: "gain " + medalCls(t.medal), title: t.medal }, t.medal.replace(" Median", " med."));
+      return h("span", { class: "gain " + medalCls(t.medal), title: MEDALS.includes(t.medal) ? t.medal + " medal" : t.medal }, t.medal.replace(" Median", " med."));
     }
     const cls = g == null ? "na" : g > 0.05 ? "pos" : g < -0.05 ? "neg" : "na";
     return h("span", { class: "gain " + cls, title: "\u0394 = " + gainRef(t) }, g == null ? "n/a" : pctP(g, 1));
@@ -1140,7 +1165,7 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
               h("span", { class: "task-name", text: t.short_name || t.name, title: t.name }),
               h("span", { class: "task-sub", text: sub.join(" \u00b7 ") }),
             ]),
-            gainPill(t),
+            resultBadges(t, false),
           ]
         );
       })
@@ -1790,7 +1815,7 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
         ]),
         h("td", { class: "r mono", "data-label": "Baseline", text: isMle(t) && t.plain == null ? "fails" : fmtScore(t.plain) }),
         h("td", { class: "r mono", "data-label": "Final Score", text: fmtScore(t.score) }),
-        h("td", { class: "r", "data-label": "\u0394" }, gainPill(t)),
+        h("td", { class: "r", "data-label": "\u0394" }, resultBadges(t, true)),
         h("td", { "data-label": "Active Hooks" },
           hooks.length
             ? h("div", { class: "hook-pills" }, hooks.map((hk) => h("span", { class: "hook-tag", text: hk })))
@@ -1829,8 +1854,8 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
     const medals = medalCount(TASKS);
     const summaryStrip = h("section", { class: "summary-strip", "aria-label": "Benchmark summary" }, [
       statTile("MLE-Bench-Tabular", String(TASKS.length) + " Competitions", "Multi-file Kaggle relational & spatial schemas"),
-      statTile("Medals Won", medals.n + " / " + TASKS.length + " (62.5%)", medals.sub, "pos"),
-      statTile("Gold Medals", "5 / 8 (62.5%)", "Tied #1 overall on MLE-Bench-Tabular"),
+      statTile("Medals Won", medals.n + " / " + TASKS.length + " (" + Math.round((100 * medals.n) / TASKS.length) + "%)", medals.sub, "pos"),
+      statTile("MLE-Bench Elo", "1827 (#1)", "Highest of 14 agents \u00b7 Claude Code + Opus 5"),
       statTile("Median Pipeline Size", fmtInt(median(TASKS.map((t) => t.lines))) + " lines", "Compact Python hooks & helpers"),
     ]);
 
