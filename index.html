@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TabFM-Auto: Self-Evolving Pipelines for Tabular Foundation Models</title>
-<meta name="description" content="Taking the best of both worlds: pairing a language-model coding agent's semantic reasoning with a frozen 400M-parameter TabFM backbone's in-context numerical prior reaches 2013 Elo (#1) on TabArena and ranks #1 overall on MLE-Bench-Tabular.">
+<meta name="description" content="Taking the best of both worlds: pairing a language-model coding agent's semantic reasoning with a frozen 400M-parameter TabFM backbone's in-context numerical prior reaches 2013.0 Elo (#1) on TabArena and transfers zero-shot across frozen tabular foundation models.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="style.css">
@@ -19,17 +19,17 @@
       <span class="nav-dot" aria-hidden="true"></span>
       <span>TabFM-Auto</span>
       <span class="nav-sep" aria-hidden="true">/</span>
-      <span class="nav-sub">Technical Report &amp; Interactive Pipeline Explorer</span>
+      <span class="nav-sub">Technical Report &amp; Pipeline Explorer</span>
     </a>
     <nav class="nav-links" aria-label="Section navigation">
-      <a class="nav-link" href="#intro">1. Intro</a>
-      <a class="nav-link" href="#method">2. Method</a>
-      <a class="nav-link" href="#explorer">3. Explorer</a>
-      <a class="nav-link" href="#tabarena">4. TabArena</a>
-      <a class="nav-link" href="#taxonomy">5. Taxonomy &amp; Dynamics</a>
-      <a class="nav-link" href="#ablations">6. Ablations</a>
-      <a class="nav-link" href="#mlebench">7. MLE-Bench</a>
-      <a class="nav-cta" href="explorer.html" target="_blank" rel="noopener">Open Full Explorer ↗</a>
+      <a class="nav-link" href="#intro">Intro</a>
+      <a class="nav-link" href="#method">Method</a>
+      <a class="nav-link" href="#explorer">Explorer</a>
+      <a class="nav-link" href="#tabarena">TabArena</a>
+      <a class="nav-link" href="#taxonomy">Taxonomy</a>
+      <a class="nav-link" href="#ablations">Ablations</a>
+      <a class="nav-link" href="#mlebench">MLE-Bench-Tabular</a>
+      <a class="nav-cta" href="explorer.html" target="_blank" rel="noopener">Full Explorer ↗</a>
       <button type="button" class="theme-btn" id="theme-toggle" aria-label="Switch theme"></button>
     </nav>
   </div>
@@ -41,7 +41,7 @@
     <div class="venue-kicker">Technical Report &amp; Interactive Artifact</div>
     <h1 class="paper-title">TabFM-Auto: Self-Evolving Pipelines for Tabular Foundation Models</h1>
     <p class="paper-subtitle">
-      Taking the best of both worlds: pairing a language-model coding agent's domain reasoning with a frozen 400M-parameter <code>TabFM</code> backbone's zero-shot numerical prior reaches <strong>2013.0 Elo (#1)</strong> across all 51 TabArena datasets and ranks <strong>#1 overall</strong> on MLE-Bench-Tabular.
+      Taking the best of both worlds: pairing a language-model coding agent's domain reasoning with a frozen 400M-parameter <code>TabFM</code> backbone's zero-shot numerical prior reaches <strong>2013.0 Elo (#1)</strong> across all 51 TabArena datasets and transfers zero-shot across frozen tabular foundation models.
     </p>
 
     <div class="meta-grid">
@@ -49,12 +49,12 @@
         <div class="meta-label">Authors</div>
         <div class="meta-value">
           <a href="https://deqingfu.github.io/" target="_blank" rel="noopener"><strong>Deqing Fu</strong></a><sup>1,3</sup>,
-          <strong>Huangyuan Su</strong><sup>2,4</sup>,
-          <strong>Rajat Sen</strong><sup>1</sup>,
-          <strong>Taman Narayan</strong><sup>1</sup>,
-          <strong>Sujay Sanghavi</strong><sup>1,5</sup>,
-          <strong>Abhimanyu Das</strong><sup>1</sup>,
-          <strong>Weihao Kong</strong><sup>1</sup>
+          <a href="https://huangyuan-hy.github.io/" target="_blank" rel="noopener"><strong>Huangyuan Su</strong></a><sup>2,4</sup>,
+          <a href="https://rajatsen91.github.io/" target="_blank" rel="noopener"><strong>Rajat Sen</strong></a><sup>1</sup>,
+          <a href="https://openreview.net/profile?id=~Taman_Narayan1" target="_blank" rel="noopener"><strong>Taman Narayan</strong></a><sup>1</sup>,
+          <a href="https://sites.utexas.edu/sanghavi/" target="_blank" rel="noopener"><strong>Sujay Sanghavi</strong></a><sup>1,5</sup>,
+          <a href="https://scholar.google.com/citations?user=G66j9hUAAAAJ" target="_blank" rel="noopener"><strong>Abhimanyu Das</strong></a><sup>1</sup>,
+          <a href="https://weihaokong.github.io/" target="_blank" rel="noopener"><strong>Weihao Kong</strong></a><sup>1</sup>
         </div>
       </div>
       <div>
@@ -68,44 +68,13 @@
         </div>
       </div>
     </div>
-
-    <div class="action-row">
-      <a class="btn primary" href="#explorer">Explore All 59 Evolved Pipelines ↓</a>
-      <a class="btn" href="explorer.html" target="_blank" rel="noopener">Full-Screen Dashboard ↗</a>
-      <a class="btn" href="#fig-headline">Interactive Overview Figures ↓</a>
-      <a class="btn" href="#mlebench">MLE-Bench-Tabular</a>
-      <a class="btn" href="#citation">BibTeX</a>
-    </div>
   </header>
 
   <section class="abstract-card" aria-label="Abstract">
     <div class="meta-label">Abstract</div>
     <p>
-      Tabular foundation models achieve strong zero-shot accuracy on structured data by pretraining on synthetic tables, yet their attention layers ignore the column names, task descriptions, and auxiliary files that carry dataset semantics. Meanwhile, self-evolving machine learning engineering (MLE) agents read dataset metadata and write feature code, yet training gradient-boosted trees or neural networks from scratch on each candidate iteration is noisy: stochastic training variance masks small feature gains and drives validation overfitting. We introduce <strong>TabFM-Auto</strong>, which takes the best of both worlds by pairing a frozen 400M-parameter tabular foundation model, <code>TabFM</code>, with a language-model coding agent that iteratively evolves the surrounding data pipeline. Guided by dataset metadata and 3-fold cross-validation feedback on the training set, <strong>TabFM-Auto</strong> refines data cleaning, domain and structural feature engineering, multi-view context selection, and post-processing while keeping <code>TabFM</code>'s weights fixed. Across all 51 datasets of the TabArena benchmark, <strong>TabFM-Auto</strong> takes the <strong>#1 overall position at 2013.0 Elo</strong> (+227.7 Elo over plain <code>TabFM</code> and +344.6 Elo over 4-hour <code>AutoGluon 1.5 (extreme)</code>). The discovered Python pipelines also transfer without further search to other frozen tabular foundation models, boosting <code>TabICLv2</code>, <code>TabPFN-3</code>, and <code>EXAONE-Tabular</code> by <strong>+88.7 to +143.3 Elo</strong>. On the 8 tabular competitions of MLE-Bench, <strong>TabFM-Auto</strong> ranks <strong>first overall (1827 Elo, 86.7% pairwise win rate)</strong> ahead of 12 external MLE agents.
+      Tabular foundation models achieve strong zero-shot accuracy on structured data by pretraining on synthetic tables, yet their attention layers ignore the column names, task descriptions, and auxiliary files that carry dataset semantics. Meanwhile, self-evolving machine learning engineering (MLE) agents read dataset metadata and write feature code, yet training gradient-boosted trees or neural networks from scratch on each candidate iteration is noisy: stochastic training variance masks small feature gains and drives validation overfitting. We introduce <strong>TabFM-Auto</strong>, which takes the best of both worlds by pairing a frozen 400M-parameter tabular foundation model, <code>TabFM</code>, with a language-model coding agent that iteratively evolves the surrounding data pipeline. Guided by dataset metadata and 3-fold cross-validation feedback on the training set, <strong>TabFM-Auto</strong> refines data cleaning, domain and structural feature engineering, multi-view context selection, and post-processing while keeping <code>TabFM</code>'s weights fixed. Across all 51 datasets of the TabArena benchmark, <strong>TabFM-Auto</strong> takes the <strong>#1 overall position at 2013.0 Elo</strong> (+227.7 Elo over plain <code>TabFM</code> and +344.6 Elo over 4-hour <code>AutoGluon 1.5 (extreme)</code>). Moreover, the discovered Python pipelines transfer without further search to other frozen tabular foundation models, boosting <code>TabICLv2</code>, <code>TabPFN-3</code>, and <code>EXAONE-Tabular</code> by <strong>+88.7 to +143.3 Elo</strong>.
     </p>
-  </section>
-
-  <section class="kpi-grid" aria-label="Key empirical results">
-    <div class="kpi-card">
-      <div class="kpi-num accent">2013.0 Elo</div>
-      <div class="kpi-title">#1 on TabArena (51 Datasets)</div>
-      <div class="kpi-desc">+227.7 Elo over plain TabFM (1785.3) and +344.6 Elo over 4h AutoGluon 1.5 (extreme).</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-num pos">+467.0 Elo</div>
-      <div class="kpi-title">Regression Leap (2512.9 Elo)</div>
-      <div class="kpi-desc">Improves over TabFM on all 13 regression datasets, reducing oracle improvability to 0.00%.</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-num">+143.3 Elo</div>
-      <div class="kpi-title">Zero-Shot Pipeline Transfer</div>
-      <div class="kpi-desc">Pipelines evolved for TabFM boost TabICLv2 (+143), TabPFN-3 (+131), and EXAONE-Tabular (+89) with no re-search.</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-num accent">#1 Overall</div>
-      <div class="kpi-title">MLE-Bench-Tabular (1827 Elo)</div>
-      <div class="kpi-desc">86.7% pairwise win rate (248 / 286 matches) across 12 external MLE agents; 3 Gold &amp; 1 Bronze Kaggle medals.</div>
-    </div>
   </section>
 
   <!-- ================= INTERACTIVE FIGURE 1: HEADLINE TABARENA OVERVIEW ================= -->
@@ -121,46 +90,57 @@
           <button type="button" class="seg-tab" data-f1-suite="regression">Regression (13)</button>
           <button type="button" class="seg-tab" data-f1-suite="classification">Classification (38)</button>
         </div>
-        <div class="seg-tabs" role="tablist" aria-label="Evaluation metric">
+        <div class="seg-tabs" id="f1-metric-tabs" role="tablist" aria-label="Evaluation metric">
           <button type="button" class="seg-tab is-active" data-f1-metric="elo">Elo &uarr;</button>
           <button type="button" class="seg-tab" data-f1-metric="wins">Wins &uarr;</button>
           <button type="button" class="seg-tab" data-f1-metric="improv">Improvability &darr;</button>
           <button type="button" class="seg-tab" data-f1-metric="gmean">G-Mean Error &darr;</button>
         </div>
+        <div class="seg-tabs" role="tablist" aria-label="Display mode">
+          <button type="button" class="seg-tab is-active" data-f1-mode="chart">Chart</button>
+          <button type="button" class="seg-tab" data-f1-mode="table">Table</button>
+        </div>
       </div>
     </div>
 
-    <div class="fig-svg-wrap" id="fig1-svg-wrap"></div>
+    <div id="fig1-chart-pane">
+      <div class="fig-svg-wrap" id="fig1-svg-wrap"></div>
 
-    <div class="fig-legend">
-      <span class="leg-item"><span class="leg-swatch sw-auto"></span><strong>TabFM-Auto</strong> (Evolved Pipeline + Frozen TabFM)</span>
-      <span class="leg-item"><span class="leg-swatch sw-tabfm"></span><strong>TabFM / TabFM+</strong> (Frozen Backbone)</span>
-      <span class="leg-item"><span class="leg-swatch sw-tfm"></span>Other Tabular Foundation Models</span>
-      <span class="leg-item"><span class="leg-swatch sw-automl"></span>AutoML Ensembles (4h)</span>
-      <span class="leg-item"><span class="leg-swatch sw-agent"></span>Unconstrained Coding Agent (GBDT/NN)</span>
-      <span class="leg-item"><span class="leg-swatch sw-base"></span>Tuned Baselines</span>
+      <div class="fig-legend">
+        <span class="leg-item"><span class="leg-swatch sw-auto"></span><strong>TabFM-Auto</strong> (Evolved Pipeline + Frozen TabFM)</span>
+        <span class="leg-item"><span class="leg-swatch sw-tabfm"></span><strong>TabFM / TabFM+</strong> (Frozen Backbone)</span>
+        <span class="leg-item"><span class="leg-swatch sw-tfm"></span>Other Tabular Foundation Models</span>
+        <span class="leg-item"><span class="leg-swatch sw-automl"></span>AutoML Ensembles (4h)</span>
+        <span class="leg-item"><span class="leg-swatch sw-agent"></span>Unconstrained Coding Agent (GBDT/NN)</span>
+        <span class="leg-item"><span class="leg-swatch sw-base"></span>Tuned Baselines</span>
+      </div>
+
+      <div class="fig-readout" id="fig1-readout"></div>
     </div>
 
-    <div class="fig-readout" id="fig1-readout"></div>
+    <div id="fig1-table-pane" class="is-hidden">
+      <div class="tbl-scroll">
+        <table class="bench-tbl" id="lb-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Method</th>
+              <th>Category</th>
+              <th>Bradley&ndash;Terry Elo &uarr;</th>
+              <th class="r">Dataset Wins &uarr;</th>
+              <th class="r">Improvability &darr;</th>
+              <th class="r">G-Mean Error &darr;</th>
+            </tr>
+          </thead>
+          <tbody id="lb-tbody"></tbody>
+        </table>
+      </div>
+    </div>
 
     <div class="fig-caption">
-      <strong>Figure 1: Interactive TabArena leaderboard across all 51 datasets (38 classification, 13 regression).</strong> Switch between task splits and evaluation metrics above, or hover/click any bar to inspect exact figures. Across all 51 datasets, <strong>TabFM-Auto</strong> reaches <strong>2013.0 Elo (+227.7 over plain TabFM)</strong>, outperforming 4-hour <code>AutoGluon 1.5 (extreme)</code> ensembles (1668.4 Elo) and every evaluated tabular foundation model. An unconstrained coding agent that trains and blends GBDTs and neural networks from scratch under the same budget reaches 1468.8 Elo.
+      <strong>Figure 1: Interactive TabArena leaderboard across all 51 datasets (38 classification, 13 regression).</strong> Switch between task splits, evaluation metrics, or the full table view above, and hover/click any bar to inspect exact figures. Across all 51 datasets, <strong>TabFM-Auto</strong> reaches <strong>2013.0 Elo (+227.7 over plain TabFM)</strong>, outperforming 4-hour <code>AutoGluon 1.5 (extreme)</code> ensembles (1668.4 Elo) and every evaluated tabular foundation model. An unconstrained coding agent that trains and blends GBDTs and neural networks from scratch under the same budget reaches 1468.8 Elo.
     </div>
   </section>
-
-  <nav class="toc" aria-label="Table of contents">
-    <div class="toc-title">Technical Report Contents</div>
-    <ol>
-      <li><a href="#intro">Introduction: Taking the Best of Both Worlds</a></li>
-      <li><a href="#method">Methodology: Closed-Loop Evolution Around Frozen TabFM</a></li>
-      <li><a href="#explorer">Interactive Pipeline Explorer (All 59 Evolved Pipelines)</a></li>
-      <li><a href="#tabarena">TabArena Evaluation Across 51 Datasets</a></li>
-      <li><a href="#taxonomy">Pipeline Taxonomy &amp; Validation-to-Test Dynamics</a></li>
-      <li><a href="#ablations">Controlled Ablations &amp; Zero-Shot Cross-Model Transfer</a></li>
-      <li><a href="#mlebench">Multi-File Autonomous Engineering on MLE-Bench-Tabular</a></li>
-      <li><a href="#citation">Discussion, Limitations &amp; Citation</a></li>
-    </ol>
-  </nav>
 
   <!-- ================= SECTION 1: INTRODUCTION ================= -->
   <h2 id="intro">1. Introduction: Taking the Best of Both Worlds</h2>
@@ -423,25 +403,25 @@ def engineer(X_train, y_train, X_test):
     Generic versions of all four stages already exist in <code>TabFM+</code>, which extends <code>TabFM</code> to normalize inputs and clip outliers (&Phi;<sub>clean</sub>), append pairwise feature crosses and SVD projections (&Phi;<sub>feat</sub>), ensemble predictions over multiple views with a configurable context size (<i>S</i><sub>ctx</sub>), and weight views by non-negative least squares (NNLS) before calibrating outputs (&Psi;<sub>post</sub>). <code>TABFM_KWARGS</code> exposes these generic presets as constructor settings of <i>f</i><sub>&theta;*</sub>. The coding agent can therefore cover standard numerical conditioning by setting dictionary flags and reserve the four Python functions for dataset-specific logic that generic presets cannot express &mdash; such as domain formulas, sentinel recoding, or minority-class context stratification. Separating <code>TABFM_KWARGS</code> from the four functions also allows us to transfer the evolved Python functions directly around other tabular foundation models (&sect;6).
   </p>
 
-  <!-- ================= SECTION 3: INTERACTIVE PIPELINE EXPLORER ================= -->
-  <h2 id="explorer">3. Interactive Pipeline Explorer (All 59 Evolved Pipelines)</h2>
+  <!-- ================= SECTION 3: INTERACTIVE TABARENA PIPELINE EXPLORER ================= -->
+  <h2 id="explorer">3. Interactive TabArena Pipeline Explorer (All 51 Datasets)</h2>
 
   <p>
-    What kind of pipelines does the agent actually write? Below is the self-contained <strong>TabFM-Auto Pipeline Explorer</strong> covering all <strong>59 evolved pipelines</strong> (all 51 TabArena datasets and all 8 MLE-Bench-Tabular competitions), defaulting to the <strong>Regression</strong> suite. Click any stage button (<code>preprocess()</code>, <code>engineer()</code>, <code>sample()</code>, <code>postprocess()</code>) to inspect both the hook and every helper function it calls, or switch to <strong>Write-up</strong> to read the technical documentation written for that dataset.
+    What kind of pipelines does the agent actually write? Below is the interactive <strong>TabArena Pipeline Explorer</strong> covering all <strong>51 evolved TabArena pipelines</strong> across Regression (13), Binary Classification (26), and Multiclass Classification (12), defaulting to the <strong>Regression</strong> suite. Click any stage button (<code>preprocess()</code>, <code>engineer()</code>, <code>sample()</code>, <code>postprocess()</code>) to inspect both the hook and every helper function it calls, or switch to <strong>Write-up</strong> to read the technical documentation for that dataset.
   </p>
 
   <div class="wide-bleed">
     <div class="explorer-frame-card">
       <div class="explorer-toolbar">
-        <div class="explorer-presets" role="group" aria-label="Featured pipelines">
-          <span class="preset-label">Featured pipelines:</span>
-          <button type="button" class="preset-btn is-active" data-hash="#mode=pipelines&suite=tabarena_regression&task=airfoil_self_noise&tab=code&hook=engineer">airfoil_self_noise &middot; engineer()</button>
-          <button type="button" class="preset-btn" data-hash="#mode=pipelines&suite=tabarena_regression&task=diamonds&tab=code&hook=engineer">diamonds &middot; engineer()</button>
-          <button type="button" class="preset-btn" data-hash="#mode=pipelines&suite=tabarena_regression&task=concrete_compressive_strength&tab=code&hook=engineer">concrete_strength &middot; engineer()</button>
-          <button type="button" class="preset-btn" data-hash="#mode=pipelines&suite=tabarena_binary&task=Amazon_employee_access&tab=code&hook=engineer">Amazon_employee &middot; engineer()</button>
-          <button type="button" class="preset-btn" data-hash="#mode=pipelines&suite=tabarena_multiclass&task=splice&tab=code&hook=engineer">splice &middot; engineer()</button>
-          <button type="button" class="preset-btn" data-hash="#mode=pipelines&suite=mlebench&task=predict-volcanic-eruptions-ingv-oe&tab=code">volcanic-eruptions (Gold)</button>
-          <button type="button" class="preset-btn" data-hash="#mode=tasks&suite=tabarena_regression">All 59 Tasks Table</button>
+        <div class="explorer-presets" role="group" aria-label="Featured TabArena pipelines">
+          <span class="preset-label">Featured datasets:</span>
+          <button type="button" class="preset-btn is-active" data-ta-hash="#mode=pipelines&suite=tabarena_regression&task=airfoil_self_noise&tab=code&hook=engineer">airfoil_self_noise &middot; engineer()</button>
+          <button type="button" class="preset-btn" data-ta-hash="#mode=pipelines&suite=tabarena_regression&task=diamonds&tab=code&hook=engineer">diamonds &middot; engineer()</button>
+          <button type="button" class="preset-btn" data-ta-hash="#mode=pipelines&suite=tabarena_regression&task=concrete_compressive_strength&tab=code&hook=engineer">concrete_strength &middot; engineer()</button>
+          <button type="button" class="preset-btn" data-ta-hash="#mode=pipelines&suite=tabarena_binary&task=Amazon_employee_access&tab=code&hook=engineer">Amazon_employee &middot; engineer()</button>
+          <button type="button" class="preset-btn" data-ta-hash="#mode=pipelines&suite=tabarena_multiclass&task=splice&tab=code&hook=engineer">splice &middot; engineer()</button>
+          <button type="button" class="preset-btn" data-ta-hash="#mode=pipelines&suite=tabarena_multiclass&task=website_phishing&tab=code&hook=sample">website_phishing &middot; sample()</button>
+          <button type="button" class="preset-btn" data-ta-hash="#mode=table&suite=all">All 51 Datasets Table</button>
         </div>
         <a class="explorer-open-link" id="open-current-explorer" href="explorer.html" target="_blank" rel="noopener">Open in full tab ↗</a>
       </div>
@@ -449,7 +429,7 @@ def engineer(X_train, y_train, X_test):
         id="explorer-iframe"
         class="explorer-iframe"
         src="explorer.html"
-        title="TabFM-Auto Interactive Pipeline Explorer"
+        title="TabFM-Auto TabArena Interactive Pipeline Explorer"
         loading="lazy"
       ></iframe>
     </div>
@@ -465,61 +445,30 @@ def engineer(X_train, y_train, X_test):
 
   <p>
     <strong>Main Results.</strong>
-    Across all 51 datasets (Figure 1 and Table 1), <strong>TabFM-Auto</strong> takes the <strong>#1 overall position at 2013.0 Elo</strong>, improving over plain <code>TabFM</code> (1785.3 Elo) by <strong>+227.7 Elo</strong> and outperforming 4-hour <code>AutoGluon 1.5 (extreme)</code> ensembles (1668.4 Elo) by <strong>+344.6 Elo</strong>. On the 38 classification datasets, <code>TabFM-Auto</code> raises <code>TabFM</code> by <strong>+197.6 Elo to 1966.3 Elo</strong>. On the 13 regression datasets, <code>TabFM-Auto</code> leaps by <strong>+467.0 Elo to 2512.9 Elo</strong>, improving over plain <code>TabFM</code> on all 13 datasets and driving oracle improvability down to <strong>0.00%</strong>. Regression gains are particularly large because expressing physical ratios in <code>engineer()</code> and linearizing skewed targets in <code>preprocess()</code> lets <code>TabFM</code> smoothly interpolate continuous functions that axis-aligned tree splits approximate only coarsely.
+    Across all 51 datasets (<a href="#fig-headline">Figure 1</a>; switch to <em>Table</em> view in Figure 1 for all exact columns), <strong>TabFM-Auto</strong> takes the <strong>#1 overall position at 2013.0 Elo</strong>, improving over plain <code>TabFM</code> (1785.3 Elo) by <strong>+227.7 Elo</strong> and outperforming 4-hour <code>AutoGluon 1.5 (extreme)</code> ensembles (1668.4 Elo) by <strong>+344.6 Elo</strong>. On the 38 classification datasets, <code>TabFM-Auto</code> raises <code>TabFM</code> by <strong>+197.6 Elo to 1966.3 Elo</strong>. On the 13 regression datasets, <code>TabFM-Auto</code> leaps by <strong>+467.0 Elo to 2512.9 Elo</strong>, improving over plain <code>TabFM</code> on all 13 datasets and driving oracle improvability down to <strong>0.00%</strong>. Regression gains are particularly large because expressing physical ratios in <code>engineer()</code> and linearizing skewed targets in <code>preprocess()</code> lets <code>TabFM</code> smoothly interpolate continuous functions that axis-aligned tree splits approximate only coarsely.
   </p>
-
-  <div class="data-card wide-card">
-    <div class="card-head">
-      <h3 class="card-title">Table 1: Official TabArena Leaderboard (All Evaluation Folds)</h3>
-      <div class="seg-tabs" role="tablist" aria-label="Leaderboard split">
-        <button type="button" class="seg-tab is-active" data-lb="overall">Overall (51 Datasets)</button>
-        <button type="button" class="seg-tab" data-lb="regression">Regression (13 Datasets)</button>
-        <button type="button" class="seg-tab" data-lb="classification">Classification (38 Datasets)</button>
-      </div>
-    </div>
-
-    <div class="tbl-scroll">
-      <table class="bench-tbl" id="lb-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Method</th>
-            <th>Category</th>
-            <th>Bradley&ndash;Terry Elo &uarr;</th>
-            <th class="r">Dataset Wins &uarr;</th>
-            <th class="r">Improvability &darr;</th>
-            <th class="r">G-Mean Error &darr;</th>
-          </tr>
-        </thead>
-        <tbody id="lb-tbody"></tbody>
-      </table>
-    </div>
-    <div class="fig-caption">
-      <strong>Table 1: TabArena leaderboard across all 51 datasets, 13 regression datasets, and 38 classification datasets.</strong> Each method is rated against the 66-method TabArena pool (anchored to default Random Forest = 1000 Elo). <em>Improvability</em> measures the mean relative error gap to the per-dataset oracle best model; <em>G-Mean Error</em> is the geometric mean test error across datasets.
-    </div>
-  </div>
 
   <!-- ================= SECTION 5: TAXONOMY & DYNAMICS ================= -->
   <h2 id="taxonomy">5. What Do Evolved Pipelines Learn? Taxonomy &amp; Search Dynamics</h2>
 
   <p>
-    To understand the algorithmic strategies discovered during search, we analyze the final evolved pipelines across all 51 TabArena datasets and group them into three categories (Table 2): (I) <strong>Domain-Knowledge Features</strong>, (II) <strong>Statistical &amp; Structural Feature Engineering</strong>, and (III) <strong>Context Selection &amp; Output Calibration</strong>.
+    To understand the algorithmic strategies discovered during search, we analyze the final evolved pipelines across all 51 TabArena datasets and group them into three categories (Table 1): (I) <strong>Domain-Knowledge Features</strong>, (II) <strong>Statistical &amp; Structural Feature Engineering</strong>, and (III) <strong>Context Selection &amp; Output Calibration</strong>.
   </p>
 
   <p>
-    The evolved pipelines modify the feature table in <strong>95.1% of runs</strong>, pairing feature engineering (&Phi;<sub>feat</sub>) with missing-value cleaning and reversible target transforms (&Phi;<sub>clean</sub>) on regression, and with minority-class context selection (<i>S</i><sub>ctx</sub>) and prior calibration (&Psi;<sub>post</sub>) on multiclass classification. On the 17 datasets whose column names or task descriptions identify physical, clinical, or economic quantities (Category I), the agent writes domain formulas directly from the schema &mdash; reducing official test error across all folds by <strong>7.3% to 8.2%</strong>. That is <strong>nearly three times</strong> the 2.3% to 3.0% error reduction on datasets with anonymized or generic schemas (Category II), where the agent relies on statistical transforms, frequency encodings, and bipartite graph degree features. Category I datasets account for <strong>6 of the 10 largest test error reductions</strong> across TabArena.
+    The evolved pipelines modify the feature table in <strong>95.1% of runs</strong>, pairing feature engineering (&Phi;<sub>feat</sub>) with missing-value cleaning and reversible target transforms (&Phi;<sub>clean</sub>) on regression, and with minority-class context selection (<i>S</i><sub>ctx</sub>) and prior calibration (&Psi;<sub>post</sub>) on multiclass classification. On the 17 datasets whose column names or task descriptions identify physical, clinical, or economic quantities (Category I), the agent writes domain formulas directly from the schema &mdash; achieving a mean test error reduction of <strong>7.3% to 8.2%</strong> across all folds. That is <strong>nearly three times</strong> the 2.3% to 3.0% error reduction on datasets with anonymized or generic schemas (Category II), where the agent relies on statistical transforms, frequency encodings, and bipartite graph degree features. Category I datasets account for <strong>6 of the 10 largest test error reductions</strong> across TabArena.
   </p>
 
   <div class="data-card wide-card">
     <div class="card-head">
-      <h3 class="card-title">Table 2: Taxonomy of Evolved TabArena Pipelines Across All 51 Datasets</h3>
+      <h3 class="card-title">Table 1: Taxonomy of Evolved TabArena Pipelines Across All 51 Datasets</h3>
     </div>
     <div class="tbl-scroll">
       <table class="bench-tbl">
         <thead>
           <tr>
             <th>Category</th>
-            <th>Representative Operations Synthesized in Code</th>
+            <th>Representative Operations (Click Dataset to Inspect)</th>
             <th class="r">Datasets</th>
             <th class="r">Mean &Delta; Error</th>
             <th class="r">Median &Delta; Error</th>
@@ -528,121 +477,31 @@ def engineer(X_train, y_train, X_test):
         <tbody>
           <tr class="highlight-row">
             <td><strong>I. Domain-Knowledge Features</strong></td>
-            <td>Aeroacoustic Strouhal &amp; Helmholtz numbers (<code>airfoil</code>), water-to-binder maturity laws (<code>concrete</code>), ICD-9 clinical hierarchies (<code>Diabetes130US</code>), SDSS rest-frame color indices (<code>SDSS17</code>), DNA splice motif log-likelihoods (<code>splice</code>)</td>
+            <td>Aeroacoustic Strouhal &amp; Helmholtz numbers (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_regression&task=airfoil_self_noise&tab=code&hook=engineer"><code>airfoil_self_noise</code></a>), water-to-binder maturity laws (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_regression&task=concrete_compressive_strength&tab=code&hook=engineer"><code>concrete_strength</code></a>), ICD-9 clinical hierarchies (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Diabetes130US&tab=code&hook=engineer"><code>Diabetes130US</code></a>), SDSS rest-frame color indices (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=SDSS17&tab=code&hook=engineer"><code>SDSS17</code></a>), DNA splice motif log-likelihoods (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=splice&tab=code&hook=engineer"><code>splice</code></a>)</td>
             <td class="r">17 / 51</td>
-            <td class="r"><span class="badge pos">&minus;7.3% to &minus;8.2%</span></td>
-            <td class="r">&minus;3.0%</td>
+            <td class="r"><span class="badge pos">7.3% to 8.2%</span></td>
+            <td class="r">3.0%</td>
           </tr>
           <tr>
             <td><strong>II. Statistical &amp; Structural FE</strong></td>
-            <td>Transductive bipartite entity-graph degrees &amp; pairwise co-occurrences (<code>Amazon_employee</code>), missingness-pattern signatures (<code>APSFailure</code>), collinearity pruning &amp; truncated SVD projections (<code>Bioresponse</code>)</td>
+            <td>Transductive bipartite entity-graph degrees &amp; pairwise co-occurrences (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Amazon_employee_access&tab=code&hook=engineer"><code>Amazon_employee</code></a>), missingness-pattern signatures (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=APSFailure&tab=code&hook=engineer"><code>APSFailure</code></a>), collinearity pruning &amp; truncated SVD projections (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Bioresponse&tab=code&hook=engineer"><code>Bioresponse</code></a>)</td>
             <td class="r">34 / 51</td>
-            <td class="r"><span class="badge pos">&minus;2.3% to &minus;3.0%</span></td>
-            <td class="r">&minus;1.7%</td>
+            <td class="r"><span class="badge pos">2.3% to 3.0%</span></td>
+            <td class="r">1.7%</td>
           </tr>
           <tr>
             <td><strong>III. Context &amp; Calibration</strong></td>
-            <td>Minority-class stratified multi-view context sampling in <code>sample()</code> and log-odds class-prior alignment in <code>postprocess()</code> (<code>website_phishing</code>)</td>
+            <td>Minority-class stratified multi-view context sampling in <code>sample()</code> and log-odds class-prior alignment in <code>postprocess()</code> (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=website_phishing&tab=code&hook=sample"><code>website_phishing</code></a>)</td>
             <td class="r">95% of runs</td>
-            <td class="r"><span class="badge neutral">&minus;7.6% to &minus;8.4% Log-Loss</span></td>
+            <td class="r"><span class="badge neutral">7.6% to 8.4% Log-Loss</span></td>
             <td class="r">&mdash;</td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="fig-caption">
-      <strong>Table 2: Pipeline taxonomy across the 51 TabArena datasets.</strong> When column headers expose domain semantics (Category I), explicit scientific and econometric formulas yield nearly 3&times; larger test error reductions than purely statistical transformations on anonymized tables (Category II).
+      <strong>Table 1: Pipeline taxonomy across the 51 TabArena datasets.</strong> When column headers expose domain semantics (Category I), explicit scientific and econometric formulas yield nearly 3&times; larger test error reductions than purely statistical transformations on anonymized tables (Category II). Click any dataset name above to jump straight to its implementation in the TabArena Pipeline Explorer.
     </div>
-  </div>
-
-  <div class="case-grid wide-card">
-    <article class="case-card">
-      <div class="case-head">
-        <div class="case-title">
-          <span class="badge pos">Category I &middot; Physics &amp; Aeroacoustics</span>
-          <code>airfoil_self_noise</code>
-          <span class="badge neutral">Test RMSE: 1.0712 &rarr; 0.9165 (&minus;14.4%)</span>
-        </div>
-        <a class="case-link" href="explorer.html#mode=pipelines&suite=tabarena_regression&task=airfoil_self_noise&tab=code&hook=engineer" target="_blank" rel="noopener">Inspect full pipeline &amp; helpers in Explorer ↗</a>
-      </div>
-      <div class="case-body">
-        <pre class="case-code"><code>def engineer(X_tr, y_tr, X_te):
-    for df in (X_tr, X_te):
-        f, u = df["frequency"], df["free-stream-velocity"]
-        c, d = df["chord-length"], df["suction-side-thickness"]
-        a = df["attack-angle"]
-        df["log_st_d"] = np.log(f * d / u)  # Strouhal St = f*d*/U
-        df["st_h"] = f * c * np.sin(np.radians(a)) / u
-        df["helmholtz"], df["d_over_c"] = f * c / 343.0, d / c
-    return X_tr, X_te</code></pre>
-        <div class="case-notes">
-          <div>
-            <p><strong>Aeroacoustic Scaling &amp; Operating-Point Interpolation.</strong> From the five NASA wind-tunnel column headers, the pipeline constructs dimensionless aeroacoustic groups: the displacement-thickness Strouhal number <i>St</i> = <i>f&delta;*</i>/<i>U</i><sub>&infin;</sub>, frontal Strouhal projection, Helmholtz acoustic compactness <i>He</i> = <i>fc</i>/<i>a</i><sub>0</sub>, and thickness-to-chord ratio.</p>
-            <p>In addition, its helper functions <code>_brackets()</code> and <code>_ecdf_grid()</code> identify the two brackets of the (<i>c</i>, <i>U</i><sub>&infin;</sub>, &alpha;) wind-tunnel grid surrounding each query point so <code>TabFM</code> can smoothly interpolate sound pressure levels across frequency sweeps.</p>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="case-card">
-      <div class="case-head">
-        <div class="case-title">
-          <span class="badge pos">Category II &middot; Transductive Relational Graph</span>
-          <code>Amazon_employee_access</code>
-          <span class="badge neutral">Test 1&minus;AUROC: 0.1416 &rarr; 0.1039 (&minus;26.6%)</span>
-        </div>
-        <a class="case-link" href="explorer.html#mode=pipelines&suite=tabarena_binary&task=Amazon_employee_access&tab=code&hook=engineer" target="_blank" rel="noopener">Inspect full pipeline in Explorer ↗</a>
-      </div>
-      <div class="case-body">
-        <pre class="case-code"><code>def engineer(X_tr, y_tr, X_te):
-    cols = [c for c in X_tr.columns if c != "row_id"]
-    all_df = pd.concat([X_tr[cols], X_te[cols]], axis=0)
-    for df in (X_tr, X_te):
-        for c in cols:  # 1. Marginal entity frequencies
-            df[f"{c}_cnt"] = df[c].map(all_df[c].value_counts())
-        for c1, c2 in PAIRS:  # 2. Pairwise co-occurrences
-            vc = all_df.groupby([c1, c2]).size()
-            df[f"{c1}_{c2}_cnt"] = df.set_index([c1, c2]).index.map(vc)
-        for s, t, nm in GROUP_MAPS:  # 3. Bipartite nunique degrees
-            df[f"{s}_{nm}"] = df[s].map(all_df.groupby(s)[t].nunique())
-    return X_tr, X_te</code></pre>
-        <div class="case-notes">
-          <div>
-            <p><strong>Turning Opaque Integer IDs into Bipartite Graph Topology.</strong> Raw columns are arbitrary integer IDs (<code>RESOURCE</code>, <code>MGR_ID</code>, <code>ROLE_DEPTNAME</code>) whose numerical magnitudes carry zero meaning to a TFM.</p>
-            <p>Without touching evaluation labels, <code>engineer()</code> pools unlabeled train and test inputs to compute marginal entity frequencies, pairwise role&ndash;resource co-occurrence counts, and bipartite cardinalities (e.g., how many distinct resources a manager oversees), paired with smoothed out-of-fold empirical Bayes target rates.</p>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="case-card">
-      <div class="case-head">
-        <div class="case-title">
-          <span class="badge pos">Category III &middot; Context Selection &amp; Prior Alignment</span>
-          <code>website_phishing</code>
-          <span class="badge neutral">Test Log-Loss: 0.2104 &rarr; 0.2024 (&minus;3.8%)</span>
-        </div>
-        <a class="case-link" href="explorer.html#mode=pipelines&suite=tabarena_multiclass&task=website_phishing&tab=code" target="_blank" rel="noopener">Inspect full pipeline in Explorer ↗</a>
-      </div>
-      <div class="case-body">
-        <pre class="case-code"><code>def sample(X_tr, y_tr, X_te, max_rows):
-    idx = np.arange(len(X_tr))
-    return [idx, np.r_[idx, np.flatnonzero(y_tr == "Suspicious")]]
-
-def postprocess(pred, y_tr, X_te):
-    p, cols = pred.to_numpy(), pred.columns
-    pi = y_tr.value_counts(normalize=True).reindex(cols).values
-    z = np.log(p) + np.log(pi / p.mean(0))
-    q = np.exp(z - z.max(1, keepdims=True))
-    return pd.DataFrame(q / q.sum(1, keepdims=True), columns=cols)</code></pre>
-        <div class="case-notes">
-          <div>
-            <p><strong>Minority-Class Context Ensembling &amp; Log-Odds Calibration.</strong> On imbalanced multiclass tables, rare classes (such as <code>Suspicious</code>) receive too few in-context examples and under-calibrated posterior probabilities.</p>
-            <p><code>sample()</code> pairs the natural training draw with an oversampled minority-class view, while <code>postprocess()</code> shifts log-odds so mean predicted probabilities match the empirical training class prior &pi;.</p>
-          </div>
-        </div>
-      </div>
-    </article>
   </div>
 
   <p>
@@ -793,14 +652,14 @@ def postprocess(pred, y_tr, X_te):
   <h2 id="mlebench">7. Multi-File Autonomous Engineering on MLE-Bench-Tabular</h2>
 
   <p>
-    We further evaluate <strong>TabFM-Auto</strong> on <strong>MLE-Bench-Tabular</strong>, the 8 tabular Kaggle competitions of <a href="https://arxiv.org/abs/2410.07095" target="_blank" rel="noopener">MLE-Bench</a>, comparing against 12 external autonomous MLE agents (including CAIR MARS+, CAIR MARS, MLEvolve, Famou-Agent 2.0, PiEvolve, ML-Master 2.0, AIBuildAI, Thesis, CAIR MLE-STAR-Pro, R&amp;D-Agent, AIDE, InternAgent, and AIRA-Dojo) that search over both feature engineering and custom model training (GBDTs, deep neural networks, and multi-stage ensembles).
+    We also evaluate <strong>TabFM-Auto</strong> on <a href="https://arxiv.org/abs/2410.07095" target="_blank" rel="noopener"><strong>MLE-Bench-Tabular</strong></a>, the 8-competition tabular suite comparing against 12 external autonomous MLE agents (including CAIR MARS+, CAIR MARS, MLEvolve, Famou-Agent 2.0, PiEvolve, ML-Master 2.0, AIBuildAI, Thesis, CAIR MLE-STAR-Pro, R&amp;D-Agent, AIDE, InternAgent, and AIRA-Dojo) that search over both feature engineering and custom model training (GBDTs, deep neural networks, and multi-stage ensembles).
   </p>
 
   <p>
-    In several competitions &mdash; such as <code>predict-volcanic-eruptions-ingv-oe</code> and <code>smartphone-decimeter-2022</code> &mdash; the main CSV contains only recording IDs while the predictive signal lives in thousands of auxiliary sensor waveforms, GNSS satellite logs, or 3D molecular geometry files. Plain <code>TabFM</code> cannot read these auxiliary files directly. Within <code>engineer()</code>, <strong>TabFM-Auto</strong> writes domain-specific signal-processing and geometric parsers (FFT spectral energy bands, STA/LTA seismic trigger ratios, Ewald-like reciprocal lattice unit-cell volumes, Karplus dihedral angles, and weighted least-squares GNSS positioning with Rauch&ndash;Tung&ndash;Striebel Kalman smoothing) and joins the extracted features into a clean tabular representation for <code>TabFM</code>.
+    In several <strong>MLE-Bench-Tabular</strong> competitions &mdash; such as <code>predict-volcanic-eruptions-ingv-oe</code> and <code>smartphone-decimeter-2022</code> &mdash; the main CSV contains only recording IDs while the predictive signal lives in thousands of auxiliary sensor waveforms, GNSS satellite logs, or 3D molecular geometry files. Plain <code>TabFM</code> cannot read these auxiliary files directly. Within <code>engineer()</code>, <strong>TabFM-Auto</strong> writes domain-specific signal-processing and geometric parsers (FFT spectral energy bands, STA/LTA seismic trigger ratios, reciprocal lattice unit-cell volumes, Karplus dihedral angles, and weighted least-squares GNSS positioning with Rauch&ndash;Tung&ndash;Striebel Kalman smoothing) and joins the extracted features into a clean tabular representation for <code>TabFM</code>.
   </p>
 
-  <!-- ================= INTERACTIVE FIGURE 5: MLE-BENCH ELO & 8-COMPETITION BREAKDOWN ================= -->
+  <!-- ================= INTERACTIVE FIGURE 5: MLE-BENCH-TABULAR ELO & 8-COMPETITION BREAKDOWN ================= -->
   <section class="fig-card wide-card" id="fig-mlebench" aria-label="Figure 5: MLE-Bench-Tabular Elo and Per-Competition Comparison">
     <div class="fig-top">
       <div class="fig-heading">
@@ -808,7 +667,7 @@ def postprocess(pred, y_tr, X_te):
         <h3 class="fig-title" id="f5-title">MLE-Bench-Tabular Overall Elo Leaderboard &amp; Head-to-Head Win Rates (13 Agents)</h3>
       </div>
       <div class="fig-controls">
-        <div class="seg-tabs" role="tablist" aria-label="MLE-Bench figure view">
+        <div class="seg-tabs" role="tablist" aria-label="MLE-Bench-Tabular figure view">
           <button type="button" class="seg-tab is-active" data-f5-view="elo">Overall Elo &amp; Head-to-Head Win Rates</button>
           <button type="button" class="seg-tab" data-f5-view="comps">Per-Competition Scores (All 8 Tasks)</button>
         </div>
@@ -824,105 +683,35 @@ def postprocess(pred, y_tr, X_te):
     </div>
 
     <div class="fig-caption">
-      <strong>Figure 5: MLE-Bench-Tabular overall Elo ranking, head-to-head win rates, and per-competition scores.</strong> Toggle between the aggregate Elo &amp; pairwise win-rate view and the 8-competition breakdown above. Across all graded pairwise matches against the 12 external MLE agents with complete 8-competition submissions, <strong>TabFM-Auto ranks #1 overall at 1827 Elo</strong>, winning <strong>86.7% (248 / 286)</strong> of all graded head-to-head matches (including 75%&ndash;88% against each of the top five external agents and 83%&ndash;100% against the rest).
+      <strong>Figure 5: MLE-Bench-Tabular overall Elo ranking, head-to-head win rates, and per-competition scores.</strong> Toggle between the aggregate Elo &amp; pairwise win-rate view and the 8-competition breakdown above. In the per-competition histograms, agents are ordered from best (top) to worst (bottom), bar length shows the competition metric directly (so shorter bars at the top indicate smaller errors on lower-is-better tasks), and the vertical gold dashed line marks the Kaggle Gold Medal threshold. Across all graded pairwise matches against the 12 external MLE agents with complete 8-competition submissions, <strong>TabFM-Auto ranks #1 overall at 1827 Elo</strong>, winning <strong>86.7% (248 / 286)</strong> of all graded head-to-head matches.
     </div>
   </section>
 
-  <div class="data-card wide-card">
-    <div class="card-head">
-      <h3 class="card-title">Table 3: MLE-Bench-Tabular Performance &amp; Synthesized Multi-File Features Across All 8 Competitions</h3>
-    </div>
-    <div class="tbl-scroll">
-      <table class="bench-tbl">
-        <thead>
-          <tr>
-            <th>Competition</th>
-            <th>Domain &amp; Modality</th>
-            <th>Metric</th>
-            <th class="r">Identity TabFM</th>
-            <th class="r">TabFM-Auto</th>
-            <th>Standing</th>
-            <th>Key Operations Synthesized in <code>pipeline.py</code></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="highlight-row">
-            <td><a href="explorer.html#mode=pipelines&suite=mlebench&task=predict-volcanic-eruptions-ingv-oe&tab=code" target="_blank" rel="noopener"><code>volcanic-eruptions</code> ↗</a></td>
-            <td>Geophysics (Waveforms)</td>
-            <td>MAE &darr;</td>
-            <td class="r">Fails (IDs)</td>
-            <td class="r"><strong>97,355</strong></td>
-            <td><span class="badge gold">Gold Medal</span></td>
-            <td>Multi-sensor seismic FFT spectral bands, STA/LTA ratios, sub-segment quantiles, Savitzky&ndash;Golay derivatives</td>
-          </tr>
-          <tr class="highlight-row">
-            <td><a href="explorer.html#mode=pipelines&suite=mlebench&task=nomad2018-predict-transparent-conductors&tab=code" target="_blank" rel="noopener"><code>nomad2018-conductors</code> ↗</a></td>
-            <td>Materials (3D Lattice)</td>
-            <td>RMSLE &darr;</td>
-            <td class="r">0.0574</td>
-            <td class="r"><strong>0.0444</strong></td>
-            <td><span class="badge gold">Gold Medal</span></td>
-            <td>3D crystal <code>geometry.xyz</code> parsing: reciprocal lattice volume, bond-length moments, Pauling electronegativity dispersion</td>
-          </tr>
-          <tr class="highlight-row">
-            <td><a href="explorer.html#mode=pipelines&suite=mlebench&task=tabular-playground-series-dec-2021&tab=code" target="_blank" rel="noopener"><code>tps-dec-2021</code> ↗</a></td>
-            <td>Cartography &amp; Hydrology</td>
-            <td>Accuracy &uarr;</td>
-            <td class="r">0.9612</td>
-            <td class="r"><strong>0.9626</strong></td>
-            <td><span class="badge gold">Gold Medal</span></td>
-            <td>Euclidean hydrology distance &radic;(<i>H</i><sup>2</sup>+<i>V</i><sup>2</sup>), circular aspect sin/cos decomposition, soil-type hierarchy</td>
-          </tr>
-          <tr>
-            <td><a href="explorer.html#mode=pipelines&suite=mlebench&task=tabular-playground-series-may-2022&tab=code" target="_blank" rel="noopener"><code>tps-may-2022</code> ↗</a></td>
-            <td>Manufacturing Telemetry</td>
-            <td>1&minus;AUROC &darr;</td>
-            <td class="r">0.0518</td>
-            <td class="r"><strong>0.0018</strong></td>
-            <td><span class="badge gold">Bronze Medal</span></td>
-            <td>Decomposing 10-character string <code>f_27</code> into positional ordinals, unique-character cardinality, and bigram transitions</td>
-          </tr>
-          <tr>
-            <td><a href="explorer.html#mode=pipelines&suite=mlebench&task=champs-scalar-coupling&tab=code" target="_blank" rel="noopener"><code>champs-coupling</code> ↗</a></td>
-            <td>Quantum Chem (3D NMR)</td>
-            <td>Log-MAE &darr;</td>
-            <td class="r">+1.1903</td>
-            <td class="r"><strong>&minus;1.5495</strong></td>
-            <td><span class="badge pos">Above Median</span></td>
-            <td>3D molecular <code>structures.xyz</code> parsing: inter-atomic <i>r</i><sub><i>ij</i></sub><sup>&minus;3</sup> dipolar decay and Karplus dihedral cos<sup>2</sup>&phi; angles</td>
-          </tr>
-          <tr>
-            <td><a href="explorer.html#mode=pipelines&suite=mlebench&task=ventilator-pressure-prediction&tab=code" target="_blank" rel="noopener"><code>ventilator-pressure</code> ↗</a></td>
-            <td>Respiratory Control</td>
-            <td>MAE &darr;</td>
-            <td class="r">3.7845</td>
-            <td class="r"><strong>0.3568</strong></td>
-            <td><span class="badge pos">&minus;90.6% MAE</span></td>
-            <td>Lung equation-of-motion integrals (&int;<i>u</i><sub>in</sub><i>dt</i>), compliant volume proxies, and breath-boundary lag/lead dynamics</td>
-          </tr>
-          <tr>
-            <td><a href="explorer.html#mode=pipelines&suite=mlebench&task=smartphone-decimeter-2022&tab=code" target="_blank" rel="noopener"><code>smartphone-decimeter</code> ↗</a></td>
-            <td>GNSS Navigation</td>
-            <td>Haversine &darr;</td>
-            <td class="r">Fails (IDs)</td>
-            <td class="r"><strong>4.328 m</strong></td>
-            <td><span class="badge pos">Above Median</span></td>
-            <td>Carrier-smoothed GNSS pseudorange WLS, Doppler velocity estimation, and forward&ndash;backward RTS Kalman smoother</td>
-          </tr>
-          <tr>
-            <td><a href="explorer.html#mode=pipelines&suite=mlebench&task=new-york-city-taxi-fare-prediction&tab=code" target="_blank" rel="noopener"><code>nyc-taxi-fare</code> ↗</a></td>
-            <td>Spatial Econometrics</td>
-            <td>RMSE &darr;</td>
-            <td class="r">4.5721</td>
-            <td class="r"><strong>3.9986</strong></td>
-            <td><span class="badge pos">&minus;12.5% RMSE</span></td>
-            <td>Geodesic Haversine distance, 29&deg;-rotated Manhattan street-grid L1 distance, and JFK/LGA/EWR airport corridor indicators</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="fig-caption">
-      <strong>Table 3: Official test scores on all 8 MLE-Bench-Tabular competitions.</strong> Raw tabular identity (<i>P</i><sub>0</sub>) fails on <code>volcanic-eruptions</code> and <code>smartphone-decimeter</code> because the main CSV contains only recording IDs; on step 2 the agent inspects the schema and synthesizes a multi-file feature extraction pipeline. Click any competition name to inspect its full Python code in the Explorer.
+  <!-- ================= DEDICATED MLE-BENCH-TABULAR PIPELINE EXPLORER ================= -->
+  <div class="wide-bleed" id="mlebench-explorer">
+    <div class="explorer-frame-card">
+      <div class="explorer-toolbar">
+        <div class="explorer-presets" role="group" aria-label="MLE-Bench-Tabular competitions">
+          <span class="preset-label">MLE-Bench-Tabular Explorer (8 Competitions):</span>
+          <button type="button" class="preset-btn is-active" data-mle-hash="#mode=pipelines&suite=mlebench&task=predict-volcanic-eruptions-ingv-oe&tab=code">volcanic-eruptions (Gold)</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=nomad2018-predict-transparent-conductors&tab=code">nomad2018 (Gold)</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=tabular-playground-series-dec-2021&tab=code">tps-dec-2021 (Gold)</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=tabular-playground-series-may-2022&tab=code">tps-may-2022 (Bronze)</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=smartphone-decimeter-2022&tab=code">smartphone-decimeter (#1)</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=champs-scalar-coupling&tab=code">champs-coupling</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=ventilator-pressure-prediction&tab=code">ventilator-pressure</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=pipelines&suite=mlebench&task=new-york-city-taxi-fare-prediction&tab=code">nyc-taxi-fare</button>
+          <button type="button" class="preset-btn" data-mle-hash="#mode=table&suite=mlebench">All 8 Competitions Table</button>
+        </div>
+        <a class="explorer-open-link" id="open-mlebench-explorer" href="mlebench_explorer.html" target="_blank" rel="noopener">Open in full tab ↗</a>
+      </div>
+      <iframe
+        id="mlebench-explorer-iframe"
+        class="explorer-iframe"
+        src="mlebench_explorer.html"
+        title="TabFM-Auto MLE-Bench-Tabular Interactive Pipeline Explorer"
+        loading="lazy"
+      ></iframe>
     </div>
   </div>
 
@@ -931,7 +720,7 @@ def postprocess(pred, y_tr, X_te):
 
   <p>
     <strong>Summary.</strong>
-    We showed how a language-model coding agent can evolve the data pipeline around a frozen tabular foundation model, combining language-model domain reasoning with fast forward-pass tabular inference to supply the semantics missing from synthetic pretraining. Across all 51 TabArena datasets, <strong>TabFM-Auto</strong> reaches 2013.0 Elo (#1 overall, +227.7 over plain <code>TabFM</code>), transfers zero-shot to other frozen tabular foundation models (+88.7 to +143.3 Elo), and ranks #1 overall on MLE-Bench-Tabular ahead of end-to-end MLE agents that train trees and neural networks from scratch.
+    We showed how a language-model coding agent can evolve the data pipeline around a frozen tabular foundation model, combining language-model domain reasoning with fast forward-pass tabular inference to supply the semantics missing from synthetic pretraining. Across all 51 TabArena datasets, <strong>TabFM-Auto</strong> reaches 2013.0 Elo (#1 overall, +227.7 over plain <code>TabFM</code>) and its discovered Python pipelines transfer zero-shot to other frozen tabular foundation models (+88.7 to +143.3 Elo).
   </p>
 
   <p>
@@ -950,7 +739,7 @@ def postprocess(pred, y_tr, X_te):
 
   <footer class="site-footer">
     <span>TabFM-Auto Technical Report &amp; Interactive Pipeline Explorer</span>
-    <span><a href="#top">Back to top &uarr;</a> &nbsp;&middot;&nbsp; <a href="explorer.html" target="_blank" rel="noopener">Standalone Explorer ↗</a></span>
+    <span><a href="#top">Back to top &uarr;</a> &nbsp;&middot;&nbsp; <a href="explorer.html" target="_blank" rel="noopener">TabArena Explorer ↗</a></span>
   </footer>
 
 </main>
@@ -973,11 +762,21 @@ def postprocess(pred, y_tr, X_te):
     return el;
   }
 
-  /* ===== 1. Theme toggle ===== */
+  /* ===== 1. Theme toggle (synced across parent page and both embedded Explorers) ===== */
+  const THEME_KEY = "tabfm_auto_theme_v1";
   const root = document.documentElement;
   const themeBtn = document.getElementById("theme-toggle");
   const SUN_SVG = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
   const MOON_SVG = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+
+  function syncIframeThemes(t) {
+    ["explorer-iframe", "mlebench-explorer-iframe"].forEach(function (id) {
+      const fr = document.getElementById(id);
+      if (fr && fr.contentDocument && fr.contentDocument.documentElement) {
+        fr.contentDocument.documentElement.setAttribute("data-theme", t);
+      }
+    });
+  }
 
   function applyTheme(t) {
     root.setAttribute("data-theme", t);
@@ -985,12 +784,13 @@ def postprocess(pred, y_tr, X_te):
       themeBtn.innerHTML = t === "dark" ? SUN_SVG : MOON_SVG;
       themeBtn.title = t === "dark" ? "Switch to light theme" : "Switch to dark theme";
     }
-    try { localStorage.setItem("tabfm_blog_theme", t); } catch (e) {}
+    try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+    syncIframeThemes(t);
   }
 
   let savedTheme = "light";
   try {
-    savedTheme = localStorage.getItem("tabfm_blog_theme") || "light";
+    savedTheme = localStorage.getItem(THEME_KEY) || "light";
   } catch (e) {}
   applyTheme(savedTheme);
 
@@ -1001,8 +801,19 @@ def postprocess(pred, y_tr, X_te):
       renderFig1();
       renderFig3();
       renderFig5Elo();
+      renderFig5Comps();
     });
   }
+
+  window.addEventListener("storage", function (e) {
+    if (e.key === THEME_KEY && (e.newValue === "light" || e.newValue === "dark")) {
+      applyTheme(e.newValue);
+      renderFig1();
+      renderFig3();
+      renderFig5Elo();
+      renderFig5Comps();
+    }
+  });
 
   /* ===== 2. Reading progress bar ===== */
   const progRect = document.getElementById("progress-rect");
@@ -1013,25 +824,54 @@ def postprocess(pred, y_tr, X_te):
     progRect.setAttribute("width", pct.toFixed(1));
   }, { passive: true });
 
-  /* ===== 3. Embedded Explorer preset buttons ===== */
-  const iframe = document.getElementById("explorer-iframe");
-  const openLink = document.getElementById("open-current-explorer");
-  const presetBtns = document.querySelectorAll(".preset-btn[data-hash]");
-  presetBtns.forEach(function (btn) {
+  /* ===== 3. Embedded Explorer preset buttons (TabArena & MLE-Bench-Tabular) ===== */
+  const taIframe = document.getElementById("explorer-iframe");
+  const taOpenLink = document.getElementById("open-current-explorer");
+  const taPresetBtns = document.querySelectorAll(".preset-btn[data-ta-hash]");
+
+  function jumpToTabArenaTask(hash) {
+    taPresetBtns.forEach(function (b) {
+      b.classList.toggle("is-active", b.getAttribute("data-ta-hash") === hash);
+    });
+    if (taIframe) taIframe.src = "explorer.html" + hash;
+    if (taOpenLink) taOpenLink.href = "explorer.html" + hash;
+  }
+
+  taPresetBtns.forEach(function (btn) {
     btn.addEventListener("click", function () {
-      presetBtns.forEach(function (b) { b.classList.remove("is-active"); });
-      btn.classList.add("is-active");
-      const hash = btn.getAttribute("data-hash") || "";
-      if (iframe) {
-        iframe.src = "explorer.html" + hash;
-      }
-      if (openLink) {
-        openLink.href = "explorer.html" + hash;
-      }
+      jumpToTabArenaTask(btn.getAttribute("data-ta-hash") || "");
     });
   });
 
-  /* ===== 4. TabArena Leaderboard Data (Figure 1 + Table 1) ===== */
+  document.querySelectorAll("[data-jump-ta]").forEach(function (link) {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      const hash = link.getAttribute("data-jump-ta") || "";
+      jumpToTabArenaTask(hash);
+      const sec = document.getElementById("explorer");
+      if (sec) sec.scrollIntoView({ behavior: "smooth" });
+    });
+  });
+
+  const mleIframe = document.getElementById("mlebench-explorer-iframe");
+  const mleOpenLink = document.getElementById("open-mlebench-explorer");
+  const mlePresetBtns = document.querySelectorAll(".preset-btn[data-mle-hash]");
+
+  function jumpToMleTask(hash) {
+    mlePresetBtns.forEach(function (b) {
+      b.classList.toggle("is-active", b.getAttribute("data-mle-hash") === hash);
+    });
+    if (mleIframe) mleIframe.src = "mlebench_explorer.html" + hash;
+    if (mleOpenLink) mleOpenLink.href = "mlebench_explorer.html" + hash;
+  }
+
+  mlePresetBtns.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      jumpToMleTask(btn.getAttribute("data-mle-hash") || "");
+    });
+  });
+
+  /* ===== 4. TabArena Leaderboard Data (Figure 1 Chart + Table) ===== */
   const LB_DATA = {
     overall: [
       { rank: 1, method: "TabFM-Auto", short: "TabFM-Auto", cat: "auto", catLabel: "TabFM-Auto", elo: 2013.0, delta: "+228", wins: 25.00, improv: 1.42, gmean: 0.3400, highlight: true },
@@ -1084,10 +924,11 @@ def postprocess(pred, y_tr, X_te):
   /* ===== Interactive Figure 1 Renderer ===== */
   let f1Suite = "overall";
   let f1Metric = "elo";
+  let f1Mode = "chart";
   let f1SelectedIdx = 0;
 
   function catColors(cat, isDark) {
-    if (cat === "auto") return { fill: isDark ? "#f97316" : "#d04418", soft: isDark ? "#7c2d12" : "#fde8e1", stroke: isDark ? "#fb923c" : "#b3340e" };
+    if (cat === "auto") return { fill: isDark ? "#f97316" : "#ea580c", soft: isDark ? "#431407" : "#ffedd5", stroke: isDark ? "#fb923c" : "#c2410c" };
     if (cat === "tabfm") return { fill: isDark ? "#3b82f6" : "#2563eb", soft: isDark ? "#1e3a8a" : "#dbeafe", stroke: isDark ? "#60a5fa" : "#1d4ed8" };
     if (cat === "tfm") return { fill: isDark ? "#818cf8" : "#6366f1", soft: isDark ? "#312e81" : "#e0e7ff", stroke: isDark ? "#a5b4fc" : "#4f46e5" };
     if (cat === "automl") return { fill: isDark ? "#f59e0b" : "#d97706", soft: isDark ? "#78350f" : "#fef3c7", stroke: isDark ? "#fbbf24" : "#b45309" };
@@ -1109,6 +950,34 @@ def postprocess(pred, y_tr, X_te):
       '</div>';
   }
 
+  function renderLeaderboardTable(split) {
+    const lbTbody = document.getElementById("lb-tbody");
+    if (!lbTbody) return;
+    const rows = LB_DATA[split] || LB_DATA.overall;
+    const maxElo = Math.max.apply(null, rows.map(function (r) { return r.elo; }));
+    const minElo = 1350;
+    lbTbody.innerHTML = rows.map(function (r) {
+      const pct = Math.max(6, Math.min(100, ((r.elo - minElo) / (maxElo - minElo)) * 100));
+      const gmeanFmt = split === "regression" ? r.gmean.toFixed(2) : r.gmean.toFixed(4);
+      return (
+        '<tr class="' + (r.highlight ? "highlight-row" : "") + '">' +
+          '<td>' + r.rank + '</td>' +
+          '<td>' + r.method + (r.delta ? ' <span class="badge pos">' + r.delta + ' vs. TabFM</span>' : '') + '</td>' +
+          '<td><span class="badge neutral">' + r.catLabel + '</span></td>' +
+          '<td>' +
+            '<div class="elo-bar-wrap">' +
+              '<svg class="elo-bar-track" viewBox="0 0 100 7" preserveAspectRatio="none"><rect class="elo-bar-fill" x="0" y="0" width="' + pct.toFixed(1) + '" height="7" rx="3.5"/></svg>' +
+              '<span><strong>' + r.elo.toFixed(1) + '</strong></span>' +
+            '</div>' +
+          '</td>' +
+          '<td class="r">' + r.wins.toFixed(2) + '</td>' +
+          '<td class="r">' + r.improv.toFixed(2) + '%</td>' +
+          '<td class="r">' + gmeanFmt + '</td>' +
+        '</tr>'
+      );
+    }).join("");
+  }
+
   function renderFig1() {
     const wrap = document.getElementById("fig1-svg-wrap");
     const titleEl = document.getElementById("fig1-title");
@@ -1122,6 +991,8 @@ def postprocess(pred, y_tr, X_te):
       else if (f1Suite === "regression") titleEl.textContent = "TabArena Regression Leaderboard Across All 13 Regression Datasets";
       else titleEl.textContent = "TabArena Classification Leaderboard Across All 38 Classification Datasets";
     }
+
+    renderLeaderboardTable(f1Suite);
 
     const W = 980, H = 320;
     const padL = 56, padR = 20, padT = 28, padB = 74;
@@ -1190,21 +1061,23 @@ def postprocess(pred, y_tr, X_te):
 
       const g = svgEl("g", { cursor: "pointer" });
 
-      // Main bar (soft fill + solid top cap for Elo delta on TabFM-Auto / TabFM+)
+      // Main bar: soft pastel lower body (both TabFM-Auto and TabFM+ use cols.soft for the base and cols.fill for the gain cap above TabFM!)
       g.appendChild(svgEl("rect", {
         x: bx, y: by, width: barW, height: bh, rx: 4,
-        fill: r.cat === "auto" ? cols.fill : cols.soft,
+        fill: cols.soft,
         stroke: cols.stroke,
         "stroke-width": idx === f1SelectedIdx ? 2.2 : 1.2
       }));
 
-      // If Elo mode and row has delta over TabFM, draw highlighted gain cap
+      // If Elo mode and row has delta over TabFM, draw highlighted gain cap in cols.fill (matching TabFM+ style)
       if (f1Metric === "elo" && r.delta && tabfmRow && r.elo > tabfmRow.elo) {
         const baseY = padT + plotH - ((tabfmRow.elo - yMin) / (yMax - yMin)) * plotH;
         const capH = Math.max(16, baseY - by);
         g.appendChild(svgEl("rect", {
           x: bx, y: by, width: barW, height: capH, rx: 4,
-          fill: cols.fill
+          fill: cols.fill,
+          stroke: cols.stroke,
+          "stroke-width": idx === f1SelectedIdx ? 2.2 : 1.2
         }));
         if (capH >= 18) {
           g.appendChild(svgEl("text", {
@@ -1277,42 +1150,23 @@ def postprocess(pred, y_tr, X_te):
     });
   });
 
-  /* ===== Table 1 Switcher ===== */
-  const lbTbody = document.getElementById("lb-tbody");
-  const lbTabs = document.querySelectorAll(".seg-tab[data-lb]");
-
-  function renderLeaderboard(split) {
-    if (!lbTbody) return;
-    const rows = LB_DATA[split] || LB_DATA.overall;
-    const maxElo = Math.max.apply(null, rows.map(function (r) { return r.elo; }));
-    const minElo = 1350;
-    lbTbody.innerHTML = rows.map(function (r) {
-      const pct = Math.max(6, Math.min(100, ((r.elo - minElo) / (maxElo - minElo)) * 100));
-      const gmeanFmt = split === "regression" ? r.gmean.toFixed(2) : r.gmean.toFixed(4);
-      return (
-        '<tr class="' + (r.highlight ? "highlight-row" : "") + '">' +
-          '<td>' + r.rank + '</td>' +
-          '<td>' + r.method + (r.delta ? ' <span class="badge pos">' + r.delta + ' vs. TabFM</span>' : '') + '</td>' +
-          '<td><span class="badge neutral">' + r.catLabel + '</span></td>' +
-          '<td>' +
-            '<div class="elo-bar-wrap">' +
-              '<svg class="elo-bar-track" viewBox="0 0 100 7" preserveAspectRatio="none"><rect class="elo-bar-fill" x="0" y="0" width="' + pct.toFixed(1) + '" height="7" rx="3.5"/></svg>' +
-              '<span><strong>' + r.elo.toFixed(1) + '</strong></span>' +
-            '</div>' +
-          '</td>' +
-          '<td class="r">' + r.wins.toFixed(2) + '</td>' +
-          '<td class="r">' + r.improv.toFixed(2) + '%</td>' +
-          '<td class="r">' + gmeanFmt + '</td>' +
-        '</tr>'
-      );
-    }).join("");
-  }
-
-  lbTabs.forEach(function (tab) {
-    tab.addEventListener("click", function () {
-      lbTabs.forEach(function (t) { t.classList.remove("is-active"); });
-      tab.classList.add("is-active");
-      renderLeaderboard(tab.getAttribute("data-lb"));
+  document.querySelectorAll("[data-f1-mode]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll("[data-f1-mode]").forEach(function (b) { b.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      f1Mode = btn.getAttribute("data-f1-mode") || "chart";
+      const chartPane = document.getElementById("fig1-chart-pane");
+      const tablePane = document.getElementById("fig1-table-pane");
+      const metricTabs = document.getElementById("f1-metric-tabs");
+      if (f1Mode === "table") {
+        if (chartPane) chartPane.classList.add("is-hidden");
+        if (tablePane) tablePane.classList.remove("is-hidden");
+        if (metricTabs) metricTabs.classList.add("is-hidden");
+      } else {
+        if (chartPane) chartPane.classList.remove("is-hidden");
+        if (tablePane) tablePane.classList.add("is-hidden");
+        if (metricTabs) metricTabs.classList.remove("is-hidden");
+      }
     });
   });
 
@@ -1332,7 +1186,7 @@ def postprocess(pred, y_tr, X_te):
     },
     sample: {
       title: "Stage 3: sample(X_train, y_train, X_test, max_rows) — Multi-View Context Selection (S_ctx)",
-      stat: "Up to -8.39% Multiclass G-Mean Log-Loss when paired with postprocess()",
+      stat: "Up to 8.39% Multiclass G-Mean Log-Loss reduction when paired with postprocess()",
       text: "<p><strong>What limitation of frozen TabFM it solves:</strong> Because <code>TabFM</code> is pretrained on bounded context windows (up to 16,384 rows), uniform subsampling on large or imbalanced tables drops rare classes and loses tail coverage.</p><p><strong>What the agent synthesizes:</strong> Returns a list of index arrays defining multiple context views — stratifying by class, oversampling rare classes (e.g., 2&times; <code>Suspicious</code> rows on <code>website_phishing</code>), or partitioning large tables into complementary regime-matched neighborhoods whose predictions are ensembled across views.</p>",
       code: "# Identity baseline P0:\ndef sample(X_train, y_train, X_test, max_rows):\n    return [np.arange(len(X_train))]\n\n# Evolved P* on website_phishing (oversampled minority-class view):\ndef sample(X_train, y_train, X_test, max_rows):\n    idx = np.arange(len(X_train))\n    rare = np.flatnonzero(y_train == \"Suspicious\")\n    return [idx, np.r_[idx, rare]]"
     },
@@ -1459,7 +1313,7 @@ def postprocess(pred, y_tr, X_te):
   function renderFig3() {
     const isDark = root.getAttribute("data-theme") === "dark";
     drawDynPanel("f3-svg-cv", DYN_DATA.cv, 0, 9.0, function (v) { return "+" + v.toFixed(1) + "%"; }, null, isDark);
-    drawDynPanel("f3-svg-test", DYN_DATA.te, 0, 4.5, function (v) { return "-" + v.toFixed(1) + "%"; }, null, isDark);
+    drawDynPanel("f3-svg-test", DYN_DATA.te, 0, 4.5, function (v) { return v.toFixed(1) + "%"; }, null, isDark);
     drawDynPanel("f3-svg-elo", DYN_DATA.elo, 1760, 2020, function (v) { return v.toFixed(0); }, [
       { val: 1856.0, label: "TabFM+ (1856)", col: isDark ? "#60a5fa" : "#2563eb" },
       { val: 1785.3, label: "TabFM (1785)", col: isDark ? "#94a3b8" : "#64748b" }
@@ -1479,7 +1333,7 @@ def postprocess(pred, y_tr, X_te):
         '</div>' +
         '<div class="fig-readout-metrics">' +
         '<span>3-Fold CV Gain: <strong>+' + cv.toFixed(2) + '%</strong></span>' +
-        '<span>All-Folds Test Error Reduction: <strong>&minus;' + te.toFixed(2) + '%</strong></span>' +
+        '<span>All-Folds Test Error Reduction: <strong>' + te.toFixed(2) + '%</strong></span>' +
         '<span>All-Folds TabArena Elo: <strong>' + el.toFixed(1) + '</strong> (+' + (el - 1784.0).toFixed(1) + ')</span>' +
         '</div>';
     }
@@ -1550,7 +1404,7 @@ def postprocess(pred, y_tr, X_te):
     });
   });
 
-  /* ===== 8. Interactive Figure 5: MLE-Bench Elo & Per-Competition Grid ===== */
+  /* ===== 8. Interactive Figure 5: MLE-Bench-Tabular Elo & Per-Competition Histograms ===== */
   const MLE_ELO = [
     { agent: "TabFM-Auto", elo: 1827, winVsOurs: "—", matches: "248 / 286 (86.7% total win rate)", ours: true },
     { agent: "CAIR MARS+", elo: 1717, winVsOurs: "75.0%", matches: "18 / 24 matches won by TabFM-Auto" },
@@ -1571,9 +1425,10 @@ def postprocess(pred, y_tr, X_te):
     {
       id: "nomad2018-predict-transparent-conductors",
       short: "nomad2018",
-      metric: "RMSLE ↓",
+      metric: "RMSLE ↓ (Lower better)",
       better: "lower",
       gold: "0.0559",
+      goldVal: 0.0559,
       standing: "GOLD MEDAL",
       rows: [
         { a: "TabFM-Auto", v: 0.0444, s: "0.0444", ours: true },
@@ -1587,9 +1442,10 @@ def postprocess(pred, y_tr, X_te):
     {
       id: "predict-volcanic-eruptions-ingv-oe",
       short: "volcanic-eruptions",
-      metric: "MAE ↓",
+      metric: "MAE ↓ (Lower better)",
       better: "lower",
-      gold: "3,971,366",
+      gold: "3.97M",
+      goldVal: 3971366,
       standing: "GOLD MEDAL",
       rows: [
         { a: "TabFM-Auto", v: 97355, s: "97,355", ours: true },
@@ -1603,9 +1459,10 @@ def postprocess(pred, y_tr, X_te):
     {
       id: "tabular-playground-series-dec-2021",
       short: "tps-dec-2021",
-      metric: "Accuracy ↑",
+      metric: "Accuracy ↑ (Higher better)",
       better: "higher",
       gold: "0.9566",
+      goldVal: 0.9566,
       standing: "GOLD MEDAL",
       rows: [
         { a: "PiEvolve 24h", v: 0.96344, s: "0.9634" },
@@ -1619,9 +1476,10 @@ def postprocess(pred, y_tr, X_te):
     {
       id: "tabular-playground-series-may-2022",
       short: "tps-may-2022",
-      metric: "AUROC ↑",
+      metric: "AUROC ↑ (Higher better)",
       better: "higher",
       gold: "0.99823",
+      goldVal: 0.99823,
       standing: "BRONZE MEDAL",
       rows: [
         { a: "TabFM-Auto", v: 0.99821, s: "0.9982", ours: true },
@@ -1634,10 +1492,11 @@ def postprocess(pred, y_tr, X_te):
     {
       id: "ventilator-pressure-prediction",
       short: "ventilator-pressure",
-      metric: "MAE ↓",
+      metric: "MAE ↓ (Lower better)",
       better: "lower",
       gold: "0.1119",
-      standing: "-90.6% vs. P0",
+      goldVal: 0.1119,
+      standing: "90.6% MAE RED.",
       rows: [
         { a: "MLEvolve", v: 0.1538, s: "0.1538" },
         { a: "CAIR MARS+", v: 0.2097, s: "0.2097" },
@@ -1649,9 +1508,10 @@ def postprocess(pred, y_tr, X_te):
     {
       id: "smartphone-decimeter-2022",
       short: "smartphone-decimeter",
-      metric: "Haversine (m) ↓",
+      metric: "Haversine ↓ (Lower better)",
       better: "lower",
       gold: "1.768 m",
+      goldVal: 1.768,
       standing: "RANK #1 AGENT",
       rows: [
         { a: "TabFM-Auto", v: 4.328, s: "4.328m", ours: true },
@@ -1664,10 +1524,11 @@ def postprocess(pred, y_tr, X_te):
     {
       id: "new-york-city-taxi-fare-prediction",
       short: "nyc-taxi-fare",
-      metric: "RMSE ↓",
+      metric: "RMSE ↓ (Lower better)",
       better: "lower",
       gold: "2.834",
-      standing: "-12.5% vs. P0",
+      goldVal: 2.834,
+      standing: "12.5% RMSE RED.",
       rows: [
         { a: "Famou-Agent 2.0", v: 3.972, s: "3.972" },
         { a: "TabFM-Auto", v: 3.999, s: "3.999", ours: true },
@@ -1680,9 +1541,10 @@ def postprocess(pred, y_tr, X_te):
     {
       id: "champs-scalar-coupling",
       short: "champs-coupling",
-      metric: "Log-MAE ↓",
+      metric: "Log-MAE ↓ (Lower better)",
       better: "lower",
       gold: "-2.875",
+      goldVal: -2.875,
       standing: "ABOVE MEDIAN",
       rows: [
         { a: "AIBuildAI", v: -1.922, s: "-1.922" },
@@ -1776,19 +1638,45 @@ def postprocess(pred, y_tr, X_te):
   function renderFig5Comps() {
     const grid = document.getElementById("f5-comp-grid");
     if (!grid) return;
+    const isDark = root.getAttribute("data-theme") === "dark";
+    const goldCol = isDark ? "#fbbf24" : "#b45309";
     grid.innerHTML = MLE_COMPS.map(function (c) {
       const vals = c.rows.map(function (r) { return r.v; });
-      const mn = Math.min.apply(null, vals);
-      const mx = Math.max.apply(null, vals);
-      const span = (mx - mn) || 1;
+      const allV = vals.concat(c.goldVal != null ? [c.goldVal] : []);
+      const loAll = Math.min.apply(null, allV);
+      const hiAll = Math.max.apply(null, allV);
+
+      // Direct metric histogram (lower-is-better has shorter bars for smaller errors at the top, matching paper Figure 7)
+      let xLo = 0, xHi = hiAll * 1.08;
+      if (loAll < 0) {
+        // Log-MAE (can be negative, e.g., -2.875 to +1.428): shift origin to just below loAll so -1.92 has a shorter bar than +1.43
+        const span = hiAll - loAll;
+        xLo = loAll - span * 0.15;
+        xHi = hiAll + span * 0.08;
+      } else if (loAll > 0 && (hiAll - loAll) / Math.abs(hiAll) < 0.25) {
+        // Tightly clustered positive metrics (e.g., tps-dec-2021 Accuracy, tps-may-2022 AUROC, nomad2018 RMSLE)
+        const rng = (hiAll - loAll) || Math.abs(hiAll) * 0.02;
+        xLo = Math.max(0, loAll - rng * 0.22);
+        xHi = hiAll + rng * 0.12;
+      } else {
+        xLo = 0;
+        xHi = hiAll * 1.06;
+      }
+      const denom = (xHi - xLo) || 1;
+      const goldX = c.goldVal != null ? Math.max(2, Math.min(98, ((c.goldVal - xLo) / denom) * 100)) : null;
+
       const barsHtml = c.rows.map(function (r) {
-        // Longer bar = better performance
-        const norm = c.better === "lower" ? (mx - r.v) / span : (r.v - mn) / span;
-        const w = 22 + norm * 78;
+        const w = Math.max(4, Math.min(98, ((r.v - xLo) / denom) * 100));
+        const goldLineSvg = goldX != null
+          ? '<line x1="' + goldX.toFixed(1) + '" y1="-1" x2="' + goldX.toFixed(1) + '" y2="10" stroke="' + goldCol + '" stroke-width="1.8" stroke-dasharray="2,1.5"/>'
+          : '';
         return (
           '<div class="mle-bar-row' + (r.ours ? ' is-ours' : '') + '">' +
             '<span class="mle-bar-label">' + r.a + '</span>' +
-            '<svg class="mle-bar-track" viewBox="0 0 100 7" preserveAspectRatio="none"><rect class="mle-bar-fill" x="0" y="0" width="' + w.toFixed(1) + '" height="7" rx="3.5"/></svg>' +
+            '<svg class="mle-bar-track" viewBox="0 0 100 9" preserveAspectRatio="none">' +
+              '<rect class="mle-bar-fill" x="0" y="1" width="' + w.toFixed(1) + '" height="7" rx="2.5"/>' +
+              goldLineSvg +
+            '</svg>' +
             '<span class="mle-bar-val">' + r.s + '</span>' +
           '</div>'
         );
@@ -1797,18 +1685,27 @@ def postprocess(pred, y_tr, X_te):
         '<div class="mle-comp-card">' +
           '<div>' +
             '<div class="mle-comp-head">' +
-              '<a class="mle-comp-name" href="explorer.html#mode=pipelines&suite=mlebench&task=' + c.id + '&tab=code" target="_blank" rel="noopener">' + c.short + ' ↗</a>' +
+              '<a class="mle-comp-name" href="#mlebench-explorer" data-jump-mle="#mode=pipelines&suite=mlebench&task=' + c.id + '&tab=code">' + c.short + ' ↓</a>' +
               '<span class="mle-comp-metric">' + c.metric + '</span>' +
             '</div>' +
             '<div class="mle-bars">' + barsHtml + '</div>' +
           '</div>' +
           '<div class="mle-comp-foot">' +
-            '<span>Gold Thr: ' + c.gold + '</span>' +
+            '<span>Gold Line: ' + c.gold + '</span>' +
             '<strong>' + c.standing + '</strong>' +
           '</div>' +
         '</div>'
       );
     }).join("");
+
+    grid.querySelectorAll("[data-jump-mle]").forEach(function (link) {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        jumpToMleTask(link.getAttribute("data-jump-mle") || "");
+        const el = document.getElementById("mlebench-explorer");
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      });
+    });
   }
 
   document.querySelectorAll("[data-f5-view]").forEach(function (btn) {
@@ -1848,7 +1745,6 @@ def postprocess(pred, y_tr, X_te):
 
   /* ===== Initial Render ===== */
   renderFig1();
-  renderLeaderboard("overall");
   renderFig3();
   renderFig4();
   renderFig5Elo();
