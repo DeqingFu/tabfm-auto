@@ -38,7 +38,7 @@
 <main class="container">
 
   <header class="hero">
-    <div class="venue-kicker">Technical Report &amp; Interactive Artifact</div>
+    <div class="venue-kicker">Technical Report</div>
     <h1 class="paper-title">TabFM-Auto: Self-Evolving Pipelines for Tabular Foundation Models</h1>
     <p class="paper-subtitle">
       Taking the best of both worlds: pairing a language-model coding agent's domain reasoning with a frozen 400M-parameter <code>TabFM</code> backbone's zero-shot numerical prior reaches <strong>2013.0 Elo (#1)</strong> across all 51 TabArena datasets and transfers zero-shot across frozen tabular foundation models.
@@ -77,11 +77,11 @@
     </p>
   </section>
 
-  <!-- ================= INTERACTIVE FIGURE 1: HEADLINE TABARENA OVERVIEW ================= -->
-  <section class="fig-card wide-card" id="fig-headline" aria-label="Figure 1: Interactive TabArena Leaderboard Overview">
+  <!-- ================= FIGURE 1: HEADLINE TABARENA OVERVIEW ================= -->
+  <section class="fig-card wide-card" id="fig-headline" aria-label="Figure 1: TabArena Leaderboard Overview">
     <div class="fig-top">
       <div class="fig-heading">
-        <span class="fig-kicker">Interactive Figure 1 &middot; Benchmark Overview</span>
+        <span class="fig-kicker">Figure 1 &middot; Benchmark Overview</span>
         <h3 class="fig-title" id="fig1-title">Overall TabArena Leaderboard Across All 51 Datasets (38 Classification, 13 Regression)</h3>
       </div>
       <div class="fig-controls">
@@ -138,7 +138,7 @@
     </div>
 
     <div class="fig-caption">
-      <strong>Figure 1: Interactive TabArena leaderboard across all 51 datasets (38 classification, 13 regression).</strong> Switch between task splits, evaluation metrics, or the full table view above, and hover/click any bar to inspect exact figures. Across all 51 datasets, <strong>TabFM-Auto</strong> reaches <strong>2013.0 Elo (+227.7 over plain TabFM)</strong>, outperforming 4-hour <code>AutoGluon 1.5 (extreme)</code> ensembles (1668.4 Elo) and every evaluated tabular foundation model. An unconstrained coding agent (<code>Antigravity + Gemini 3.8 Flash</code>) that trains and blends GBDTs and neural networks from scratch under the same budget reaches 1468.8 Elo.
+      <strong>Figure 1: TabArena leaderboard across all 51 datasets (38 classification, 13 regression).</strong> Switch between task splits, evaluation metrics, or the full table view above, and hover/click any bar to inspect exact figures. Across all 51 datasets, <strong>TabFM-Auto</strong> reaches <strong>2013.0 Elo (+227.7 over plain TabFM)</strong>, outperforming 4-hour <code>AutoGluon 1.5 (extreme)</code> ensembles (1668.4 Elo) and every evaluated tabular foundation model. An unconstrained coding agent (<code>Antigravity + Gemini 3.8 Flash</code>) that trains and blends GBDTs and neural networks from scratch under the same budget reaches 1468.8 Elo.
     </div>
   </section>
 
@@ -241,22 +241,12 @@
     Throughout search, &theta;* stays fixed. Passing unlabeled inputs <i>X</i><sub>val</sub> (or <i>X</i><sub>test</sub> at evaluation time) alongside the training split while withholding evaluation labels lets the pipeline compute both <em>inductive</em> transformations fitted on training rows and <em>label-free transductive</em> features (such as entity frequency and bipartite graph degrees across combined train and test inputs).
   </p>
 
-  <!-- ================= INTERACTIVE FIGURE 2: ARCHITECTURE & DATAFLOW OVERVIEW ================= -->
-  <section class="fig-card wide-card" id="fig-overview" aria-label="Figure 2: Interactive Overview of TabFM-Auto">
+  <!-- ================= FIGURE 2: ARCHITECTURE & DATAFLOW OVERVIEW ================= -->
+  <section class="fig-card wide-card" id="fig-overview" aria-label="Figure 2: Overview of TabFM-Auto">
     <div class="fig-top">
       <div class="fig-heading">
-        <span class="fig-kicker">Interactive Figure 2 &middot; System Architecture &amp; Dataflow</span>
+        <span class="fig-kicker">Figure 2 &middot; System Architecture &amp; Dataflow</span>
         <h3 class="fig-title">Overview of TabFM-Auto: Closed-Loop Pipeline Search &amp; Test-Time Dataflow</h3>
-      </div>
-      <div class="fig-controls">
-        <span class="preset-label">Inspect Stage:</span>
-        <div class="seg-tabs" role="tablist" aria-label="Pipeline stage selector">
-          <button type="button" class="seg-tab" data-f2-stage="preprocess">1. preprocess()</button>
-          <button type="button" class="seg-tab is-active" data-f2-stage="engineer">2. engineer()</button>
-          <button type="button" class="seg-tab" data-f2-stage="sample">3. sample()</button>
-          <button type="button" class="seg-tab" data-f2-stage="kwargs">4. TABFM_KWARGS</button>
-          <button type="button" class="seg-tab" data-f2-stage="postprocess">5. postprocess()</button>
-        </div>
       </div>
     </div>
 
@@ -269,65 +259,32 @@
         </div>
         <div class="arch-loop-grid">
           <div class="arch-actor">
-            <div>
-              <div class="arch-actor-title">
-                <span>LLM Coding Agent</span>
-                <span class="badge neutral"><span>Metadata <i>M</i> + Logs</span></span>
-              </div>
-              <div class="arch-actor-body">
-                Reads column names, units, class balance, and auxiliary schemas; proposes targeted edits to <code>pipeline.py</code> and retains candidates that improve 3-fold CV score <i>U</i><sub>val</sub>.
-              </div>
+            <div class="arch-actor-title">
+              <span>1. LLM Coding Agent</span>
+              <span class="badge neutral">Metadata <i>M</i> + Logs</span>
             </div>
-            <div class="arch-mini-code">
-              # Iterative diff patch on pipeline.py<br>
-              + df["log_st_d"] = np.log(f * d / u)<br>
-              + df["st_h"] = f * c * np.sin(rad_a) / u
+            <div class="arch-actor-body">
+              Reads column names, units, class balance, and auxiliary schemas; proposes targeted edits to <code>pipeline.py</code> and retains candidates that improve 3-fold CV score <i>U</i><sub>val</sub>.
             </div>
           </div>
 
           <div class="arch-actor">
             <div class="arch-actor-title">
-              <span>Candidate Pipeline <i>P</i> (<code>pipeline.py</code>)</span>
-              <span class="badge pos">Click any stage</span>
+              <span>2. Candidate Pipeline <i>P</i></span>
+              <span class="badge pos"><code>pipeline.py</code></span>
             </div>
-            <div class="stage-pill-list">
-              <button type="button" class="stage-pill-btn" data-f2-stage="preprocess">
-                <span class="stage-pill-fn">1. preprocess(X_tr, y_tr, X_te)</span>
-                <span class="stage-pill-role">Outlier Filter &amp; <i>y</i> Map (&Phi;<sub>clean</sub>)</span>
-              </button>
-              <button type="button" class="stage-pill-btn is-active" data-f2-stage="engineer">
-                <span class="stage-pill-fn">2. engineer(X_tr, y_tr, X_te)</span>
-                <span class="stage-pill-role">Domain &amp; Graph FE (&Phi;<sub>feat</sub>)</span>
-              </button>
-              <button type="button" class="stage-pill-btn" data-f2-stage="sample">
-                <span class="stage-pill-fn">3. sample(X_tr, y_tr, X_te, max_rows)</span>
-                <span class="stage-pill-role">Multi-View Context (<i>S</i><sub>ctx</sub>)</span>
-              </button>
-              <button type="button" class="stage-pill-btn" data-f2-stage="kwargs">
-                <span class="stage-pill-fn">4. TABFM_KWARGS</span>
-                <span class="stage-pill-role">Norms, SVD, Cross, NNLS</span>
-              </button>
-              <button type="button" class="stage-pill-btn" data-f2-stage="postprocess">
-                <span class="stage-pill-fn">5. postprocess(pred, y_tr, X_te)</span>
-                <span class="stage-pill-role">Calibrate &amp; Inv-Map (&Psi;<sub>post</sub>)</span>
-              </button>
+            <div class="arch-actor-body">
+              Expresses dataset-specific transformations across four modular Python hooks (<code>preprocess</code>, <code>engineer</code>, <code>sample</code>, <code>postprocess</code>) plus declarative <code>TABFM_KWARGS</code> presets.
             </div>
           </div>
 
           <div class="arch-actor">
-            <div>
-              <div class="arch-actor-title">
-                <span>Sandboxed 3-Fold Judge</span>
-                <span class="badge neutral">Frozen &theta;* (400M)</span>
-              </div>
-              <div class="arch-actor-body">
-                Evaluates <i>P</i> across 3 internal folds of <i>D</i><sub>train</sub> using a single forward-pass ICL call per fold/view around frozen <code>TabFM</code>. Held-out test splits are never mounted during search.
-              </div>
+            <div class="arch-actor-title">
+              <span>3. Sandboxed 3-Fold Judge</span>
+              <span class="badge neutral">Frozen &theta;* (400M)</span>
             </div>
-            <div class="arch-mini-code">
-              [Split 1..3] TabFM(400M) Forward Pass<br>
-              Zero Gradient Updates &rarr; 3-Fold CV Score<br>
-              Freeze P* &rarr; Evaluate once on X_test
+            <div class="arch-actor-body">
+              Evaluates <i>P</i> across 3 internal folds of <i>D</i><sub>train</sub> using a single forward-pass ICL call per fold/view around frozen <code>TabFM</code>, then freezes the best pipeline <i>P*</i> for test evaluation.
             </div>
           </div>
         </div>
@@ -336,32 +293,32 @@
       <!-- Panel (b) -->
       <div class="arch-panel-box">
         <div class="arch-panel-head">
-          <span class="arch-panel-label">(b) Visual Dataflow Through Discovered Pipeline <i>P*</i> at Inference Time</span>
-          <span class="arch-panel-sub">Click any block below to inspect how it transforms the table around frozen TabFM</span>
+          <span class="arch-panel-label">(b) Inference Dataflow Through Selected Pipeline <i>P*</i> Around Frozen TabFM</span>
+          <span class="arch-panel-sub">Five modular components in Equation (1)</span>
         </div>
         <div class="dataflow-strip">
-          <div class="df-step" data-f2-stage="preprocess">
-            <div class="df-step-num">STAGE 1 &middot; &Phi;<sub>clean</sub></div>
+          <div class="df-step">
+            <div class="df-step-num">1. preprocess() &middot; &Phi;<sub>clean</sub></div>
             <div class="df-step-title">Clean &amp; Target Map</div>
             <div class="df-step-desc">Recodes sentinel <code>0 &rarr; NaN</code>, filters corrupted rows, and transforms skewed <i>y</i><sub>train</sub> via <i>g</i>(<i>y</i>).</div>
           </div>
-          <div class="df-step is-active" data-f2-stage="engineer">
-            <div class="df-step-num">STAGE 2 &middot; &Phi;<sub>feat</sub></div>
+          <div class="df-step is-active">
+            <div class="df-step-num">2. engineer() &middot; &Phi;<sub>feat</sub></div>
             <div class="df-step-title">Domain &amp; Structural FE</div>
-            <div class="df-step-desc">Synthesizes physical ratios, clinical groupings, out-of-fold target rates, and multi-file features.</div>
+            <div class="df-step-desc">Synthesizes physical ratios, clinical groupings, out-of-fold target rates, and multi-file features (95.1% of runs).</div>
           </div>
-          <div class="df-step" data-f2-stage="sample">
-            <div class="df-step-num">STAGE 3 &middot; <i>S</i><sub>ctx</sub></div>
+          <div class="df-step">
+            <div class="df-step-num">3. sample() &middot; <i>S</i><sub>ctx</sub></div>
             <div class="df-step-title">Context Sampling</div>
             <div class="df-step-desc">Builds stratified or minority-oversampled context views within the 16,384-row window.</div>
           </div>
-          <div class="df-step" data-f2-stage="kwargs">
-            <div class="df-step-num">STAGE 4 &middot; <i>f</i><sub>&theta;*</sub></div>
+          <div class="df-step">
+            <div class="df-step-num">4. TABFM_KWARGS &middot; <i>f</i><sub>&theta;*</sub></div>
             <div class="df-step-title">Frozen TabFM (400M)</div>
-            <div class="df-step-desc">Alternating row &amp; column attention predicts test labels in one forward pass per view.</div>
+            <div class="df-step-desc">Configures generic presets (norms, SVD, NNLS) and predicts test labels in one forward pass per view.</div>
           </div>
-          <div class="df-step" data-f2-stage="postprocess">
-            <div class="df-step-num">STAGE 5 &middot; &Psi;<sub>post</sub></div>
+          <div class="df-step">
+            <div class="df-step-num">5. postprocess() &middot; &Psi;<sub>post</sub></div>
             <div class="df-step-title">Calibrate &amp; Inv-Map</div>
             <div class="df-step-desc">Applies inverse map <i>g</i><sup>&minus;1</sup>, log-odds prior alignment, and temperature scaling &rarr; <strong>2013 Elo (#1)</strong>.</div>
           </div>
@@ -369,32 +326,8 @@
       </div>
     </div>
 
-    <!-- Live Stage Inspector -->
-    <div class="stage-inspector" id="f2-inspector">
-      <div class="stage-inspector-head">
-        <span class="stage-inspector-title" id="f2-insp-title">Stage 2: engineer(X_train, y_train, X_test) &mdash; Semantic &amp; Structural Feature Engineering (&Phi;<sub>feat</sub>)</span>
-        <span class="stage-inspector-stat" id="f2-insp-stat">Modified in 95.1% of TabArena runs (97 / 102)</span>
-      </div>
-      <div class="stage-inspector-body">
-        <div class="stage-inspector-text" id="f2-insp-text">
-          <p><strong>What limitation of frozen TabFM it solves:</strong> Attention layers over raw numbers cannot infer domain laws from column headers or join external sensor/molecular files. Writing a domain formula as an explicit column spares <code>TabFM</code> from having to approximate a nonlinear product or ratio in context.</p>
-          <p><strong>What the agent synthesizes:</strong> Inductive domain formulas (aeroacoustic Strouhal numbers, concrete water-to-binder maturity laws, clinical ICD-9 chapters), smoothed out-of-fold target encodings, auxiliary waveform/3D parsers, and label-free transductive entity-graph degrees over combined <i>X</i><sub>train</sub> &cup; <i>X</i><sub>test</sub>.</p>
-        </div>
-        <pre class="stage-inspector-code"><code id="f2-insp-code"># Identity baseline P0:
-def engineer(X_train, y_train, X_test):
-    return X_train, X_test
-
-# Evolved P* on airfoil_self_noise (Test RMSE: 1.0712 -> 0.9165, -14.4%):
-def engineer(X_train, y_train, X_test):
-    X_tr, X_te = _phys(X_train, OPT["groups"]), _phys(X_test, OPT["groups"])
-    b_tr, b_te = _brackets(X_train, y_train, X_test)
-    g_tr, g_te = _ecdf_grid(X_train, X_test)
-    return pd.concat([X_tr, b_tr, g_tr], axis=1), pd.concat([X_te, b_te, g_te], axis=1)</code></pre>
-      </div>
-    </div>
-
     <div class="fig-caption">
-      <strong>Figure 2: Interactive architecture and inference dataflow of TabFM-Auto.</strong> Click any of the five pipeline components above to inspect its role in Equation (1), the failure mode of frozen <code>TabFM</code> it addresses, and a representative transformation from an evolved pipeline.
+      <strong>Figure 2: Closed-loop pipeline search and test-time inference dataflow of TabFM-Auto.</strong> (a) During search, the coding agent iteratively edits <code>pipeline.py</code> using 3-fold cross-validation feedback on <i>D</i><sub>train</sub> around frozen <code>TabFM</code>. (b) At test time, the frozen pipeline <i>P*</i> transforms the table through five modular stages around the 400M-parameter <code>TabFM</code> backbone.
     </div>
   </section>
 
@@ -403,11 +336,11 @@ def engineer(X_train, y_train, X_test):
     Generic versions of all four stages already exist in <code>TabFM+</code>, which extends <code>TabFM</code> to normalize inputs and clip outliers (&Phi;<sub>clean</sub>), append pairwise feature crosses and SVD projections (&Phi;<sub>feat</sub>), ensemble predictions over multiple views with a configurable context size (<i>S</i><sub>ctx</sub>), and weight views by non-negative least squares (NNLS) before calibrating outputs (&Psi;<sub>post</sub>). <code>TABFM_KWARGS</code> exposes these generic presets as constructor settings of <i>f</i><sub>&theta;*</sub>. The coding agent can therefore cover standard numerical conditioning by setting dictionary flags and reserve the four Python functions for dataset-specific logic that generic presets cannot express &mdash; such as domain formulas, sentinel recoding, or minority-class context stratification. Separating <code>TABFM_KWARGS</code> from the four functions also allows us to transfer the evolved Python functions directly around other tabular foundation models (&sect;6).
   </p>
 
-  <!-- ================= SECTION 3: INTERACTIVE TABARENA PIPELINE EXPLORER ================= -->
-  <h2 id="explorer">3. Interactive TabArena Pipeline Explorer (All 51 Datasets)</h2>
+  <!-- ================= SECTION 3: TABARENA PIPELINE EXPLORER ================= -->
+  <h2 id="explorer">3. TabArena Pipeline Explorer (All 51 Datasets)</h2>
 
   <p>
-    What kind of pipelines does the agent actually write? Below is the interactive <strong>TabArena Pipeline Explorer</strong> covering all <strong>51 evolved TabArena pipelines</strong> across Regression (13), Binary Classification (26), and Multiclass Classification (12), defaulting to the <strong>Regression</strong> suite. Click any stage button (<code>preprocess()</code>, <code>engineer()</code>, <code>sample()</code>, <code>postprocess()</code>) to inspect both the hook and every helper function it calls, or switch to <strong>Write-up</strong> to read the technical documentation for that dataset.
+    What kind of pipelines does the agent actually write? Below is the <strong>TabArena Pipeline Explorer</strong> covering all <strong>51 evolved TabArena pipelines</strong> across Regression (13), Binary Classification (26), and Multiclass Classification (12), defaulting to the <strong>Regression</strong> suite. Click any stage button (<code>preprocess()</code>, <code>engineer()</code>, <code>sample()</code>, <code>postprocess()</code>) to inspect both the hook and every helper function it calls, or switch to <strong>Write-up</strong> to read the technical documentation for that dataset.
   </p>
 
   <div class="wide-bleed">
@@ -509,11 +442,11 @@ def engineer(X_train, y_train, X_test):
     A natural question for any iterative search method is whether optimizing 3-fold cross-validation on fold 0's training set overfits the validation split. To test this directly, we evaluate 15 intermediate pipeline checkpoints per dataset &mdash; taken at fixed fractions of the search budget from 0% (identity baseline <i>P</i><sub>0</sub>) to 100% (final pipeline <i>P*</i>) &mdash; on the official held-out test sets across all folds (Figure 3). Cross-validation gains on fold 0's training set (Figure 3a) translate monotonically into official test error reductions across all folds (Figure 3b) and higher TabArena Elo ratings (Figure 3c). Notably, <strong>TabFM-Auto surpasses <code>TabFM+</code> (1856 Elo) within the first 2.5% of the search budget</strong> (roughly 3 candidate evaluations) and continues climbing to full budget without validation-to-test degradation.
   </p>
 
-  <!-- ================= INTERACTIVE FIGURE 3: SEARCH DYNAMICS & GENERALIZATION ================= -->
+  <!-- ================= FIGURE 3: SEARCH DYNAMICS & GENERALIZATION ================= -->
   <section class="fig-card wide-card" id="fig-dynamics" aria-label="Figure 3: Search Dynamics and Test Generalization">
     <div class="fig-top">
       <div class="fig-heading">
-        <span class="fig-kicker">Interactive Figure 3 &middot; Search Dynamics &amp; Generalization</span>
+        <span class="fig-kicker">Figure 3 &middot; Search Dynamics &amp; Generalization</span>
         <h3 class="fig-title">Validation-to-Test Trajectory Across All 51 TabArena Datasets (0% &rarr; 100% Search Budget)</h3>
       </div>
       <div class="fig-controls">
@@ -659,11 +592,11 @@ def engineer(X_train, y_train, X_test):
     In several <strong>MLE-Bench-Tabular</strong> competitions &mdash; such as <code>predict-volcanic-eruptions-ingv-oe</code> and <code>smartphone-decimeter-2022</code> &mdash; the main CSV contains only recording IDs while the predictive signal lives in thousands of auxiliary sensor waveforms, GNSS satellite logs, or 3D molecular geometry files. Plain <code>TabFM</code> cannot read these auxiliary files directly. Within <code>engineer()</code>, <strong>TabFM-Auto</strong> writes domain-specific signal-processing and geometric parsers (FFT spectral energy bands, STA/LTA seismic trigger ratios, reciprocal lattice unit-cell volumes, Karplus dihedral angles, and weighted least-squares GNSS positioning with Rauch&ndash;Tung&ndash;Striebel Kalman smoothing) and joins the extracted features into a clean tabular representation for <code>TabFM</code>.
   </p>
 
-  <!-- ================= INTERACTIVE FIGURE 5: MLE-BENCH-TABULAR ELO & 8-COMPETITION BREAKDOWN ================= -->
+  <!-- ================= FIGURE 5: MLE-BENCH-TABULAR ELO & 8-COMPETITION BREAKDOWN ================= -->
   <section class="fig-card wide-card" id="fig-mlebench" aria-label="Figure 5: MLE-Bench-Tabular Elo and Per-Competition Comparison">
     <div class="fig-top">
       <div class="fig-heading">
-        <span class="fig-kicker">Interactive Figure 5 &middot; MLE-Bench-Tabular</span>
+        <span class="fig-kicker">Figure 5 &middot; MLE-Bench-Tabular</span>
         <h3 class="fig-title" id="f5-title">MLE-Bench-Tabular Overall Elo Leaderboard &amp; Head-to-Head Win Rates (13 Agents)</h3>
       </div>
       <div class="fig-controls">
@@ -709,7 +642,7 @@ def engineer(X_train, y_train, X_test):
         id="mlebench-explorer-iframe"
         class="explorer-iframe"
         src="mlebench_explorer.html"
-        title="TabFM-Auto MLE-Bench-Tabular Interactive Pipeline Explorer"
+        title="TabFM-Auto MLE-Bench-Tabular Pipeline Explorer"
         loading="lazy"
       ></iframe>
     </div>
@@ -738,7 +671,7 @@ def engineer(X_train, y_train, X_test):
   </div>
 
   <footer class="site-footer">
-    <span>TabFM-Auto Technical Report &amp; Interactive Pipeline Explorer</span>
+    <span>TabFM-Auto Technical Report &amp; Pipeline Explorer</span>
     <span><a href="#top">Back to top &uarr;</a> &nbsp;&middot;&nbsp; <a href="explorer.html" target="_blank" rel="noopener">TabArena Explorer ↗</a></span>
   </footer>
 
