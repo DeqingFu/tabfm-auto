@@ -84,13 +84,6 @@
     </div>
   </header>
 
-  <section class="abstract-card" aria-label="Abstract">
-    <div class="meta-label">TL;DR &middot; Abstract</div>
-    <p>
-      Tabular foundation models (TFMs) have strong zero-shot numerical priors but ignore column names, domain units, and auxiliary files; end-to-end MLE coding agents read dataset semantics, but training GBDTs or neural networks from scratch on every candidate step introduces retraining variance and validation overfitting. <strong>TabFM-Auto</strong> combines both strengths: a coding agent iteratively evolves a 4-stage Python data pipeline (<code>preprocess</code>, <code>engineer</code>, <code>sample</code>, <code>postprocess</code>) via 3-fold cross-validation while keeping the 400M-parameter <code>TabFM</code> backbone strictly frozen. Across all 51 TabArena datasets, <strong>TabFM-Auto</strong> ranks <strong>#1 overall at 2013.0 Elo</strong> (+227.7 over plain <code>TabFM</code>, +344.6 over 4-hour <code>AutoGluon 1.5</code>), and its discovered pipelines transfer zero-shot to <code>TabICLv2</code> (+143.3 Elo), <code>TabPFN-3</code> (+130.8 Elo), and <code>EXAONE-Tabular</code> (+88.7 Elo).
-    </p>
-  </section>
-
   <!-- ================= FIGURE 1: HEADLINE TABARENA OVERVIEW ================= -->
   <section class="fig-card wide-card" id="fig-headline" aria-label="Figure 1: TabArena Leaderboard Overview">
     <div class="fig-top">
@@ -152,7 +145,7 @@
     </div>
 
     <div class="fig-caption">
-      <strong>Figure 1: TabArena leaderboard across all 51 datasets (38 classification, 13 regression).</strong> Switch task splits, metrics, or table view above, and hover/click any bar to inspect details.
+      <strong>Figure 1: TabArena leaderboard across all 51 datasets.</strong> Hover or click a bar for details.
     </div>
   </section>
 
@@ -160,7 +153,7 @@
   <h2 id="intro">1. Why Pair a Coding Agent with a Frozen Tabular Foundation Model?</h2>
 
   <p>
-    Tabular foundation models and LLM coding agents have complementary strengths and blind spots. Evaluating every candidate pipeline through a <strong>frozen 400M-parameter <code>TabFM</code> forward pass</strong> eliminates model-retraining variance, so even a 0.2% cross-validation improvement reflects a genuine improvement in how the table is represented.
+    Frozen TFMs and coding agents fail in opposite ways. TabFM-Auto keeps the TFM frozen and lets the agent rewrite only the data pipeline, so every CV gain comes from the pipeline itself.
   </p>
 
   <div class="worlds-grid wide-card" role="region" aria-label="Comparison of Tabular Paradigms">
@@ -368,16 +361,14 @@ def engineer(X_train, y_train, X_test):
     </div>
 
     <div class="fig-caption">
-      <strong>Figure 2: Closed-loop pipeline search and test-time dataflow of TabFM-Auto.</strong> Click any stage in (b) to compare the identity baseline <i>P</i><sub>0</sub> (left) against the evolved pipeline <i>P*</i> (right).
+      <strong>Figure 2: Closed-loop search (a) and test-time dataflow (b).</strong>
     </div>
   </section>
 
   <!-- ================= SECTION 3: TABARENA PIPELINE EXPLORER ================= -->
   <h2 id="explorer">3. TabArena Pipeline Explorer (All 51 Datasets)</h2>
 
-  <p>
-    Inspect all <strong>51 evolved TabArena pipelines</strong> across Regression (13), Binary Classification (26), and Multiclass Classification (12) &mdash; click any stage button (<code>preprocess()</code>, <code>engineer()</code>, <code>sample()</code>, <code>postprocess()</code>) to jump to its implementation, or switch to <strong>Write-up</strong> for per-dataset documentation.
-  </p>
+  <p>All 51 evolved pipelines. Pick a dataset and a stage to read its code, or open <strong>Write-up</strong> for notes.</p>
 
   <div class="wide-bleed">
     <div class="explorer-frame-card">
@@ -408,7 +399,7 @@ def engineer(X_train, y_train, X_test):
   <h2 id="tabarena">4. TabArena Results, Taxonomy &amp; Search Dynamics</h2>
 
   <p>
-    We run pipeline search once per dataset using 3-fold CV on fold 0's training split (up to 96 evaluations or 6 hours on one H100 GPU), then freeze <i>P*</i> and evaluate across all official held-out folds (9 or 30 splits per dataset). Across all 51 datasets (<a href="#fig-headline">Figure 1</a>), <strong>TabFM-Auto</strong> achieves <strong>2013.0 Elo (#1)</strong>, gaining <strong>+197.6 Elo on Classification (1966.3)</strong> and <strong>+467.0 Elo on Regression (2512.9, 0.00% improvability)</strong>.
+    Search runs once per dataset with 3-fold CV on fold 0's training split (up to 96 evaluations or 6 hours on one H100); the frozen <i>P*</i> is then scored on every official test fold. Over plain <code>TabFM</code>, TabFM-Auto gains <strong>+197.6 Elo</strong> on classification and <strong>+467.0 Elo</strong> on regression.
   </p>
 
   <div class="data-card wide-card" id="taxonomy">
@@ -452,7 +443,7 @@ def engineer(X_train, y_train, X_test):
       </table>
     </div>
     <div class="fig-caption">
-      <strong>Table 1: Pipeline taxonomy across the 51 TabArena datasets.</strong> Explicit domain formulas on named schemas (Category I) yield nearly 3&times; larger test error reductions than statistical transforms on anonymized tables (Category II).
+      <strong>Table 1: Pipeline taxonomy.</strong> Domain formulas on named schemas (I) cut test error nearly 3&times; more than statistical transforms on anonymized tables (II).
     </div>
   </div>
 
@@ -494,7 +485,7 @@ def engineer(X_train, y_train, X_test):
     <div class="fig-readout" id="f3-readout"></div>
 
     <div class="fig-caption">
-      <strong>Figure 3: Validation-to-test trajectory across all 51 TabArena datasets.</strong> 3-fold CV gains on fold 0's training set (a) translate monotonically into all-folds test error reductions (b) and Elo gains (c), surpassing <code>TabFM+</code> (1856 Elo) within the first 2.5% of search budget.
+      <strong>Figure 3: Search dynamics.</strong> CV gains (a) carry over to test error (b) and Elo (c); TabFM-Auto passes <code>TabFM+</code> (1856 Elo) within the first 2.5% of the budget.
     </div>
   </section>
 
@@ -564,7 +555,7 @@ def engineer(X_train, y_train, X_test):
         </div>
       </div>
       <p class="card-lead">
-        Running the Python functions (<code>preprocess</code>, <code>engineer</code>, <code>sample</code>, <code>postprocess</code>) evolved for <code>TabFM</code> unchanged around three other frozen TFMs (with <strong>zero re-search</strong>) boosts every model:
+        Pipelines evolved for <code>TabFM</code>, reused unchanged (<strong>no re-search</strong>) on three other frozen TFMs:
       </p>
       <div id="f4-transfer-container"></div>
     </div>
@@ -574,7 +565,7 @@ def engineer(X_train, y_train, X_test):
   <h2 id="mlebench">6. Multi-File Autonomous Engineering on MLE-Bench-Tabular</h2>
 
   <p>
-    On <a href="https://arxiv.org/abs/2410.07095" target="_blank" rel="noopener"><strong>MLE-Bench-Tabular</strong></a> (8 Kaggle tabular competitions against 12 external MLE agents), several tasks store the predictive signal inside thousands of auxiliary sensor waveforms, GNSS satellite logs, or 3D molecular geometry files. Within <code>engineer()</code>, <strong>TabFM-Auto</strong> writes domain-specific signal-processing and geometric parsers (FFT spectral bands, STA/LTA seismic triggers, reciprocal lattice volumes, Karplus dihedral angles, and WLS + RTS Kalman GNSS smoothing) and joins them into a clean table for frozen <code>TabFM</code>.
+    On <a href="https://arxiv.org/abs/2410.07095" target="_blank" rel="noopener"><strong>MLE-Bench-Tabular</strong></a> (8 Kaggle competitions, 12 external agents), much of the signal lives in auxiliary files: sensor waveforms, GNSS logs, and 3D molecular geometry. <code>engineer()</code> writes parsers for them (FFT bands, seismic STA/LTA triggers, Karplus angles, Kalman-smoothed GNSS fixes) and joins the results into one table for frozen <code>TabFM</code>.
   </p>
 
   <!-- ================= FIGURE 5: MLE-BENCH-TABULAR ELO & 8-COMPETITION BREAKDOWN ================= -->
@@ -601,16 +592,14 @@ def engineer(X_train, y_train, X_test):
     </div>
 
     <div class="fig-caption">
-      <strong>Figure 5: MLE-Bench-Tabular evaluation across all 8 competitions.</strong> <strong>TabFM-Auto</strong> ranks <strong>#1 overall at 1827 Elo</strong> (+110 over CAIR MARS+ at 1717 Elo). Switch to <em>Per-Competition Scores</em> and click any task card to inspect its evolved multi-file pipeline below.
+      <strong>Figure 5: MLE-Bench-Tabular.</strong> <strong>TabFM-Auto</strong> ranks #1 at 1827 Elo (+110 over CAIR MARS+). Click a competition card to open its pipeline below.
     </div>
   </section>
 
   <!-- ================= SECTION 7: MLE-BENCH-TABULAR PIPELINE EXPLORER ================= -->
   <h2 id="mlebench-explorer">7. MLE-Bench-Tabular Pipeline Explorer (All 8 Competitions)</h2>
 
-  <p>
-    Explore all <strong>8 evolved MLE-Bench-Tabular pipelines</strong> below &mdash; including multi-file waveform, GNSS trajectory, and 3D crystal/molecular geometry extractors, official leaderboard medal thresholds, and technical write-ups.
-  </p>
+  <p>All 8 evolved pipelines, with medal thresholds and write-ups.</p>
 
   <div class="wide-bleed">
     <div class="explorer-frame-card">
@@ -858,7 +847,7 @@ def engineer(X_train, y_train, X_test):
     if (!ro || !r) return;
     const badgeHtml = r.delta ? ' <span class="badge pos">' + r.delta + ' Elo vs. TabFM</span>' : '';
     ro.innerHTML =
-      '<div><strong>#' + r.rank + ' ' + r.name + '</strong> &middot; <span style="color:var(--muted)">' + r.catLabel + '</span>' + badgeHtml + '</div>' +
+      '<div><strong>#' + r.rank + ' ' + r.name + '</strong> &middot; <span class="muted">' + r.catLabel + '</span>' + badgeHtml + '</div>' +
       '<div class="fig-readout-metrics">' +
       '<span>Elo: <strong>' + r.elo.toFixed(1) + '</strong> (' + r.ci + ')</span>' +
       '<span>Wins: <strong>' + r.wins.toFixed(1) + '</strong></span>' +

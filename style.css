@@ -1375,6 +1375,10 @@ table.bench-tbl {
   color: var(--medal);
 }
 
+.muted {
+  color: var(--muted);
+}
+
 .is-hidden {
   display: none !important;
 }
