@@ -185,6 +185,27 @@ pre code {
   flex: none;
 }
 
+.nav-logo {
+  width: 24px;
+  height: 24px;
+  display: block;
+  flex: none;
+}
+.nav-logo .logo-backbone {
+  fill: var(--blue);
+}
+.nav-logo .logo-cell-soft {
+  fill: var(--blue);
+  fill-opacity: 0.24;
+}
+.nav-logo .logo-cell-mid {
+  fill: var(--blue);
+  fill-opacity: 0.42;
+}
+.nav-logo .logo-spark {
+  fill: var(--accent);
+}
+
 .nav-sep {
   color: var(--border);
   font-weight: 400;
