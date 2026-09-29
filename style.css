@@ -218,6 +218,14 @@ pre code {
   align-items: center;
   gap: 2px;
   flex-wrap: nowrap;
+  margin-left: auto;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
 }
 
 .nav-link {
@@ -1518,14 +1526,61 @@ table.bench-tbl {
   body {
     font-size: 15px;
   }
-  .site-nav-inner {
-    padding: 0 14px;
+  .site-nav {
+    height: auto;
   }
-  .nav-sep,
-  .nav-sub,
-  .nav-gr-logo,
-  .nav-links .nav-link {
+  .site-nav-inner {
+    padding: 8px 14px 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 6px;
+    height: auto;
+  }
+  .nav-brand {
+    font-size: 13px;
+    gap: 5px;
+  }
+  .nav-logo {
+    width: 19px;
+    height: 19px;
+  }
+  .nav-gr-logo {
+    height: 12.5px;
+  }
+  .nav-cta {
+    padding: 3.5px 8px;
+    font-size: 11px;
+    margin-left: 0;
+  }
+  section[id],
+  h2[id] {
+    scroll-margin-top: 88px;
+  }
+  .theme-btn {
+    width: 30px;
+    height: 30px;
+  }
+  .nav-actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .nav-links {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin: 0 -14px;
+    padding: 4px 10px 5px;
+    border-top: 1px solid var(--hairline);
+    overflow-x: auto;
+    scrollbar-width: none;
+    justify-content: space-between;
+    gap: 0;
+  }
+  .nav-links::-webkit-scrollbar {
     display: none;
+  }
+  .nav-link {
+    font-size: 11.5px;
+    padding: 4px 5px;
   }
   .container {
     padding: 24px 14px 64px;
