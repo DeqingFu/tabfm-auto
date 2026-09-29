@@ -56,10 +56,6 @@
         </svg>
         <span>TabFM-Auto &middot; Technical Report</span>
       </div>
-      <div class="hero-pills">
-        <a class="hero-pill" href="#fig-headline">TabArena (51) &middot; <strong>2013.0 Elo (#1)</strong></a>
-        <a class="hero-pill" href="#fig-mlebench">MLE-Bench-Tabular (8) &middot; <strong>1827 Elo (#1)</strong></a>
-      </div>
     </div>
     <h1 class="paper-title">TabFM-Auto: Self-Evolving Pipelines for Tabular Foundation Models</h1>
     <p class="paper-subtitle">
@@ -92,7 +88,6 @@
             <span class="affil-n">2</span>
             <img src="assets/logos/google-deepmind.png" alt="Google DeepMind" class="logo-gdm">
           </a></li>
-          <li class="affil-break" aria-hidden="true"></li>
           <li><a class="affil-item" href="https://www.usc.edu/" target="_blank" rel="noopener" title="University of Southern California">
             <span class="affil-n">3</span>
             <img src="assets/logos/usc.svg" alt="University of Southern California" class="logo-usc only-light">
@@ -811,44 +806,44 @@ def engineer(X_train, y_train, X_test):
   /* ===== 4. Interactive Figure 1: TabArena Leaderboard Chart & Table ===== */
   const TABARENA_DATA = {
     overall: [
-      { rank: 1, name: "TabFM-Auto (Evolved Pipeline + Frozen TabFM)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 2013.0, ci: "+17.7 / -17.3", wins: 19.6, improv: 4.19, gmean: 0.0882, delta: "+228" },
-      { rank: 2, name: "TabFM+ (Frozen + Generic Wrapper Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 1856.0, ci: "+15.2 / -15.3", wins: 4.3, improv: 6.45, gmean: 0.0913, delta: "+71" },
-      { rank: 3, name: "TabFM (Plain Frozen Backbone)", short: "TabFM", cat: "tabfm", catLabel: "Tabular Foundation Model", elo: 1785.3, ci: "+14.5 / -15.8", wins: 1.5, improv: 8.11, gmean: 0.0937, delta: null },
-      { rank: 4, name: "EXAONE-Tabular (tuned + ensembled)", short: "EXAONE-Tab", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1773.6, ci: "+14.5 / -14.7", wins: 4.1, improv: 9.73, gmean: 0.0942, delta: null },
-      { rank: 5, name: "RealTabPFN-2.5 (tuned + ensembled)", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1732.1, ci: "+14.4 / -14.5", wins: 1.8, improv: 8.66, gmean: 0.0956, delta: null },
-      { rank: 6, name: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1668.4, ci: "+14.5 / -14.1", wins: 2.3, improv: 9.57, gmean: 0.0972, delta: null },
-      { rank: 7, name: "TabPFN-3 (default)", short: "TabPFN-3", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1666.0, ci: "+15.1 / -14.7", wins: 1.3, improv: 10.90, gmean: 0.0981, delta: null },
-      { rank: 8, name: "TabDPT (tuned + ensembled)", short: "TabDPT", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1617.0, ci: "+13.3 / -13.3", wins: 2.0, improv: 11.49, gmean: 0.1003, delta: null },
-      { rank: 9, name: "TabICLv2 (tuned + ensembled)", short: "TabICLv2", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1593.0, ci: "+14.7 / -14.2", wins: 1.8, improv: 11.65, gmean: 0.1011, delta: null },
-      { rank: 10, name: "AutoGluon 1.3 (best, 4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1490.3, ci: "+12.8 / -13.5", wins: 0.3, improv: 13.73, gmean: 0.1045, delta: null },
-      { rank: 11, name: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Unconstrained Agent", cat: "agent", catLabel: "End-to-End Coding Agent (6h)", elo: 1468.8, ci: "+14.4 / -14.1", wins: 2.1, improv: 19.30, gmean: 0.1112, delta: null },
-      { rank: 12, name: "LightGBM (tuned + ensembled)", short: "LightGBM", cat: "base", catLabel: "Tuned GBDT Ensemble", elo: 1446.6, ci: "+13.8 / -13.1", wins: 0.7, improv: 16.06, gmean: 0.1078, delta: null },
-      { rank: 13, name: "CatBoost (tuned + ensembled)", short: "CatBoost", cat: "base", catLabel: "Tuned GBDT Ensemble", elo: 1423.8, ci: "+13.2 / -13.1", wins: 0.2, improv: 15.65, gmean: 0.1072, delta: null },
-      { rank: 14, name: "RealMLP (tuned + ensembled)", short: "RealMLP", cat: "base", catLabel: "Tuned Neural Network", elo: 1409.5, ci: "+12.8 / -12.8", wins: 0.5, improv: 16.41, gmean: 0.1084, delta: null }
+      { rank: 1, name: "TabFM-Auto (Evolved Pipeline + Frozen TabFM)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 2013.0, wins: 19.6, improv: 4.19, gmean: 0.0882, delta: "+228" },
+      { rank: 2, name: "TabFM+ (Frozen + Generic Wrapper Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 1856.0, wins: 4.3, improv: 6.45, gmean: 0.0913, delta: "+71" },
+      { rank: 3, name: "TabFM (Plain Frozen Backbone)", short: "TabFM", cat: "tabfm", catLabel: "Tabular Foundation Model", elo: 1785.3, wins: 1.5, improv: 8.11, gmean: 0.0937, delta: null },
+      { rank: 4, name: "EXAONE-Tabular (tuned + ensembled)", short: "EXAONE-Tab", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1773.6, wins: 4.1, improv: 9.73, gmean: 0.0942, delta: null },
+      { rank: 5, name: "RealTabPFN-2.5 (tuned + ensembled)", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1732.1, wins: 1.8, improv: 8.66, gmean: 0.0956, delta: null },
+      { rank: 6, name: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1668.4, wins: 2.3, improv: 9.57, gmean: 0.0972, delta: null },
+      { rank: 7, name: "TabPFN-3 (default)", short: "TabPFN-3", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1666.0, wins: 1.3, improv: 10.90, gmean: 0.0981, delta: null },
+      { rank: 8, name: "TabDPT (tuned + ensembled)", short: "TabDPT", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1617.0, wins: 2.0, improv: 11.49, gmean: 0.1003, delta: null },
+      { rank: 9, name: "TabICLv2 (tuned + ensembled)", short: "TabICLv2", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1593.0, wins: 1.8, improv: 11.65, gmean: 0.1011, delta: null },
+      { rank: 10, name: "AutoGluon 1.3 (best, 4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1490.3, wins: 0.3, improv: 13.73, gmean: 0.1045, delta: null },
+      { rank: 11, name: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Unconstrained Agent", cat: "agent", catLabel: "End-to-End Coding Agent (6h)", elo: 1468.8, wins: 2.1, improv: 19.30, gmean: 0.1112, delta: null },
+      { rank: 12, name: "LightGBM (tuned + ensembled)", short: "LightGBM", cat: "base", catLabel: "Tuned GBDT Ensemble", elo: 1446.6, wins: 0.7, improv: 16.06, gmean: 0.1078, delta: null },
+      { rank: 13, name: "CatBoost (tuned + ensembled)", short: "CatBoost", cat: "base", catLabel: "Tuned GBDT Ensemble", elo: 1423.8, wins: 0.2, improv: 15.65, gmean: 0.1072, delta: null },
+      { rank: 14, name: "RealMLP (tuned + ensembled)", short: "RealMLP", cat: "base", catLabel: "Tuned Neural Network", elo: 1409.5, wins: 0.5, improv: 16.41, gmean: 0.1084, delta: null }
     ],
     regression: [
-      { rank: 1, name: "TabFM-Auto (Evolved Pipeline + Frozen TabFM)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 2512.9, ci: "+42.1 / -40.5", wins: 7.8, improv: 0.00, gmean: 2.084, delta: "+467" },
-      { rank: 2, name: "TabFM+ (Frozen + Generic Wrapper Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 2169.2, ci: "+31.8 / -31.2", wins: 1.5, improv: 3.12, gmean: 2.152, delta: "+123" },
-      { rank: 3, name: "TabFM (Plain Frozen Backbone)", short: "TabFM", cat: "tabfm", catLabel: "Tabular Foundation Model", elo: 2045.9, ci: "+29.4 / -30.1", wins: 0.5, improv: 5.48, gmean: 2.212, delta: null },
-      { rank: 4, name: "EXAONE-Tabular (tuned + ensembled)", short: "EXAONE-Tab", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1971.6, ci: "+28.0 / -28.4", wins: 1.0, improv: 6.90, gmean: 2.254, delta: null },
-      { rank: 5, name: "RealTabPFN-2.5 (tuned + ensembled)", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1945.0, ci: "+27.5 / -27.9", wins: 0.6, improv: 7.15, gmean: 2.268, delta: null },
-      { rank: 6, name: "TabPFN-3 (default)", short: "TabPFN-3", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1869.3, ci: "+28.2 / -27.6", wins: 0.4, improv: 8.42, gmean: 2.305, delta: null },
-      { rank: 7, name: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1842.0, ci: "+26.8 / -26.5", wins: 0.6, improv: 8.85, gmean: 2.318, delta: null },
-      { rank: 8, name: "TabICLv2 (tuned + ensembled)", short: "TabICLv2", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1726.6, ci: "+26.1 / -25.8", wins: 0.3, improv: 10.90, gmean: 2.382, delta: null },
-      { rank: 9, name: "AutoGluon 1.3 (best, 4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1658.4, ci: "+24.5 / -25.0", wins: 0.1, improv: 12.10, gmean: 2.425, delta: null },
-      { rank: 10, name: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Unconstrained Agent", cat: "agent", catLabel: "End-to-End Coding Agent (6h)", elo: 1615.3, ci: "+27.0 / -26.4", wins: 0.2, improv: 15.80, gmean: 2.540, delta: null }
+      { rank: 1, name: "TabFM-Auto (Evolved Pipeline + Frozen TabFM)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 2512.9, wins: 7.8, improv: 0.00, gmean: 2.084, delta: "+467" },
+      { rank: 2, name: "TabFM+ (Frozen + Generic Wrapper Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 2169.2, wins: 1.5, improv: 3.12, gmean: 2.152, delta: "+123" },
+      { rank: 3, name: "TabFM (Plain Frozen Backbone)", short: "TabFM", cat: "tabfm", catLabel: "Tabular Foundation Model", elo: 2045.9, wins: 0.5, improv: 5.48, gmean: 2.212, delta: null },
+      { rank: 4, name: "EXAONE-Tabular (tuned + ensembled)", short: "EXAONE-Tab", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1971.6, wins: 1.0, improv: 6.90, gmean: 2.254, delta: null },
+      { rank: 5, name: "RealTabPFN-2.5 (tuned + ensembled)", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1945.0, wins: 0.6, improv: 7.15, gmean: 2.268, delta: null },
+      { rank: 6, name: "TabPFN-3 (default)", short: "TabPFN-3", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1869.3, wins: 0.4, improv: 8.42, gmean: 2.305, delta: null },
+      { rank: 7, name: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1842.0, wins: 0.6, improv: 8.85, gmean: 2.318, delta: null },
+      { rank: 8, name: "TabICLv2 (tuned + ensembled)", short: "TabICLv2", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1726.6, wins: 0.3, improv: 10.90, gmean: 2.382, delta: null },
+      { rank: 9, name: "AutoGluon 1.3 (best, 4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1658.4, wins: 0.1, improv: 12.10, gmean: 2.425, delta: null },
+      { rank: 10, name: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Unconstrained Agent", cat: "agent", catLabel: "End-to-End Coding Agent (6h)", elo: 1615.3, wins: 0.2, improv: 15.80, gmean: 2.540, delta: null }
     ],
     classification: [
-      { rank: 1, name: "TabFM-Auto (Evolved Pipeline + Frozen TabFM)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 1966.3, ci: "+19.4 / -18.9", wins: 11.8, improv: 5.62, gmean: 0.0528, delta: "+198" },
-      { rank: 2, name: "TabFM+ (Frozen + Generic Wrapper Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 1836.7, ci: "+17.1 / -17.0", wins: 2.8, improv: 7.59, gmean: 0.0545, delta: "+68" },
-      { rank: 3, name: "EXAONE-Tabular (tuned + ensembled)", short: "EXAONE-Tab", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1770.0, ci: "+16.4 / -16.6", wins: 3.1, improv: 10.70, gmean: 0.0558, delta: null },
-      { rank: 4, name: "TabFM (Plain Frozen Backbone)", short: "TabFM", cat: "tabfm", catLabel: "Tabular Foundation Model", elo: 1768.7, ci: "+16.2 / -17.1", wins: 1.0, improv: 9.01, gmean: 0.0556, delta: null },
-      { rank: 5, name: "RealTabPFN-2.5 (tuned + ensembled)", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1712.4, ci: "+16.1 / -16.2", wins: 1.2, improv: 9.18, gmean: 0.0565, delta: null },
-      { rank: 6, name: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1650.2, ci: "+16.0 / -15.8", wins: 1.7, improv: 9.82, gmean: 0.0574, delta: null },
-      { rank: 7, name: "TabPFN-3 (default)", short: "TabPFN-3", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1643.8, ci: "+16.8 / -16.4", wins: 0.9, improv: 11.75, gmean: 0.0580, delta: null },
-      { rank: 8, name: "TabICLv2 (tuned + ensembled)", short: "TabICLv2", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1587.1, ci: "+16.5 / -16.0", wins: 1.5, improv: 11.91, gmean: 0.0592, delta: null },
-      { rank: 9, name: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Unconstrained Agent", cat: "agent", catLabel: "End-to-End Coding Agent (6h)", elo: 1472.0, ci: "+16.2 / -15.9", wins: 1.9, improv: 20.50, gmean: 0.0648, delta: null },
-      { rank: 10, name: "AutoGluon 1.3 (best, 4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1471.5, ci: "+14.5 / -15.1", wins: 0.2, improv: 14.29, gmean: 0.0611, delta: null }
+      { rank: 1, name: "TabFM-Auto (Evolved Pipeline + Frozen TabFM)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 1966.3, wins: 11.8, improv: 5.62, gmean: 0.0528, delta: "+198" },
+      { rank: 2, name: "TabFM+ (Frozen + Generic Wrapper Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 1836.7, wins: 2.8, improv: 7.59, gmean: 0.0545, delta: "+68" },
+      { rank: 3, name: "EXAONE-Tabular (tuned + ensembled)", short: "EXAONE-Tab", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1770.0, wins: 3.1, improv: 10.70, gmean: 0.0558, delta: null },
+      { rank: 4, name: "TabFM (Plain Frozen Backbone)", short: "TabFM", cat: "tabfm", catLabel: "Tabular Foundation Model", elo: 1768.7, wins: 1.0, improv: 9.01, gmean: 0.0556, delta: null },
+      { rank: 5, name: "RealTabPFN-2.5 (tuned + ensembled)", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1712.4, wins: 1.2, improv: 9.18, gmean: 0.0565, delta: null },
+      { rank: 6, name: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1650.2, wins: 1.7, improv: 9.82, gmean: 0.0574, delta: null },
+      { rank: 7, name: "TabPFN-3 (default)", short: "TabPFN-3", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1643.8, wins: 0.9, improv: 11.75, gmean: 0.0580, delta: null },
+      { rank: 8, name: "TabICLv2 (tuned + ensembled)", short: "TabICLv2", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1587.1, wins: 1.5, improv: 11.91, gmean: 0.0592, delta: null },
+      { rank: 9, name: "Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)", short: "Unconstrained Agent", cat: "agent", catLabel: "End-to-End Coding Agent (6h)", elo: 1472.0, wins: 1.9, improv: 20.50, gmean: 0.0648, delta: null },
+      { rank: 10, name: "AutoGluon 1.3 (best, 4h)", short: "AutoGluon 1.3", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1471.5, wins: 0.2, improv: 14.29, gmean: 0.0611, delta: null }
     ]
   };
 
@@ -884,7 +879,7 @@ def engineer(X_train, y_train, X_test):
     ro.innerHTML =
       '<div><strong>#' + r.rank + ' ' + r.name + '</strong> &middot; <span class="muted">' + r.catLabel + '</span>' + badgeHtml + '</div>' +
       '<div class="fig-readout-metrics">' +
-      '<span>Elo: <strong>' + r.elo.toFixed(1) + '</strong> (' + r.ci + ')</span>' +
+      '<span>Elo: <strong>' + r.elo.toFixed(1) + '</strong></span>' +
       '<span>Wins: <strong>' + r.wins.toFixed(1) + '</strong></span>' +
       '<span>Improvability: <strong>' + r.improv.toFixed(2) + '%</strong></span>' +
       '<span>G-Mean Error: <strong>' + r.gmean + '</strong></span>' +
@@ -926,8 +921,13 @@ def engineer(X_train, y_train, X_test):
 
     // Render SVG Chart
     const isDark = root.getAttribute("data-theme") === "dark";
-    const W = 980, H = 320;
-    const padL = 56, padR = 20, padT = 28, padB = 74;
+    const isMobile = window.innerWidth <= 640;
+    const W = isMobile ? 350 : 980;
+    const H = isMobile ? 286 : 320;
+    const padL = isMobile ? 34 : 56;
+    const padR = isMobile ? 6 : 20;
+    const padT = isMobile ? 22 : 28;
+    const padB = isMobile ? 66 : 74;
     const plotW = W - padL - padR;
     const plotH = H - padT - padB;
 
@@ -957,7 +957,7 @@ def engineer(X_train, y_train, X_test):
     const textCol = isDark ? "#e2e8f0" : "#0f172a";
     const mutedCol = isDark ? "#8b9bb4" : "#5f6b7c";
 
-    const nTicks = 5;
+    const nTicks = isMobile ? 4 : 5;
     for (let i = 0; i <= nTicks; i++) {
       const frac = i / nTicks;
       const val = yMin + frac * (yMax - yMin);
@@ -966,7 +966,7 @@ def engineer(X_train, y_train, X_test):
       let lbl = val.toFixed(0);
       if (f1Metric === "improv") lbl = val.toFixed(1) + "%";
       else if (f1Metric === "gmean") lbl = f1Suite === "regression" ? val.toFixed(1) : val.toFixed(3);
-      svg.appendChild(svgEl("text", { x: padL - 8, y: y + 4, "text-anchor": "end", fill: mutedCol, "font-size": 11, "font-family": "Google Sans Mono, monospace" }, lbl));
+      svg.appendChild(svgEl("text", { x: padL - (isMobile ? 5 : 8), y: y + 3.5, "text-anchor": "end", fill: mutedCol, "font-size": isMobile ? 9 : 11, "font-family": "Google Sans Mono, monospace" }, lbl));
     }
 
     const tabfmRow = rows.find(function (r) { return r.short === "TabFM"; });
@@ -976,12 +976,12 @@ def engineer(X_train, y_train, X_test):
     }
 
     const slotW = plotW / rows.length;
-    const barW = Math.min(44, slotW * 0.66);
+    const barW = Math.min(isMobile ? 16 : 44, slotW * (isMobile ? 0.68 : 0.66));
     const bottomY = padT + plotH;
     const anim = [];
     function fmtVal(x) {
       if (f1Metric === "wins") return x.toFixed(1);
-      if (f1Metric === "improv") return x.toFixed(1) + "%";
+      if (f1Metric === "improv") return x.toFixed(1) + (isMobile ? "" : "%");
       if (f1Metric === "gmean") return f1Suite === "regression" ? x.toFixed(2) : x.toFixed(3);
       return x.toFixed(0);
     }
@@ -998,23 +998,23 @@ def engineer(X_train, y_train, X_test):
 
       const a = { by: by, bh: bh, v: v, capBottom: null };
       a.base = g.appendChild(svgEl("rect", {
-        x: bx, y: by, width: barW, height: bh, rx: 4,
+        x: bx, y: by, width: barW, height: bh, rx: isMobile ? 2.5 : 4,
         fill: cols.soft,
         stroke: cols.stroke,
-        "stroke-width": idx === f1SelectedIdx ? 2.2 : 1.2
+        "stroke-width": idx === f1SelectedIdx ? (isMobile ? 1.8 : 2.2) : 1.2
       }));
 
       if (f1Metric === "elo" && r.delta && tabfmRow && r.elo > tabfmRow.elo) {
         const baseY = padT + plotH - ((tabfmRow.elo - yMin) / (yMax - yMin)) * plotH;
-        const capH = Math.max(16, baseY - by);
+        const capH = Math.max(isMobile ? 12 : 16, baseY - by);
         a.capBottom = by + capH;
         a.cap = g.appendChild(svgEl("rect", {
-          x: bx, y: by, width: barW, height: capH, rx: 4,
+          x: bx, y: by, width: barW, height: capH, rx: isMobile ? 2.5 : 4,
           fill: cols.fill,
           stroke: cols.stroke,
-          "stroke-width": idx === f1SelectedIdx ? 2.2 : 1.2
+          "stroke-width": idx === f1SelectedIdx ? (isMobile ? 1.8 : 2.2) : 1.2
         }));
-        if (capH >= 18) {
+        if (!isMobile && capH >= 18) {
           a.delta = g.appendChild(svgEl("text", {
             x: bx + barW / 2, y: by + capH / 2 + 4,
             "text-anchor": "middle", fill: "#ffffff", "font-size": 10.5, "font-weight": 700, "font-family": "Google Sans Mono, monospace"
@@ -1025,25 +1025,26 @@ def engineer(X_train, y_train, X_test):
       const valStr = fmtVal(v);
 
       a.label = g.appendChild(svgEl("text", {
-        x: bx + barW / 2, y: by - 6,
+        x: bx + barW / 2, y: by - (isMobile ? 4 : 6),
         "text-anchor": "middle",
         fill: r.cat === "auto" ? cols.fill : textCol,
-        "font-size": 11,
+        "font-size": isMobile ? 7.8 : 11,
         "font-weight": r.cat === "auto" ? 700 : 600,
         "font-family": "Google Sans Mono, monospace"
       }, valStr));
       anim.push(a);
 
       const lx = bx + barW / 2;
-      const ly = padT + plotH + 14;
+      const ly = padT + plotH + (isMobile ? 10 : 14);
+      const shortLbl = isMobile && r.short === "Unconstrained Agent" ? "Free Agent" : r.short;
       g.appendChild(svgEl("text", {
         x: lx, y: ly,
-        transform: "rotate(-28 " + lx + " " + ly + ")",
+        transform: "rotate(" + (isMobile ? -44 : -28) + " " + lx + " " + ly + ")",
         "text-anchor": "end",
         fill: r.cat === "auto" ? cols.fill : textCol,
-        "font-size": 11,
+        "font-size": isMobile ? 8.5 : 11,
         "font-weight": r.cat === "auto" ? 700 : 500
-      }, r.short));
+      }, shortLbl));
 
       g.addEventListener("mouseenter", function () {
         f1SelectedIdx = idx;
@@ -1051,7 +1052,7 @@ def engineer(X_train, y_train, X_test):
       });
       g.addEventListener("click", function () {
         f1SelectedIdx = idx;
-        renderFig1();
+        renderFig1(false);
       });
 
       svg.appendChild(g);
@@ -1546,8 +1547,13 @@ def engineer(X_train, y_train, X_test):
     const wrap = document.getElementById("f5-svg-wrap");
     if (!wrap) return;
     const isDark = root.getAttribute("data-theme") === "dark";
-    const W = 1000, H = 356;
-    const padL = 178, padR = 136, padT = 16, padB = 26;
+    const isMobile = window.innerWidth <= 640;
+    const W = isMobile ? 350 : 1000;
+    const H = isMobile ? 336 : 356;
+    const padL = isMobile ? 114 : 178;
+    const padR = isMobile ? 38 : 136;
+    const padT = isMobile ? 12 : 16;
+    const padB = isMobile ? 24 : 26;
     const plotW = W - padL - padR;
     const plotH = H - padT - padB;
     const xMin = 1150, xMax = 1860;
@@ -1563,14 +1569,14 @@ def engineer(X_train, y_train, X_test):
     const barCol = isDark ? "#334155" : "#cbd5e1";
     const runnerCol = isDark ? "#475569" : "#94a3b8";
 
-    [1200, 1350, 1500, 1650, 1800].forEach(function (xv) {
+    (isMobile ? [1200, 1400, 1600, 1800] : [1200, 1350, 1500, 1650, 1800]).forEach(function (xv) {
       const x = padL + ((xv - xMin) / (xMax - xMin)) * plotW;
       svg.appendChild(svgEl("line", { x1: x, y1: padT, x2: x, y2: padT + plotH, stroke: gridCol, "stroke-width": 1, "stroke-dasharray": "3,3" }));
-      svg.appendChild(svgEl("text", { x: x, y: H - 6, "text-anchor": "middle", fill: mutedCol, "font-size": 10.5, "font-family": "Google Sans Mono, monospace" }, String(xv)));
+      svg.appendChild(svgEl("text", { x: x, y: H - 6, "text-anchor": "middle", fill: mutedCol, "font-size": isMobile ? 9.5 : 10.5, "font-family": "Google Sans Mono, monospace" }, String(xv)));
     });
 
     const rowH = plotH / MLE_ELO.length;
-    const barH = Math.min(17, rowH * 0.68);
+    const barH = Math.min(isMobile ? 15 : 17, rowH * 0.68);
 
     // Subtle reference line for #2 CAIR MARS+ (1717)
     const xRunner = padL + ((1717 - xMin) / (xMax - xMin)) * plotW;
@@ -1582,36 +1588,37 @@ def engineer(X_train, y_train, X_test):
     MLE_ELO.forEach(function (r, idx) {
       const y = padT + idx * rowH + (rowH - barH) / 2;
       const bw = Math.max(8, ((r.elo - xMin) / (xMax - xMin)) * plotW);
+      const agentName = isMobile && r.agent === "CAIR MLE-STAR-Pro" ? "MLE-STAR-Pro" : r.agent;
 
       if (r.ours) {
         svg.appendChild(svgEl("rect", {
-          x: 6, y: padT + idx * rowH + 1, width: W - 12, height: rowH - 2, rx: 6,
+          x: 4, y: padT + idx * rowH + 1, width: W - 8, height: rowH - 2, rx: 6,
           fill: accentSoft
         }));
       }
 
       svg.appendChild(svgEl("text", {
-        x: padL - 10, y: y + barH - 3,
+        x: padL - (isMobile ? 6 : 10), y: y + barH - (isMobile ? 2.5 : 3),
         "text-anchor": "end",
         fill: r.ours ? accentCol : textCol,
-        "font-size": 12,
+        "font-size": isMobile ? 10 : 12,
         "font-weight": r.ours ? 700 : (idx < 3 ? 600 : 500)
-      }, "#" + (idx + 1) + "  " + r.agent));
+      }, "#" + (idx + 1) + (isMobile ? " " : "  ") + agentName));
 
       svg.appendChild(svgEl("rect", {
-        x: padL, y: y, width: bw, height: barH, rx: 4,
+        x: padL, y: y, width: bw, height: barH, rx: isMobile ? 3 : 4,
         fill: r.ours ? accentCol : (idx === 1 ? runnerCol : barCol)
       }));
 
       svg.appendChild(svgEl("text", {
-        x: padL + bw + 7, y: y + barH - 3,
+        x: padL + bw + (isMobile ? 5 : 7), y: y + barH - (isMobile ? 2.5 : 3),
         fill: r.ours ? accentCol : textCol,
-        "font-size": 11.5,
+        "font-size": isMobile ? 10 : 11.5,
         "font-weight": r.ours ? 700 : 600,
         "font-family": "Google Sans Mono, monospace"
       }, String(r.elo)));
 
-      if (r.ours) {
+      if (r.ours && !isMobile) {
         const bx = padL + bw + 44;
         svg.appendChild(svgEl("rect", {
           x: bx, y: y - 1, width: 84, height: barH + 2, rx: 9,
@@ -1737,7 +1744,17 @@ def engineer(X_train, y_train, X_test):
     });
   }
 
-  /* ===== Initial Render ===== */
+  /* ===== Initial Render & Responsive Resize ===== */
+  let lastMobile = window.innerWidth <= 640;
+  window.addEventListener("resize", function () {
+    const nowMobile = window.innerWidth <= 640;
+    if (nowMobile !== lastMobile) {
+      lastMobile = nowMobile;
+      renderFig1(false);
+      renderFig5Elo();
+    }
+  });
+
   renderFig1(false);
   renderFig3();
   renderFig4();
