@@ -52,7 +52,7 @@
         <rect class="logo-spark" x="22" y="12.5" width="7" height="6.5" rx="2.2"/>
         <rect class="logo-cell-mid" x="22" y="22.5" width="7" height="6.5" rx="2.2"/>
       </svg>
-      <span>TabFM &middot; Technical Report</span>
+      <span>TabFM-Auto &middot; Technical Report</span>
     </div>
     <h1 class="paper-title">TabFM-Auto: Self-Evolving Pipelines for Tabular Foundation Models</h1>
     <p class="paper-subtitle">
@@ -64,11 +64,11 @@
         <div class="meta-label">Authors</div>
         <div class="meta-value">
           <a href="https://deqingfu.github.io/" target="_blank" rel="noopener"><strong>Deqing Fu</strong></a><sup>1,3</sup>,
-          <a href="https://huangyuan-hy.github.io/" target="_blank" rel="noopener"><strong>Huangyuan Su</strong></a><sup>2,4</sup>,
+          <a href="https://hither1.github.io/" target="_blank" rel="noopener"><strong>Huangyuan Su</strong></a><sup>2,4</sup>,
           <a href="https://rajatsen91.github.io/" target="_blank" rel="noopener"><strong>Rajat Sen</strong></a><sup>1</sup>,
           <a href="https://openreview.net/profile?id=~Taman_Narayan1" target="_blank" rel="noopener"><strong>Taman Narayan</strong></a><sup>1</sup>,
           <a href="https://sites.utexas.edu/sanghavi/" target="_blank" rel="noopener"><strong>Sujay Sanghavi</strong></a><sup>1,5</sup>,
-          <a href="https://scholar.google.com/citations?user=G66j9hUAAAAJ" target="_blank" rel="noopener"><strong>Abhimanyu Das</strong></a><sup>1</sup>,
+          <a href="https://sites.google.com/site/abhidas/" target="_blank" rel="noopener"><strong>Abhimanyu Das</strong></a><sup>1</sup>,
           <a href="https://weihaokong.github.io/" target="_blank" rel="noopener"><strong>Weihao Kong</strong></a><sup>1</sup>
         </div>
       </div>
@@ -309,40 +309,67 @@
       <div class="arch-panel-box">
         <div class="arch-panel-head">
           <span class="arch-panel-label">(b) Inference Dataflow Through Selected Pipeline <i>P*</i> Around Frozen TabFM</span>
-          <span class="arch-panel-sub">Five modular components in Equation (1)</span>
+          <span class="arch-panel-sub">Click any of the five stages below to inspect its contract &amp; evolved code</span>
         </div>
         <div class="dataflow-strip">
-          <div class="df-step">
+          <div class="df-step" data-f2-stage="preprocess">
             <div class="df-step-num">1. preprocess() &middot; &Phi;<sub>clean</sub></div>
             <div class="df-step-title">Clean &amp; Target Map</div>
             <div class="df-step-desc">Recodes sentinel <code>0 &rarr; NaN</code>, filters corrupted rows, and transforms skewed <i>y</i><sub>train</sub> via <i>g</i>(<i>y</i>).</div>
           </div>
-          <div class="df-step is-active">
+          <div class="df-step is-active" data-f2-stage="engineer">
             <div class="df-step-num">2. engineer() &middot; &Phi;<sub>feat</sub></div>
             <div class="df-step-title">Domain &amp; Structural FE</div>
             <div class="df-step-desc">Synthesizes physical ratios, clinical groupings, out-of-fold target rates, and multi-file features (95.1% of runs).</div>
           </div>
-          <div class="df-step">
+          <div class="df-step" data-f2-stage="sample">
             <div class="df-step-num">3. sample() &middot; <i>S</i><sub>ctx</sub></div>
             <div class="df-step-title">Context Sampling</div>
             <div class="df-step-desc">Builds stratified or minority-oversampled context views within the 16,384-row window.</div>
           </div>
-          <div class="df-step">
+          <div class="df-step" data-f2-stage="kwargs">
             <div class="df-step-num">4. TABFM_KWARGS &middot; <i>f</i><sub>&theta;*</sub></div>
             <div class="df-step-title">Frozen TabFM (400M)</div>
             <div class="df-step-desc">Configures generic presets (norms, SVD, NNLS) and predicts test labels in one forward pass per view.</div>
           </div>
-          <div class="df-step">
+          <div class="df-step" data-f2-stage="postprocess">
             <div class="df-step-num">5. postprocess() &middot; &Psi;<sub>post</sub></div>
             <div class="df-step-title">Calibrate &amp; Inv-Map</div>
             <div class="df-step-desc">Applies inverse map <i>g</i><sup>&minus;1</sup>, log-odds prior alignment, and temperature scaling &rarr; <strong>2013 Elo (#1)</strong>.</div>
           </div>
         </div>
       </div>
+
+      <!-- Stage Inspector (updates when clicking any of the 5 stages in Panel b) -->
+      <div class="stage-inspector" id="f2-inspector">
+        <div class="stage-inspector-head">
+          <div class="stage-inspector-title" id="f2-insp-title">Stage 2: engineer(X_train, y_train, X_test) &mdash; Semantic &amp; Structural Feature Engineering (&Phi;<sub>feat</sub>)</div>
+          <span class="badge pos" id="f2-insp-stat">Modified in 95.1% of TabArena runs (97 / 102)</span>
+        </div>
+        <div class="stage-inspector-grid">
+          <div class="stage-inspector-text" id="f2-insp-text">
+            <p><strong>What limitation of frozen TabFM it solves:</strong> Attention layers over raw numbers cannot infer domain scaling laws from column headers or join external sensor/molecular files. Writing a domain formula as an explicit column spares <code>TabFM</code> from approximating nonlinear ratios in context.</p>
+            <p><strong>What the agent synthesizes:</strong> Inductive domain formulas (aeroacoustic Strouhal numbers, concrete water-to-binder maturity laws, clinical ICD-9 hierarchies), smoothed out-of-fold target statistics, multi-file waveform/3D parsers, and label-free transductive entity-graph degrees over combined <i>X</i><sub>train</sub> &cup; <i>X</i><sub>test</sub>.</p>
+          </div>
+          <pre class="stage-inspector-code" id="f2-insp-code"># Evolved P* on airfoil_self_noise (Test RMSE: 1.0712 -> 0.9165, -14.4%):
+def _phys(df):
+    f, c, u, d = df["frequency"], df["chord-length"], df["free-stream-velocity"], df["suction-side-displacement-thickness"]
+    out = df.drop(columns=["frequency", "free-stream-velocity", "chord-length"]).copy()
+    out["log_f"], out["log_d"], out["log_c"] = np.log10(f), np.log10(d), np.log10(c)
+    out["log_St_d"], out["log_St_c"] = np.log10(f * d / u), np.log10(f * c / u)
+    out["log_Re_c"], out["log_Re_d"] = np.log10(u * c / 1.5e-5), np.log10(u * d / 1.5e-5)
+    out["log_d_over_c"] = np.log10(d / c)
+    out["bpm_scale"] = 10.0 * np.log10(d) + 50.0 * np.log10(u / 340.46)
+    return out
+
+def engineer(X_train, y_train, X_test):
+    return _phys(X_train), _phys(X_test)</pre>
+        </div>
+      </div>
     </div>
 
     <div class="fig-caption">
-      <strong>Figure 2: Closed-loop pipeline search and test-time inference dataflow of TabFM-Auto.</strong> (a) During search, the coding agent iteratively edits <code>pipeline.py</code> using 3-fold cross-validation feedback on <i>D</i><sub>train</sub> around frozen <code>TabFM</code>. (b) At test time, the frozen pipeline <i>P*</i> transforms the table through five modular stages around the 400M-parameter <code>TabFM</code> backbone.
+      <strong>Figure 2: Closed-loop pipeline search and test-time inference dataflow of TabFM-Auto.</strong> (a) During search, the coding agent iteratively edits <code>pipeline.py</code> using 3-fold cross-validation feedback on <i>D</i><sub>train</sub> around frozen <code>TabFM</code>. (b) At test time, the frozen pipeline <i>P*</i> transforms the table through five modular stages around the 400M-parameter <code>TabFM</code> backbone; click any stage box in (b) to inspect its contract and evolved code.
     </div>
   </section>
 
@@ -1109,7 +1136,7 @@
       title: "Stage 2: engineer(X_train, y_train, X_test) — Semantic & Structural Feature Engineering (Φ_feat)",
       stat: "Modified in 95.1% of TabArena runs (97 / 102)",
       text: "<p><strong>What limitation of frozen TabFM it solves:</strong> Attention layers over raw numbers cannot infer domain scaling laws from column headers or join external sensor/molecular files. Writing a domain formula as an explicit column spares <code>TabFM</code> from approximating nonlinear ratios in context.</p><p><strong>What the agent synthesizes:</strong> Inductive domain formulas (aeroacoustic Strouhal numbers, concrete water-to-binder maturity laws, clinical ICD-9 hierarchies), smoothed out-of-fold target statistics, multi-file waveform/3D parsers, and label-free transductive entity-graph degrees over combined <i>X</i><sub>train</sub> &cup; <i>X</i><sub>test</sub>.</p>",
-      code: "# Identity baseline P0:\ndef engineer(X_train, y_train, X_test):\n    return X_train, X_test\n\n# Evolved P* on airfoil_self_noise (Test RMSE: 1.0712 -> 0.9165, -14.4%):\ndef engineer(X_train, y_train, X_test):\n    X_tr, X_te = _phys(X_train, OPT[\"groups\"]), _phys(X_test, OPT[\"groups\"])\n    b_tr, b_te = _brackets(X_train, y_train, X_test)\n    g_tr, g_te = _ecdf_grid(X_train, X_test)\n    return pd.concat([X_tr, b_tr, g_tr], axis=1), pd.concat([X_te, b_te, g_te], axis=1)"
+      code: "# Evolved P* on airfoil_self_noise (Test RMSE: 1.0712 -> 0.9165, -14.4%):\ndef _phys(df):\n    f, c, u, d = df[\"frequency\"], df[\"chord-length\"], df[\"free-stream-velocity\"], df[\"suction-side-displacement-thickness\"]\n    out = df.drop(columns=[\"frequency\", \"free-stream-velocity\", \"chord-length\"]).copy()\n    out[\"log_f\"], out[\"log_d\"], out[\"log_c\"] = np.log10(f), np.log10(d), np.log10(c)\n    out[\"log_St_d\"], out[\"log_St_c\"] = np.log10(f * d / u), np.log10(f * c / u)\n    out[\"log_Re_c\"], out[\"log_Re_d\"] = np.log10(u * c / 1.5e-5), np.log10(u * d / 1.5e-5)\n    out[\"log_d_over_c\"] = np.log10(d / c)\n    out[\"bpm_scale\"] = 10.0 * np.log10(d) + 50.0 * np.log10(u / 340.46)\n    return out\n\ndef engineer(X_train, y_train, X_test):\n    return _phys(X_train), _phys(X_test)"
     },
     sample: {
       title: "Stage 3: sample(X_train, y_train, X_test, max_rows) — Multi-View Context Selection (S_ctx)",

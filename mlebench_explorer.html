@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-tOwVIfn2xscxU1ileLON0HruT0Axe3tFIdLlMyoRKMg='; style-src 'sha256-WL9DocEX2eA6L0ZBEAUjdc2k1gSH38P238wRO7C7gzg='; font-src data:; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-tOwVIfn2xscxU1ileLON0HruT0Axe3tFIdLlMyoRKMg='; style-src 'sha256-5ZuGd5zIyhpzremo2xgesa1OGaBoyhlSVsiHb6YTjts='; font-src data:; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Interactive explorer for the 8 evolved TabFM-Auto pipelines across the MLE-Bench-Tabular competition suite.">
 <meta name="color-scheme" content="light dark">
@@ -118,11 +118,14 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
 .brand-mark {
   width: 24px;
   height: 24px;
-  border-radius: 6px;
   flex: none;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent) 50%, transparent 50.5%), var(--accent-soft);
-  box-shadow: inset 0 0 0 1px hsla(0 0% 100% / 0.15);
+  display: block;
 }
+.brand-mark .logo-backbone { fill: #2563eb; }
+.brand-mark .logo-cell-mid { fill: #2563eb; fill-opacity: 0.32; }
+.brand-mark .logo-spark { fill: var(--accent); }
+[data-theme="dark"] .brand-mark .logo-backbone { fill: #60a5fa; }
+[data-theme="dark"] .brand-mark .logo-cell-mid { fill: #60a5fa; fill-opacity: 0.32; }
 .brand-title { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: -0.015em; white-space: nowrap; }
 .brand-sep { color: var(--border); font-weight: 400; }
 .brand-sub { margin: 0; font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -843,7 +846,7 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <span class="brand-mark" aria-hidden="true"></span>
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect class="logo-backbone" x="3" y="3" width="26" height="6.5" rx="2.2"/><rect class="logo-cell-mid" x="3" y="12.5" width="6.5" height="16.5" rx="2.2"/><rect class="logo-backbone" x="12.5" y="12.5" width="6.5" height="16.5" rx="2.2"/><rect class="logo-spark" x="22" y="12.5" width="7" height="6.5" rx="2.2"/><rect class="logo-cell-mid" x="22" y="22.5" width="7" height="6.5" rx="2.2"/></svg>
       <h1 class="brand-title">TabFM-Auto</h1>
       <span class="brand-sep" aria-hidden="true">/</span>
       <p class="brand-sub" id="brand-sub">Pipeline Explorer</p>
