@@ -595,11 +595,11 @@
     <div class="fig-top">
       <div class="fig-heading">
         <span class="fig-kicker">Figure 5 &middot; MLE-Bench-Tabular</span>
-        <h3 class="fig-title" id="f5-title">MLE-Bench-Tabular Overall Elo Leaderboard &amp; Head-to-Head Win Rates (13 Agents)</h3>
+        <h3 class="fig-title" id="f5-title">MLE-Bench-Tabular Overall Elo Leaderboard (13 Agents)</h3>
       </div>
       <div class="fig-controls">
         <div class="seg-tabs" role="tablist" aria-label="MLE-Bench-Tabular figure view">
-          <button type="button" class="seg-tab is-active" data-f5-view="elo">Overall Elo &amp; Head-to-Head Win Rates</button>
+          <button type="button" class="seg-tab is-active" data-f5-view="elo">Overall Elo Leaderboard</button>
           <button type="button" class="seg-tab" data-f5-view="comps">Per-Competition Scores (All 8 Tasks)</button>
         </div>
       </div>
@@ -614,7 +614,7 @@
     </div>
 
     <div class="fig-caption">
-      <strong>Figure 5: MLE-Bench-Tabular overall Elo ranking, head-to-head win rates, and per-competition scores.</strong> Toggle between the aggregate Elo &amp; pairwise win-rate view and the 8-competition breakdown above. In the per-competition histograms, agents are ordered from best (top) to worst (bottom), bar length shows the competition metric directly (so shorter bars at the top indicate smaller errors on lower-is-better tasks), and the vertical gold dashed line marks the Kaggle Gold Medal threshold. Across all graded pairwise matches against the 12 external MLE agents with complete 8-competition submissions, <strong>TabFM-Auto ranks #1 overall at 1827 Elo</strong>, winning <strong>86.7% (248 / 286)</strong> of all graded head-to-head matches.
+      <strong>Figure 5: MLE-Bench-Tabular overall Elo ranking and per-competition scores.</strong> Toggle between the aggregate Elo leaderboard and the 8-competition breakdown above. In the per-competition histograms, agents are ordered from best (top) to worst (bottom), bar length shows the competition metric directly (so shorter bars at the top indicate smaller errors on lower-is-better tasks), and the vertical gold dashed line marks the Kaggle Gold Medal threshold. Across the 8-competition suite against the 12 external MLE agents with complete submissions, <strong>TabFM-Auto ranks #1 overall at 1827 Elo</strong>.
     </div>
   </section>
 
@@ -1335,21 +1335,21 @@
     });
   });
 
-  /* ===== 8. Interactive Figure 5: MLE-Bench-Tabular Elo & Per-Competition Histograms ===== */
+  /* ===== 8. Figure 5: MLE-Bench-Tabular Elo & Per-Competition Histograms ===== */
   const MLE_ELO = [
-    { agent: "TabFM-Auto", elo: 1827, winVsOurs: "—", matches: "248 / 286 (86.7% total win rate)", ours: true },
-    { agent: "CAIR MARS+", elo: 1717, winVsOurs: "75.0%", matches: "18 / 24 matches won by TabFM-Auto" },
-    { agent: "CAIR MARS", elo: 1652, winVsOurs: "75.0%", matches: "18 / 24 matches won by TabFM-Auto" },
-    { agent: "MLEvolve", elo: 1595, winVsOurs: "83.3%", matches: "20 / 24 matches won by TabFM-Auto" },
-    { agent: "Famou-Agent 2.0", elo: 1581, winVsOurs: "75.0%", matches: "18 / 24 matches won by TabFM-Auto" },
-    { agent: "ML-Master 2.0", elo: 1442, winVsOurs: "87.5%", matches: "21 / 24 matches won by TabFM-Auto" },
-    { agent: "AIBuildAI", elo: 1437, winVsOurs: "83.3%", matches: "20 / 24 matches won by TabFM-Auto" },
-    { agent: "Thesis", elo: 1387, winVsOurs: "95.8%", matches: "23 / 24 matches won by TabFM-Auto" },
-    { agent: "CAIR MLE-STAR-Pro", elo: 1373, winVsOurs: "83.3%", matches: "20 / 24 matches won by TabFM-Auto" },
-    { agent: "R&D-Agent", elo: 1346, winVsOurs: "100.0%", matches: "24 / 24 matches won by TabFM-Auto" },
-    { agent: "AIDE", elo: 1326, winVsOurs: "90.9%", matches: "20 / 22 matches won by TabFM-Auto" },
-    { agent: "InternAgent", elo: 1324, winVsOurs: "87.5%", matches: "21 / 24 matches won by TabFM-Auto" },
-    { agent: "AIRA-Dojo", elo: 1258, winVsOurs: "100.0%", matches: "24 / 24 matches won by TabFM-Auto" }
+    { agent: "TabFM-Auto", elo: 1827, ours: true },
+    { agent: "CAIR MARS+", elo: 1717 },
+    { agent: "CAIR MARS", elo: 1652 },
+    { agent: "MLEvolve", elo: 1595 },
+    { agent: "Famou-Agent 2.0", elo: 1581 },
+    { agent: "ML-Master 2.0", elo: 1442 },
+    { agent: "AIBuildAI", elo: 1437 },
+    { agent: "Thesis", elo: 1387 },
+    { agent: "CAIR MLE-STAR-Pro", elo: 1373 },
+    { agent: "R&D-Agent", elo: 1346 },
+    { agent: "AIDE", elo: 1326 },
+    { agent: "InternAgent", elo: 1324 },
+    { agent: "AIRA-Dojo", elo: 1258 }
   ];
 
   const MLE_COMPS = [
@@ -1491,8 +1491,8 @@
     const wrap = document.getElementById("f5-svg-wrap");
     if (!wrap) return;
     const isDark = root.getAttribute("data-theme") === "dark";
-    const W = 940, H = 360;
-    const padL = 165, padR = 230, padT = 22, padB = 26;
+    const W = 940, H = 350;
+    const padL = 175, padR = 65, padT = 16, padB = 26;
     const plotW = W - padL - padR;
     const plotH = H - padT - padB;
     const xMin = 1150, xMax = 1900;
@@ -1503,9 +1503,6 @@
     const mutedCol = isDark ? "#94a3b8" : "#64748b";
     const accentCol = isDark ? "#f97316" : "#d04418";
     const barCol = isDark ? "#475569" : "#cbd5e1";
-
-    // Column header for right side
-    svg.appendChild(svgEl("text", { x: W - padR + 30, y: 14, fill: mutedCol, "font-size": 11, "font-weight": 700, "font-family": "JetBrains Mono, monospace" }, "TabFM-Auto Win Rate vs. Agent"));
 
     [1200, 1350, 1500, 1650, 1800].forEach(function (xv) {
       const x = padL + ((xv - xMin) / (xMax - xMin)) * plotW;
@@ -1540,26 +1537,6 @@
         "font-weight": r.ours ? 800 : 600,
         "font-family": "JetBrains Mono, monospace"
       }, String(r.elo)));
-
-      // Head-to-head win rate pill on the right
-      const pillX = W - padR + 30;
-      if (r.ours) {
-        svg.appendChild(svgEl("text", {
-          x: pillX, y: y + barH - 3,
-          fill: accentCol, "font-size": 11.5, "font-weight": 700, "font-family": "JetBrains Mono, monospace"
-        }, "86.7% Overall (248 / 286)"));
-      } else {
-        svg.appendChild(svgEl("rect", {
-          x: pillX, y: y - 1, width: 54, height: barH + 2, rx: 4,
-          fill: isDark ? "#064e3b" : "#dcfce7"
-        }));
-        svg.appendChild(svgEl("text", {
-          x: pillX + 27, y: y + barH - 3,
-          "text-anchor": "middle",
-          fill: isDark ? "#6ee7b7" : "#166534",
-          "font-size": 11, "font-weight": 700, "font-family": "JetBrains Mono, monospace"
-        }, r.winVsOurs));
-      }
     });
 
     wrap.innerHTML = "";
@@ -1650,7 +1627,7 @@
       if (v === "elo") {
         if (eloPane) eloPane.classList.remove("is-hidden");
         if (compsPane) compsPane.classList.add("is-hidden");
-        if (titleEl) titleEl.textContent = "MLE-Bench-Tabular Overall Elo Leaderboard & Head-to-Head Win Rates (13 Agents)";
+        if (titleEl) titleEl.textContent = "MLE-Bench-Tabular Overall Elo Leaderboard (13 Agents)";
       } else {
         if (eloPane) eloPane.classList.add("is-hidden");
         if (compsPane) compsPane.classList.remove("is-hidden");
