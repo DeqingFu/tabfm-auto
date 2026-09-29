@@ -45,15 +45,21 @@
 <main class="container">
 
   <header class="hero">
-    <div class="venue-kicker">
-      <svg class="nav-logo" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect class="logo-backbone" x="3" y="3" width="26" height="6.5" rx="2.2"/>
-        <rect class="logo-cell-mid" x="3" y="12.5" width="6.5" height="16.5" rx="2.2"/>
-        <rect class="logo-backbone" x="12.5" y="12.5" width="6.5" height="16.5" rx="2.2"/>
-        <rect class="logo-spark" x="22" y="12.5" width="7" height="6.5" rx="2.2"/>
-        <rect class="logo-cell-mid" x="22" y="22.5" width="7" height="6.5" rx="2.2"/>
-      </svg>
-      <span>TabFM-Auto &middot; Technical Report</span>
+    <div class="hero-top">
+      <div class="venue-kicker">
+        <svg class="nav-logo" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect class="logo-backbone" x="3" y="3" width="26" height="6.5" rx="2.2"/>
+          <rect class="logo-cell-mid" x="3" y="12.5" width="6.5" height="16.5" rx="2.2"/>
+          <rect class="logo-backbone" x="12.5" y="12.5" width="6.5" height="16.5" rx="2.2"/>
+          <rect class="logo-spark" x="22" y="12.5" width="7" height="6.5" rx="2.2"/>
+          <rect class="logo-cell-mid" x="22" y="22.5" width="7" height="6.5" rx="2.2"/>
+        </svg>
+        <span>TabFM-Auto &middot; Technical Report</span>
+      </div>
+      <div class="hero-pills">
+        <a class="hero-pill" href="#fig-headline">TabArena (51) &middot; <strong>2013.0 Elo (#1)</strong></a>
+        <a class="hero-pill" href="#fig-mlebench">MLE-Bench-Tabular (8) &middot; <strong>1827 Elo (#1)</strong></a>
+      </div>
     </div>
     <h1 class="paper-title">TabFM-Auto: Self-Evolving Pipelines for Tabular Foundation Models</h1>
     <p class="paper-subtitle">
@@ -61,21 +67,23 @@
     </p>
 
     <div class="meta-grid">
-      <div>
-        <div class="meta-label">Authors</div>
-        <div class="meta-value">
-          <a href="https://deqingfu.github.io/" target="_blank" rel="noopener"><strong>Deqing Fu</strong></a><sup>1,3</sup>,
-          <a href="https://hither1.github.io/" target="_blank" rel="noopener"><strong>Huangyuan Su</strong></a><sup>2,4</sup>,
-          <a href="https://rajatsen91.github.io/" target="_blank" rel="noopener"><strong>Rajat Sen</strong></a><sup>1</sup>,
-          <a href="https://openreview.net/profile?id=~Taman_Narayan1" target="_blank" rel="noopener"><strong>Taman Narayan</strong></a><sup>1</sup>,
-          <a href="https://sites.utexas.edu/sanghavi/" target="_blank" rel="noopener"><strong>Sujay Sanghavi</strong></a><sup>1,5</sup>,
-          <a href="https://sites.google.com/site/abhidas/" target="_blank" rel="noopener"><strong>Abhimanyu Das</strong></a><sup>1</sup>,
-          <a href="https://weihaokong.github.io/" target="_blank" rel="noopener"><strong>Weihao Kong</strong></a><sup>1</sup>
-        </div>
+      <div class="author-row" aria-label="Authors">
+        <span><a href="https://deqingfu.github.io/" target="_blank" rel="noopener"><strong>Deqing Fu</strong></a><sup>1,3</sup></span>
+        <span class="author-sep" aria-hidden="true">&middot;</span>
+        <span><a href="https://hither1.github.io/" target="_blank" rel="noopener"><strong>Huangyuan Su</strong></a><sup>2,4</sup></span>
+        <span class="author-sep" aria-hidden="true">&middot;</span>
+        <span><a href="https://rajatsen91.github.io/" target="_blank" rel="noopener"><strong>Rajat Sen</strong></a><sup>1</sup></span>
+        <span class="author-sep" aria-hidden="true">&middot;</span>
+        <span><a href="https://openreview.net/profile?id=~Taman_Narayan1" target="_blank" rel="noopener"><strong>Taman Narayan</strong></a><sup>1</sup></span>
+        <span class="author-sep" aria-hidden="true">&middot;</span>
+        <span><a href="https://sites.utexas.edu/sanghavi/" target="_blank" rel="noopener"><strong>Sujay Sanghavi</strong></a><sup>1,5</sup></span>
+        <span class="author-sep" aria-hidden="true">&middot;</span>
+        <span><a href="https://sites.google.com/site/abhidas/" target="_blank" rel="noopener"><strong>Abhimanyu Das</strong></a><sup>1</sup></span>
+        <span class="author-sep" aria-hidden="true">&middot;</span>
+        <span><a href="https://weihaokong.github.io/" target="_blank" rel="noopener"><strong>Weihao Kong</strong></a><sup>1</sup></span>
       </div>
       <div class="affil-block">
-        <div class="meta-label">Affiliations</div>
-        <ul class="affil-logos">
+        <ul class="affil-logos" aria-label="Affiliations">
           <li><a class="affil-item" href="https://research.google/" target="_blank" rel="noopener" title="Google Research">
             <span class="affil-n">1</span>
             <img src="assets/logos/google-research.png" alt="Google Research" class="logo-gr">
@@ -171,7 +179,7 @@
   </section>
 
   <!-- ================= SECTION 1: INTRODUCTION ================= -->
-  <h2 id="intro">1. Why Pair a Coding Agent with a Frozen Tabular Foundation Model?</h2>
+  <h2 id="intro"><span class="sec-num">01</span><span>Why Pair a Coding Agent with a Frozen Tabular Foundation Model?</span></h2>
 
   <p>
     Frozen TFMs and coding agents fail in opposite ways. TabFM-Auto keeps the TFM frozen and lets the agent rewrite only the data pipeline, so every CV gain comes from the pipeline itself.
@@ -190,8 +198,8 @@
         </ul>
       </div>
       <div class="world-foot">
-        <span>TabArena Overall (51)</span>
-        <strong>1785.3 Elo</strong>
+        <span>TabArena (51)</span>
+        <span><strong>1785.3 Elo</strong> &middot; <span class="badge neutral">Baseline</span></span>
       </div>
     </div>
 
@@ -207,8 +215,8 @@
         </ul>
       </div>
       <div class="world-foot">
-        <span>TabArena Overall (51)</span>
-        <strong>1468.8 Elo</strong>
+        <span>TabArena (51)</span>
+        <span><strong>1468.8 Elo</strong> &middot; <span class="badge neutral">&minus;316.5</span></span>
       </div>
     </div>
 
@@ -224,14 +232,14 @@
         </ul>
       </div>
       <div class="world-foot">
-        <span>TabArena Overall (51)</span>
-        <strong>2013.0 Elo (#1)</strong>
+        <span>TabArena (51)</span>
+        <span><strong>2013.0 Elo</strong> &middot; <span class="badge pos">+227.7 (#1)</span></span>
       </div>
     </div>
   </div>
 
   <!-- ================= SECTION 2: METHODOLOGY ================= -->
-  <h2 id="method">2. Methodology: Closed-Loop Pipeline Evolution</h2>
+  <h2 id="method"><span class="sec-num">02</span><span>Methodology: Closed-Loop Pipeline Evolution</span></h2>
 
   <p>
     Given training data <math><msub><mi>D</mi><mtext>train</mtext></msub><mo>=</mo><mo stretchy="false">(</mo><msub><mi>X</mi><mtext>train</mtext></msub><mo separator="true">,</mo><msub><mi>y</mi><mtext>train</mtext></msub><mo stretchy="false">)</mo></math>, unlabeled test inputs <math><msub><mi>X</mi><mtext>test</mtext></msub></math>, and metadata <math><mi>M</mi></math>, we partition <math><msub><mi>D</mi><mtext>train</mtext></msub></math> into 3 internal cross-validation folds without touching the test split. The coding agent searches over executable Python pipelines <math><mi>P</mi><mo>=</mo><mo stretchy="false">(</mo><msub><mi mathvariant="normal">&#x3A6;</mi><mtext>clean</mtext></msub><mo separator="true">,</mo><msub><mi mathvariant="normal">&#x3A6;</mi><mtext>feat</mtext></msub><mo separator="true">,</mo><msub><mi>S</mi><mtext>ctx</mtext></msub><mo separator="true">,</mo><msub><mi mathvariant="normal">&#x3A8;</mi><mtext>post</mtext></msub><mo stretchy="false">)</mo><mo>&#x2208;</mo><mi>&#x1D4AB;</mi></math> around frozen weights <math><msup><mi>&#x3B8;</mi><mo>*</mo></msup></math> to maximize the mean 3-fold validation score <math><msub><mi>U</mi><mtext>val</mtext></msub></math>:
@@ -344,9 +352,9 @@
               <span class="stage-ba-tag">Before &middot; Identity Baseline P<sub>0</sub></span>
               <span class="stage-ba-meta" id="f2-before-meta">airfoil_self_noise &middot; Test RMSE: 1.0712</span>
             </div>
-            <pre class="stage-ba-code" id="f2-insp-before"># Raw wind-tunnel columns passed unchanged:
-# ["frequency", "angle-of-attack", "chord-length",
-#  "free-stream-velocity",
+            <pre class="stage-ba-code" id="f2-insp-before"># Raw wind-tunnel columns passed as-is:
+# ["frequency", "angle-of-attack",
+#  "chord-length", "free-stream-velocity",
 #  "suction-side-displacement-thickness"]
 
 def engineer(X_train, y_train, X_test):
@@ -387,7 +395,7 @@ def engineer(X_train, y_train, X_test):
   </section>
 
   <!-- ================= SECTION 3: TABARENA PIPELINE EXPLORER ================= -->
-  <h2 id="explorer">3. TabArena Pipeline Explorer (All 51 Datasets)</h2>
+  <h2 id="explorer"><span class="sec-num">03</span><span>TabArena Pipeline Explorer (All 51 Datasets)</span></h2>
 
   <p>All 51 evolved pipelines. Pick a dataset and a stage to read its code, or open <strong>Write-up</strong> for notes.</p>
 
@@ -417,7 +425,7 @@ def engineer(X_train, y_train, X_test):
   </div>
 
   <!-- ================= SECTION 4: TABARENA EVALUATION & TAXONOMY ================= -->
-  <h2 id="tabarena">4. TabArena Results, Taxonomy &amp; Search Dynamics</h2>
+  <h2 id="tabarena"><span class="sec-num">04</span><span>TabArena Results, Taxonomy &amp; Search Dynamics</span></h2>
 
   <p>
     Search runs once per dataset with 3-fold CV on fold 0's training split (up to 96 evaluations or 6 hours on one H100); the frozen <i>P*</i> is then scored on every official test fold. Over plain <code>TabFM</code>, TabFM-Auto gains <strong>+197.6 Elo</strong> on classification and <strong>+467.0 Elo</strong> on regression.
@@ -511,7 +519,7 @@ def engineer(X_train, y_train, X_test):
   </section>
 
   <!-- ================= SECTION 5: CONTROLLED ABLATIONS & TRANSFER ================= -->
-  <h2 id="ablations">5. Controlled Ablations &amp; Zero-Shot Pipeline Transfer</h2>
+  <h2 id="ablations"><span class="sec-num">05</span><span>Controlled Ablations &amp; Zero-Shot Pipeline Transfer</span></h2>
 
   <div class="two-col wide-card">
     <div class="data-card">
@@ -527,14 +535,17 @@ def engineer(X_train, y_train, X_test):
             <tr>
               <th>Method</th>
               <th>Working Models</th>
-              <th class="r">Overall Elo</th>
-              <th class="r">Cls. Elo</th>
-              <th class="r">Reg. Elo</th>
+              <th class="r">Overall</th>
+              <th class="r">Cls.</th>
+              <th class="r">Reg.</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><strong>Unconstrained Coding Agent (Antigravity + Gemini 3.8 Flash)</strong></td>
+              <td>
+                <strong>Unconstrained Coding Agent</strong>
+                <span class="cell-sub">Antigravity + Gemini 3.8 Flash</span>
+              </td>
               <td>GBDTs, PyTorch, Ensembles</td>
               <td class="r">1468.8</td>
               <td class="r">1472.0</td>
@@ -555,7 +566,10 @@ def engineer(X_train, y_train, X_test):
               <td class="r">2169.2</td>
             </tr>
             <tr class="highlight-row">
-              <td><strong>TabFM-Auto (Antigravity + Gemini 3.8 Flash)</strong></td>
+              <td>
+                <strong>TabFM-Auto</strong>
+                <span class="cell-sub">Antigravity + Gemini 3.8 Flash</span>
+              </td>
               <td><strong>TabFM (frozen + evolved P*)</strong></td>
               <td class="r"><strong>1979.6</strong></td>
               <td class="r"><strong>1937.5</strong></td>
@@ -583,7 +597,7 @@ def engineer(X_train, y_train, X_test):
   </div>
 
   <!-- ================= SECTION 6: MLE-BENCH-TABULAR ================= -->
-  <h2 id="mlebench">6. Multi-File Autonomous Engineering on MLE-Bench-Tabular</h2>
+  <h2 id="mlebench"><span class="sec-num">06</span><span>Multi-File Autonomous Engineering on MLE-Bench-Tabular</span></h2>
 
   <p>
     On <a href="https://arxiv.org/abs/2410.07095" target="_blank" rel="noopener"><strong>MLE-Bench-Tabular</strong></a> (8 Kaggle competitions, 12 external agents), much of the signal lives in auxiliary files: sensor waveforms, GNSS logs, and 3D molecular geometry. <code>engineer()</code> writes parsers for them (FFT bands, seismic STA/LTA triggers, Karplus angles, Kalman-smoothed GNSS fixes) and joins the results into one table for frozen <code>TabFM</code>.
@@ -618,7 +632,7 @@ def engineer(X_train, y_train, X_test):
   </section>
 
   <!-- ================= SECTION 7: MLE-BENCH-TABULAR PIPELINE EXPLORER ================= -->
-  <h2 id="mlebench-explorer">7. MLE-Bench-Tabular Pipeline Explorer (All 8 Competitions)</h2>
+  <h2 id="mlebench-explorer"><span class="sec-num">07</span><span>MLE-Bench-Tabular Pipeline Explorer (All 8 Competitions)</span></h2>
 
   <p>All 8 evolved pipelines, with medal thresholds and write-ups.</p>
 
@@ -650,7 +664,7 @@ def engineer(X_train, y_train, X_test):
   </div>
 
   <!-- ================= CITATION ================= -->
-  <h2 id="citation">Citation</h2>
+  <h2 id="citation"><span class="sec-num">BibTeX</span><span>Citation</span></h2>
 
   <div class="bibtex-box">
     <button type="button" class="copy-bib-btn" id="copy-bib-btn">Copy BibTeX</button>
@@ -1054,7 +1068,7 @@ def engineer(X_train, y_train, X_test):
   function growFig1Bars(anim, bottomY, yMin, fmtVal) {
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const token = ++f1AnimToken;
-    const DUR = 900, STAGGER = 70;
+    const DUR = 360, STAGGER = 16;
     const ease = function (t) { return 1 - Math.pow(1 - t, 3); };
     function frame(p, a) {
       const top = bottomY - a.bh * p;
@@ -1143,7 +1157,7 @@ def engineer(X_train, y_train, X_test):
       stat: "Modified in 95.1% of TabArena runs (97 / 102)",
       text: "<p><strong>Why it matters:</strong> Attention over raw numbers ignores column headers and external files; writing explicit domain formulas (Strouhal/Reynolds numbers, water-to-binder laws, ICD-9 hierarchies) or multi-file parsers spares <code>TabFM</code> from approximating nonlinear ratios in context.</p>",
       beforeMeta: "airfoil_self_noise · Test RMSE: 1.0712",
-      beforeCode: "# Raw wind-tunnel columns passed unchanged:\n# [\"frequency\", \"angle-of-attack\", \"chord-length\",\n#  \"free-stream-velocity\",\n#  \"suction-side-displacement-thickness\"]\n\ndef engineer(X_train, y_train, X_test):\n    return X_train, X_test",
+      beforeCode: "# Raw wind-tunnel columns passed as-is:\n# [\"frequency\", \"angle-of-attack\",\n#  \"chord-length\", \"free-stream-velocity\",\n#  \"suction-side-displacement-thickness\"]\n\ndef engineer(X_train, y_train, X_test):\n    return X_train, X_test",
       afterMeta: "Test RMSE: 1.0712 → 0.9165 (−14.4%)",
       afterCode: "def _phys(df):\n    f, c = df[\"frequency\"], df[\"chord-length\"]\n    u, d = df[\"free-stream-velocity\"], df[\"suction-side-displacement-thickness\"]\n    out = df.drop(columns=[\"frequency\", \"free-stream-velocity\", \"chord-length\"]).copy()\n    out[\"log_f\"], out[\"log_d\"], out[\"log_c\"] = np.log10(f), np.log10(d), np.log10(c)\n    out[\"log_St_d\"], out[\"log_St_c\"] = np.log10(f * d / u), np.log10(f * c / u)\n    out[\"log_Re_c\"], out[\"log_Re_d\"] = np.log10(u * c / 1.5e-5), np.log10(u * d / 1.5e-5)\n    out[\"log_d_over_c\"] = np.log10(d / c)\n    out[\"bpm_scale\"] = 10.0 * np.log10(d) + 50.0 * np.log10(u / 340.46)\n    return out\n\ndef engineer(X_train, y_train, X_test):\n    return _phys(X_train), _phys(X_test)"
     },
@@ -1532,18 +1546,22 @@ def engineer(X_train, y_train, X_test):
     const wrap = document.getElementById("f5-svg-wrap");
     if (!wrap) return;
     const isDark = root.getAttribute("data-theme") === "dark";
-    const W = 940, H = 350;
-    const padL = 175, padR = 65, padT = 16, padB = 26;
+    const W = 1000, H = 356;
+    const padL = 178, padR = 136, padT = 16, padB = 26;
     const plotW = W - padL - padR;
     const plotH = H - padT - padB;
-    const xMin = 1150, xMax = 1900;
+    const xMin = 1150, xMax = 1860;
 
     const svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "MLE-Bench-Tabular Elo Leaderboard" });
     const gridCol = isDark ? "#1e2b42" : "#dce4ef";
     const textCol = isDark ? "#e2e8f0" : "#0f172a";
     const mutedCol = isDark ? "#8b9bb4" : "#5f6b7c";
     const accentCol = isDark ? "#589df6" : "#1a73e8";
+    const accentSoft = isDark ? "rgba(88, 157, 246, 0.14)" : "rgba(26, 115, 232, 0.08)";
+    const posCol = isDark ? "#34d399" : "#0d8a5e";
+    const posSoft = isDark ? "rgba(52, 211, 153, 0.14)" : "rgba(13, 138, 94, 0.11)";
     const barCol = isDark ? "#334155" : "#cbd5e1";
+    const runnerCol = isDark ? "#475569" : "#94a3b8";
 
     [1200, 1350, 1500, 1650, 1800].forEach(function (xv) {
       const x = padL + ((xv - xMin) / (xMax - xMin)) * plotW;
@@ -1552,23 +1570,37 @@ def engineer(X_train, y_train, X_test):
     });
 
     const rowH = plotH / MLE_ELO.length;
-    const barH = Math.min(17, rowH * 0.66);
+    const barH = Math.min(17, rowH * 0.68);
+
+    // Subtle reference line for #2 CAIR MARS+ (1717)
+    const xRunner = padL + ((1717 - xMin) / (xMax - xMin)) * plotW;
+    svg.appendChild(svgEl("line", {
+      x1: xRunner, y1: padT, x2: xRunner, y2: padT + rowH * 2.1,
+      stroke: accentCol, "stroke-width": 1.2, "stroke-dasharray": "4,3", opacity: 0.65
+    }));
 
     MLE_ELO.forEach(function (r, idx) {
       const y = padT + idx * rowH + (rowH - barH) / 2;
       const bw = Math.max(8, ((r.elo - xMin) / (xMax - xMin)) * plotW);
+
+      if (r.ours) {
+        svg.appendChild(svgEl("rect", {
+          x: 6, y: padT + idx * rowH + 1, width: W - 12, height: rowH - 2, rx: 6,
+          fill: accentSoft
+        }));
+      }
 
       svg.appendChild(svgEl("text", {
         x: padL - 10, y: y + barH - 3,
         "text-anchor": "end",
         fill: r.ours ? accentCol : textCol,
         "font-size": 12,
-        "font-weight": r.ours ? 700 : 500
+        "font-weight": r.ours ? 700 : (idx < 3 ? 600 : 500)
       }, "#" + (idx + 1) + "  " + r.agent));
 
       svg.appendChild(svgEl("rect", {
         x: padL, y: y, width: bw, height: barH, rx: 4,
-        fill: r.ours ? accentCol : barCol
+        fill: r.ours ? accentCol : (idx === 1 ? runnerCol : barCol)
       }));
 
       svg.appendChild(svgEl("text", {
@@ -1578,6 +1610,22 @@ def engineer(X_train, y_train, X_test):
         "font-weight": r.ours ? 700 : 600,
         "font-family": "Google Sans Mono, monospace"
       }, String(r.elo)));
+
+      if (r.ours) {
+        const bx = padL + bw + 44;
+        svg.appendChild(svgEl("rect", {
+          x: bx, y: y - 1, width: 84, height: barH + 2, rx: 9,
+          fill: posSoft
+        }));
+        svg.appendChild(svgEl("text", {
+          x: bx + 42, y: y + barH - 3,
+          "text-anchor": "middle",
+          fill: posCol,
+          "font-size": 10.5,
+          "font-weight": 700,
+          "font-family": "Google Sans Mono, monospace"
+        }, "+110 vs. #2"));
+      }
     });
 
     wrap.innerHTML = "";
@@ -1690,19 +1738,7 @@ def engineer(X_train, y_train, X_test):
   }
 
   /* ===== Initial Render ===== */
-  // Figure 1 grows its bars on every page load, as soon as the chart is on screen.
-  (function () {
-    const fig1 = document.getElementById("fig1-svg-wrap");
-    if (!fig1 || !("IntersectionObserver" in window)) { renderFig1(true); return; }
-    renderFig1();
-    const io = new IntersectionObserver(function (entries) {
-      if (entries.some(function (e) { return e.isIntersecting; })) {
-        io.disconnect();
-        renderFig1(true);
-      }
-    }, { threshold: 0.25 });
-    io.observe(fig1);
-  })();
+  renderFig1(false);
   renderFig3();
   renderFig4();
   renderFig5Elo();
