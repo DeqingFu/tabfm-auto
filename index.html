@@ -139,7 +139,7 @@
       <div class="fig-svg-wrap" id="fig1-svg-wrap"></div>
 
       <div class="fig-legend">
-        <span class="leg-item"><span class="leg-swatch sw-auto"></span><strong>TabFM-Auto</strong> (best configuration: Codex + Opus 5)</span>
+        <span class="leg-item"><span class="leg-swatch sw-auto"></span><strong>TabFM-Auto</strong> (Evolved Pipeline + Frozen TabFM)</span>
         <span class="leg-item"><span class="leg-swatch sw-tabfm"></span><strong>TabFM / TabFM+</strong> (Frozen Backbone)</span>
         <span class="leg-item"><span class="leg-swatch sw-tfm"></span>Other Tabular Foundation Models</span>
         <span class="leg-item"><span class="leg-swatch sw-automl"></span>AutoML Ensembles (4h)</span>
@@ -169,7 +169,7 @@
     </div>
 
     <div class="fig-caption">
-      <strong>Figure 1: TabArena leaderboard.</strong> Numbers match the paper's Figure 1; only the best TabFM-Auto configuration is shown. Hover or click a bar for details.
+      <strong>Figure 1: TabArena leaderboard across all 51 datasets.</strong> Hover or click a bar for details.
     </div>
   </section>
 
@@ -1010,8 +1010,8 @@ def engineer(X_train, y_train, X_test):
   /* ===== 4. Interactive Figure 1: TabArena Leaderboard Chart & Table ===== */
   const TABARENA_DATA = {
     overall: [
-      { rank: 1, name: "TabFM-Auto (Codex + Opus 5)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 2013.0, wins: 25.00, improv: 1.42, gmean: 0.3400, delta: "+228" },
-      { rank: 2, name: "TabFM+ (Frozen + Generic Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 1856.0, wins: 17.58, improv: 2.20, gmean: 0.3513, delta: "+71" },
+      { rank: 1, name: "TabFM-Auto (Evolved Pipeline + Frozen TabFM)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 2013.0, wins: 25.00, improv: 1.42, gmean: 0.3400, delta: "+228" },
+      { rank: 2, name: "TabFM+ (Frozen + Generic Wrapper Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 1856.0, wins: 17.58, improv: 2.20, gmean: 0.3513, delta: "+71" },
       { rank: 3, name: "TabFM (Plain Frozen Backbone)", short: "TabFM", cat: "tabfm", catLabel: "Tabular Foundation Model", elo: 1785.3, wins: 9.74, improv: 3.20, gmean: 0.3550, delta: null },
       { rank: 4, name: "EXAONE-Tabular (default)", short: "EXAONE-Tab", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1764.6, wins: 5.56, improv: 6.05, gmean: 0.3703, delta: null },
       { rank: 5, name: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1668.4, wins: 2.11, improv: 6.79, gmean: 0.3718, delta: null },
@@ -1025,8 +1025,8 @@ def engineer(X_train, y_train, X_test):
       { rank: 13, name: "RealMLP (tuned + ensembled)", short: "RealMLP", cat: "base", catLabel: "Tuned Neural Network", elo: 1447.4, wins: 0.26, improv: 12.83, gmean: 0.4144, delta: null }
     ],
     regression: [
-      { rank: 1, name: "TabFM-Auto (Codex + Opus 5)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 2512.9, wins: 11.12, improv: 0.00, gmean: 15.8568, delta: "+467" },
-      { rank: 2, name: "TabFM+ (Frozen + Generic Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 2169.2, wins: 5.33, improv: 0.14, gmean: 16.1739, delta: "+123" },
+      { rank: 1, name: "TabFM-Auto (Evolved Pipeline + Frozen TabFM)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 2512.9, wins: 11.12, improv: 0.00, gmean: 15.8568, delta: "+467" },
+      { rank: 2, name: "TabFM+ (Frozen + Generic Wrapper Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 2169.2, wins: 5.33, improv: 0.14, gmean: 16.1739, delta: "+123" },
       { rank: 3, name: "TabFM (Plain Frozen Backbone)", short: "TabFM", cat: "tabfm", catLabel: "Tabular Foundation Model", elo: 2045.9, wins: 1.80, improv: 1.43, gmean: 16.3960, delta: null },
       { rank: 4, name: "EXAONE-Tabular (default)", short: "EXAONE-Tab", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1967.8, wins: 1.17, improv: 2.46, gmean: 16.5787, delta: null },
       { rank: 5, name: "TabPFN-3 (default)", short: "TabPFN-3", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1863.1, wins: 0.71, improv: 2.15, gmean: 16.5095, delta: null },
@@ -1040,8 +1040,8 @@ def engineer(X_train, y_train, X_test):
       { rank: 13, name: "RealTabPFN-2.5 (default)", short: "RealTabPFN-2.5", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1579.4, wins: 0.00, improv: 5.32, gmean: 17.0780, delta: null }
     ],
     classification: [
-      { rank: 1, name: "TabFM-Auto (Codex + Opus 5)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 1966.3, wins: 13.84, improv: 1.91, gmean: 0.0913, delta: "+198" },
-      { rank: 2, name: "TabFM+ (Frozen + Generic Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 1836.7, wins: 12.22, improv: 2.91, gmean: 0.0948, delta: "+68" },
+      { rank: 1, name: "TabFM-Auto (Evolved Pipeline + Frozen TabFM)", short: "TabFM-Auto", cat: "auto", catLabel: "Evolved Pipeline + Frozen TabFM", elo: 1966.3, wins: 13.84, improv: 1.91, gmean: 0.0913, delta: "+198" },
+      { rank: 2, name: "TabFM+ (Frozen + Generic Wrapper Presets)", short: "TabFM+", cat: "tabfm", catLabel: "Frozen TabFM + Generic Presets", elo: 1836.7, wins: 12.22, improv: 2.91, gmean: 0.0948, delta: "+68" },
       { rank: 3, name: "TabFM (Plain Frozen Backbone)", short: "TabFM", cat: "tabfm", catLabel: "Tabular Foundation Model", elo: 1768.7, wins: 7.91, improv: 3.80, gmean: 0.0957, delta: null },
       { rank: 4, name: "EXAONE-Tabular (default)", short: "EXAONE-Tab", cat: "tfm", catLabel: "Tabular Foundation Model", elo: 1759.5, wins: 4.39, improv: 7.28, gmean: 0.1009, delta: null },
       { rank: 5, name: "AutoGluon 1.5 (extreme, 4h)", short: "AutoGluon 1.5", cat: "automl", catLabel: "AutoML Stack (4h)", elo: 1664.6, wins: 1.72, improv: 7.86, gmean: 0.1010, delta: null },
