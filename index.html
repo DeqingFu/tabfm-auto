@@ -251,7 +251,7 @@
         <div class="cat-body">
           <div class="cat-name">Statistical features</div>
           <div class="cat-def">Anonymous columns &rarr; label-free statistics</div>
-          <div class="cat-meta">34 / 51 datasets &middot; <code>engineer()</code></div>
+          <div class="cat-meta">29&ndash;34 / 51 datasets &middot; <code>engineer()</code></div>
         </div>
       </div>
       <div class="cat-item cat-iii">
@@ -259,7 +259,7 @@
         <div class="cat-body">
           <div class="cat-name">Context &amp; calibration</div>
           <div class="cat-def">Which rows TabFM sees; output rescaling</div>
-          <div class="cat-meta">95% of runs &middot; <code>sample()</code> <code>postprocess()</code></div>
+          <div class="cat-meta">0&ndash;5 / 51 datasets &middot; <code>sample()</code> <code>postprocess()</code></div>
         </div>
       </div>
     </div>
@@ -267,7 +267,7 @@
         <a class="fe-schem-card" href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_regression&task=airfoil_self_noise&tab=code&hook=engineer">
           <div class="fe-schem-top">
             <span class="fe-schem-tag">Cat. I &middot; Domain</span>
-            <span class="fe-schem-gain">&minus;14.4% RMSE</span>
+            <span class="fe-schem-gain">&minus;14.6% RMSE</span>
           </div>
           <div class="fe-schem-title">airfoil_self_noise &middot; Nonlinear Physics &rarr; Linear Log-Strouhal Scale</div>
           <svg class="fe-schem-svg" viewBox="0 0 340 104" aria-label="Nonlinear physics to log-Strouhal linear scale">
@@ -341,7 +341,7 @@
         <a class="fe-schem-card" href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=APSFailure&tab=code&hook=engineer">
           <div class="fe-schem-top">
             <span class="fe-schem-tag">Cat. I &middot; Domain</span>
-            <span class="fe-schem-gain">&minus;26.7% (1&minus;AUROC)</span>
+            <span class="fe-schem-gain">&minus;3.0% (1&minus;AUROC)</span>
           </div>
           <div class="fe-schem-title">APSFailure &middot; Raw Histogram Bins &rarr; Shape &amp; Center of Mass</div>
           <svg class="fe-schem-svg" viewBox="0 0 340 104" aria-label="10-bin histograms to normalized shape and center of mass">
@@ -372,46 +372,45 @@
         </a>
 
         <!-- Card 4: Context & calibration (sample + postprocess) -->
-        <a class="fe-schem-card" href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=hiva_agnostic&tab=code&hook=sample">
+        <div class="fe-schem-card is-static">
           <div class="fe-schem-top">
             <span class="fe-schem-tag cat-iii">Cat. III &middot; Context &amp; Calibration</span>
-            <span class="fe-schem-gain">&minus;13.7% Log-Loss</span>
+            <span class="fe-schem-gain">&minus;3.8% Log-Loss</span>
           </div>
-          <div class="fe-schem-title">hiva_agnostic &middot; Rare-Class Context &rarr; Prior-Matched Output</div>
-          <svg class="fe-schem-svg" viewBox="0 0 340 104" aria-label="Imbalanced training rows to rare-class-enriched context, then prior matching">
-            <!-- Left: imbalanced training fold -->
+          <div class="fe-schem-title">website_phishing &middot; Rare-Class Context &rarr; Prior-Matched Output</div>
+          <svg class="fe-schem-svg" viewBox="0 0 340 104" aria-label="Training rows to a second context view with Suspicious rows doubled, then prior matching">
+            <!-- Left: training rows (Suspicious is rare) -->
             <text x="66" y="15" text-anchor="middle" font-size="10" font-weight="600" fill="#64748b">Training Rows</text>
             <line x1="18" y1="84" x2="116" y2="84" stroke="#94a3b8" stroke-width="1.2"/>
-            <rect x="28" y="24" width="20" height="60" rx="2.5" fill="#94a3b8"/>
-            <rect x="58" y="78" width="20" height="6" rx="1.5" fill="#e11d48"/>
-            <rect x="88" y="80" width="20" height="4" rx="1.5" fill="#f59e0b"/>
-            <text x="38" y="96" text-anchor="middle" font-size="8.5" fill="#64748b">CI</text>
-            <text x="68" y="96" text-anchor="middle" font-size="8.5" fill="#e11d48">CA</text>
-            <text x="98" y="96" text-anchor="middle" font-size="8.5" fill="#b45309">CM</text>
+            <rect x="28" y="30" width="20" height="54" rx="2.5" fill="#94a3b8"/>
+            <rect x="58" y="41" width="20" height="43" rx="2.5" fill="#94a3b8"/>
+            <rect x="88" y="76" width="20" height="8" rx="1.5" fill="#e11d48"/>
+            <text x="38" y="96" text-anchor="middle" font-size="8.5" fill="#64748b">Phish</text>
+            <text x="68" y="96" text-anchor="middle" font-size="8.5" fill="#64748b">Legit</text>
+            <text x="98" y="96" text-anchor="middle" font-size="8.5" fill="#e11d48">Susp</text>
             <!-- Arrow: sample() -->
             <path d="M128,50 L194,50" stroke="#4f46e5" stroke-width="1.8"/>
             <polygon points="194,46.5 202,50 194,53.5" fill="#4f46e5"/>
             <text x="164" y="42" text-anchor="middle" font-size="9.5" font-family="monospace" font-weight="700" fill="#4f46e5">sample()</text>
-            <text x="164" y="64" text-anchor="middle" font-size="8.5" fill="#64748b">rare rows &#215;6</text>
-            <text x="164" y="75" text-anchor="middle" font-size="8.5" fill="#64748b">24 draws</text>
-            <!-- Right: context TabFM sees, then prior matching -->
+            <text x="164" y="64" text-anchor="middle" font-size="8.5" fill="#64748b">+1 view with</text>
+            <text x="164" y="75" text-anchor="middle" font-size="8.5" fill="#64748b">Susp &#215;2</text>
+            <!-- Right: second context view -->
             <text x="268" y="15" text-anchor="middle" font-size="10" font-weight="600" fill="#4f46e5">Context TabFM Sees</text>
             <line x1="214" y1="84" x2="322" y2="84" stroke="#94a3b8" stroke-width="1.2"/>
-            <rect x="226" y="36" width="20" height="48" rx="2.5" fill="#94a3b8"/>
-            <rect x="256" y="52" width="20" height="32" rx="2.5" fill="#e11d48"/>
-            <rect x="286" y="52" width="20" height="32" rx="2.5" fill="#f59e0b"/>
-            <text x="236" y="96" text-anchor="middle" font-size="8.5" fill="#64748b">CI</text>
-            <text x="266" y="96" text-anchor="middle" font-size="8.5" fill="#e11d48">CA</text>
-            <text x="296" y="96" text-anchor="middle" font-size="8.5" fill="#b45309">CM</text>
+            <rect x="226" y="30" width="20" height="54" rx="2.5" fill="#94a3b8"/>
+            <rect x="256" y="41" width="20" height="43" rx="2.5" fill="#94a3b8"/>
+            <rect x="286" y="68" width="20" height="16" rx="2" fill="#e11d48"/>
+            <text x="236" y="96" text-anchor="middle" font-size="8.5" fill="#64748b">Phish</text>
+            <text x="266" y="96" text-anchor="middle" font-size="8.5" fill="#64748b">Legit</text>
+            <text x="296" y="96" text-anchor="middle" font-size="8.5" fill="#e11d48">Susp</text>
           </svg>
           <div class="fe-schem-foot">
-            <span class="fe-schem-formula">postprocess(): rescale p so mean(p) = class prior &pi;</span>
-            <span class="fe-schem-cta">View code &uarr;</span>
+            <span class="fe-schem-formula">postprocess(): z = log p + &gamma;&middot;log(&pi; / p&#772;)</span>
           </div>
-        </a>
+        </div>
     </div>
     <div class="fig-caption">
-      Every dataset is I or II; III edits stack on top. Badges = test-error reduction vs. plain <code>TabFM</code>. Click a card to open its <code>pipeline.py</code>.
+      Each pipeline falls into one category. Badges = test-error reduction vs. plain <code>TabFM</code>. Click a card to open its <code>pipeline.py</code>.
     </div>
   </div>
 
@@ -587,7 +586,7 @@ def engineer(X_train, y_train, X_test):
           <button type="button" class="preset-btn" data-ta-hash="#mode=pipelines&suite=tabarena_regression&task=concrete_compressive_strength&tab=code&hook=engineer">concrete_strength &middot; engineer()</button>
           <button type="button" class="preset-btn" data-ta-hash="#mode=pipelines&suite=tabarena_binary&task=Amazon_employee_access&tab=code&hook=engineer">Amazon_employee &middot; engineer()</button>
           <button type="button" class="preset-btn" data-ta-hash="#mode=pipelines&suite=tabarena_multiclass&task=splice&tab=code&hook=engineer">splice &middot; engineer()</button>
-          <button type="button" class="preset-btn" data-ta-hash="#mode=pipelines&suite=tabarena_multiclass&task=website_phishing&tab=code&hook=sample">website_phishing &middot; sample()</button>
+          <button type="button" class="preset-btn" data-ta-hash="#mode=pipelines&suite=tabarena_multiclass&task=SDSS17&tab=code&hook=sample">SDSS17 &middot; sample()</button>
           <button type="button" class="preset-btn" data-ta-hash="#mode=table&suite=all">All 51 Datasets Table</button>
         </div>
         <a class="explorer-open-link" id="open-current-explorer" href="explorer.html" target="_blank" rel="noopener">Open in full tab ↗</a>
@@ -630,21 +629,21 @@ def engineer(X_train, y_train, X_test):
             <td>Aeroacoustic Strouhal numbers (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_regression&task=airfoil_self_noise&tab=code&hook=engineer"><code>airfoil_self_noise</code></a>), water-to-binder laws (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_regression&task=concrete_compressive_strength&tab=code&hook=engineer"><code>concrete_strength</code></a>), ICD-9 clinical hierarchies (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Diabetes130US&tab=code&hook=engineer"><code>Diabetes130US</code></a>), SDSS color indices (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=SDSS17&tab=code&hook=engineer"><code>SDSS17</code></a>), DNA splice motifs (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=splice&tab=code&hook=engineer"><code>splice</code></a>)</td>
             <td class="r">17 / 51</td>
             <td class="r"><span class="badge pos">7.3% to 8.2%</span></td>
-            <td class="r">3.0%</td>
+            <td class="r">2.7% to 3.0%</td>
           </tr>
           <tr>
             <td><strong>II. Statistical &amp; Structural FE</strong></td>
-            <td>Transductive entity-graph degrees (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Amazon_employee_access&tab=code&hook=engineer"><code>Amazon_employee</code></a>), missingness signatures (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=polish_companies_bankruptcy&tab=code&hook=engineer"><code>polish_bankruptcy</code></a>), collinearity pruning &amp; SVD projections (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Bioresponse&tab=code&hook=engineer"><code>Bioresponse</code></a>)</td>
-            <td class="r">34 / 51</td>
+            <td>Transductive entity-graph degrees (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Amazon_employee_access&tab=code&hook=engineer"><code>Amazon_employee</code></a>), missingness-aware column ranking (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=kddcup09_appetency&tab=code&hook=engineer"><code>kddcup09_appetency</code></a>), collinearity pruning &amp; SVD projections (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_binary&task=Bioresponse&tab=code&hook=engineer"><code>Bioresponse</code></a>)</td>
+            <td class="r">29&ndash;34 / 51</td>
             <td class="r"><span class="badge pos">2.3% to 3.0%</span></td>
-            <td class="r">1.7%</td>
+            <td class="r">0.9% to 1.3%</td>
           </tr>
           <tr>
             <td><strong>III. Context &amp; Calibration</strong></td>
-            <td>Minority-oversampled context views in <code>sample()</code> and log-odds class-prior alignment in <code>postprocess()</code> (<a href="#explorer" data-jump-ta="#mode=pipelines&suite=tabarena_multiclass&task=hiva_agnostic&tab=code&hook=sample"><code>hiva_agnostic</code></a>)</td>
-            <td class="r">95% of runs</td>
-            <td class="r"><span class="badge neutral">7.6% to 8.4% Log-Loss</span></td>
-            <td class="r">&mdash;</td>
+            <td>Minority-oversampled context views in <code>sample()</code> and log-odds class-prior alignment in <code>postprocess()</code> (<code>website_phishing</code>)</td>
+            <td class="r">0&ndash;5 / 51</td>
+            <td class="r"><span class="badge pos">2.2%</span></td>
+            <td class="r">0.2%</td>
           </tr>
         </tbody>
       </table>
@@ -1747,14 +1746,14 @@ def engineer(X_train, y_train, X_test):
       gold: "0.0559",
       goldVal: 0.0559,
       standing: "GOLD MEDAL",
-      fe: "3D geometry.xyz unit-cell volume, Ewald Madelung potentials, Bond-Valence Sums (BVS), and Octahedral radial distributions.",
+      fe: "Parsed geometry.xyz: parallelepiped unit-cell volume, atomic packing density, reciprocal lattice constants, and composition-weighted Pauling electronegativity and ionic-radius variance across Al/Ga/In cations.",
       rows: [
         { a: "TabFM-Auto", v: 0.0444, s: "0.0444", ours: true },
-        { a: "CAIR MARS+", v: 0.0499, s: "0.0499" },
-        { a: "PiEvolve 24h", v: 0.0558, s: "0.0558" },
-        { a: "Famou-Agent 2.0", v: 0.0568, s: "0.0568" },
-        { a: "MLEvolve", v: 0.0598, s: "0.0598" },
-        { a: "AIBuildAI", v: 0.0626, s: "0.0626" }
+        { a: "CAIR MARS+", v: 0.05016, s: "0.0502" },
+        { a: "PiEvolve 24h", v: 0.05586, s: "0.0559" },
+        { a: "Famou-Agent 2.0", v: 0.05864, s: "0.0586" },
+        { a: "MLEvolve", v: 0.05867, s: "0.0587" },
+        { a: "AIBuildAI", v: 0.05968, s: "0.0597" }
       ]
     },
     {
@@ -1765,14 +1764,14 @@ def engineer(X_train, y_train, X_test):
       gold: "3.97M",
       goldVal: 3971366,
       standing: "GOLD MEDAL",
-      fe: "10-sensor seismic FFT band powers (0.5–20 Hz), STA/LTA trigger ratios, Teager–Kaiser energy, and sequence-stitching overlap graph.",
+      fe: "10-sensor seismic FFT band energy (0.5–20 Hz), STA/LTA trigger ratios across sub-windows, rolling peak-to-peak envelopes, and inter-sensor cross-correlations.",
       rows: [
         { a: "TabFM-Auto", v: 97355, s: "97,355", ours: true },
-        { a: "PiEvolve 24h", v: 611025, s: "611,025" },
-        { a: "CAIR MARS+", v: 1101042, s: "1.10M" },
-        { a: "MLEvolve", v: 1333550, s: "1.33M" },
-        { a: "AIBuildAI", v: 2469620, s: "2.47M" },
-        { a: "Famou-Agent 2.0", v: 2993476, s: "2.99M" }
+        { a: "PiEvolve 24h", v: 919758, s: "919,758" },
+        { a: "MLEvolve", v: 1241580, s: "1.24M" },
+        { a: "CAIR MARS+", v: 1311841, s: "1.31M" },
+        { a: "AIBuildAI", v: 2415937, s: "2.42M" },
+        { a: "Famou-Agent 2.0", v: 3045206, s: "3.05M" }
       ]
     },
     {
@@ -1783,14 +1782,14 @@ def engineer(X_train, y_train, X_test):
       gold: "0.9566",
       goldVal: 0.9566,
       standing: "GOLD MEDAL",
-      fe: "3D Hydrology hypotenuse √(H²+V²), aspect wraparound sin(θ)/cos(θ), Soil_Type row-sum artifact count, and class-prior logit shift.",
+      fe: "Euclidean hydrology distance √(H²+V²), relative elevation above hydrology, and compass aspect decomposition sin(θ)/cos(θ).",
       rows: [
-        { a: "PiEvolve 24h", v: 0.96344, s: "0.9634" },
-        { a: "CAIR MARS+", v: 0.96312, s: "0.9631" },
+        { a: "PiEvolve 24h", v: 0.96341, s: "0.9634" },
+        { a: "CAIR MARS+", v: 0.96301, s: "0.9630" },
         { a: "TabFM-Auto", v: 0.96264, s: "0.9626", ours: true },
-        { a: "AIBuildAI", v: 0.96250, s: "0.9625" },
-        { a: "Famou-Agent 2.0", v: 0.96238, s: "0.9624" },
-        { a: "MLEvolve", v: 0.96186, s: "0.9619" }
+        { a: "AIBuildAI", v: 0.96234, s: "0.9623" },
+        { a: "Famou-Agent 2.0", v: 0.96221, s: "0.9622" },
+        { a: "MLEvolve", v: 0.96205, s: "0.9620" }
       ]
     },
     {
@@ -1801,13 +1800,14 @@ def engineer(X_train, y_train, X_test):
       gold: "0.99823",
       goldVal: 0.99823,
       standing: "BRONZE MEDAL",
-      fe: "10-character f_27 string decomposition (pos_0..pos_9 ASCII codes + unique-letter count) and ternary interaction signs (f_00+f_01 vs f_26).",
+      fe: "10-character f_27 string decomposition (10 positional ASCII ordinals + unique-character counts) and continuous interaction terms.",
       rows: [
         { a: "TabFM-Auto", v: 0.99821, s: "0.9982", ours: true },
-        { a: "MLEvolve", v: 0.99771, s: "0.9977" },
+        { a: "MLEvolve", v: 0.99760, s: "0.9976" },
         { a: "CAIR MARS+", v: 0.99758, s: "0.9976" },
-        { a: "Famou-Agent 2.0", v: 0.99711, s: "0.9971" },
-        { a: "PiEvolve 24h", v: 0.99665, s: "0.9967" }
+        { a: "Famou-Agent 2.0", v: 0.99707, s: "0.9971" },
+        { a: "PiEvolve 24h", v: 0.99665, s: "0.9967" },
+        { a: "AIBuildAI", v: 0.86099, s: "0.8610" }
       ]
     },
     {
@@ -1817,14 +1817,14 @@ def engineer(X_train, y_train, X_test):
       better: "lower",
       gold: "0.1119",
       goldVal: 0.1119,
-      standing: "90.6% MAE RED.",
-      fe: "Lung equation-of-motion features: cumulative volume integral ∫u_in dt, flow acceleration Δu_in/Δt, lag/lead windows, and R×C Regime IDs.",
+      standing: "−90.6% VS. TABFM",
+      fe: "Respiratory-mechanics proxies: within-breath cumulative integral ∫u_in dt, finite differences Δu_in and Δ²u_in, decayed flow histories, and R×u_in / (1/C)∫u_in dt interaction terms.",
       rows: [
-        { a: "MLEvolve", v: 0.1538, s: "0.1538" },
-        { a: "CAIR MARS+", v: 0.2097, s: "0.2097" },
-        { a: "Famou-Agent 2.0", v: 0.2470, s: "0.2470" },
+        { a: "MLEvolve", v: 0.15446, s: "0.1545" },
+        { a: "Famou-Agent 2.0", v: 0.23304, s: "0.2330" },
+        { a: "CAIR MARS+", v: 0.29775, s: "0.2978" },
         { a: "TabFM-Auto", v: 0.3568, s: "0.3568", ours: true },
-        { a: "AIBuildAI", v: 1.6908, s: "1.6908" }
+        { a: "AIBuildAI", v: 1.38334, s: "1.3833" }
       ]
     },
     {
@@ -1835,13 +1835,13 @@ def engineer(X_train, y_train, X_test):
       gold: "1.768 m",
       goldVal: 1.768,
       standing: "RANK #1 AGENT",
-      fe: "Doppler-shift velocity, CN0-weighted satellite elevation residuals, RTS Rauch–Tung–Striebel Kalman smoother, and stop-epoch clamping.",
+      fe: "Multi-table GNSS: weighted-least-squares (WLS) baseline, elevation-weighted C/N0 averages, pseudorange residual dispersion, and forward-backward Kalman velocity smoothing.",
       rows: [
         { a: "TabFM-Auto", v: 4.328, s: "4.328m", ours: true },
-        { a: "Famou-Agent 2.0", v: 5.264, s: "5.264m" },
-        { a: "AIBuildAI", v: 5.592, s: "5.592m" },
-        { a: "CAIR MARS+", v: 6.003, s: "6.003m" },
-        { a: "MLEvolve", v: 6.590, s: "6.590m" }
+        { a: "Famou-Agent 2.0", v: 5.334, s: "5.334m" },
+        { a: "AIBuildAI", v: 5.643, s: "5.643m" },
+        { a: "CAIR MARS+", v: 5.973, s: "5.973m" },
+        { a: "MLEvolve", v: 6.386, s: "6.386m" }
       ]
     },
     {
@@ -1851,15 +1851,15 @@ def engineer(X_train, y_train, X_test):
       better: "lower",
       gold: "2.834",
       goldVal: 2.834,
-      standing: "12.5% RMSE RED.",
-      fe: "29° Manhattan street-grid rotation (L1 + L2 geodesic distance), JFK/LGA/EWR airport geofence radii, and pre/post-2012 fare-hike regime.",
+      standing: "−12.5% VS. TABFM",
+      fe: "Haversine and 29°-rotated Manhattan street-grid distances, plus bounding-box flags for JFK/LaGuardia/Newark airport flat-rate zones.",
       rows: [
-        { a: "Famou-Agent 2.0", v: 3.972, s: "3.972" },
+        { a: "Famou-Agent 2.0", v: 3.995, s: "3.995" },
         { a: "TabFM-Auto", v: 3.999, s: "3.999", ours: true },
-        { a: "CAIR MARS+", v: 4.029, s: "4.029" },
+        { a: "CAIR MARS+", v: 4.153, s: "4.153" },
         { a: "PiEvolve 24h", v: 4.568, s: "4.568" },
-        { a: "AIBuildAI", v: 5.074, s: "5.074" },
-        { a: "MLEvolve", v: 5.904, s: "5.904" }
+        { a: "AIBuildAI", v: 4.976, s: "4.976" },
+        { a: "MLEvolve", v: 5.497, s: "5.497" }
       ]
     },
     {
@@ -1870,13 +1870,13 @@ def engineer(X_train, y_train, X_test):
       gold: "-2.875",
       goldVal: -2.875,
       standing: "ABOVE MEDIAN",
-      fe: "3D structures.xyz molecular graph: inverse-cube distance r_ij^-3, Karplus torsion cos(φ)/cos(2φ), bond angles, and Mulliken charges.",
+      fe: "structures.csv 3D geometry: inter-atomic distances r_ij with inverse powers r_ij^-1, r_ij^-2, r_ij^-3, covalent bond-path angles, and Karplus dihedral cos φ / cos²φ.",
       rows: [
-        { a: "AIBuildAI", v: -1.922, s: "-1.922" },
+        { a: "AIBuildAI", v: -1.923, s: "-1.923" },
         { a: "TabFM-Auto", v: -1.549, s: "-1.549", ours: true },
-        { a: "MLEvolve", v: 1.298, s: "+1.298" },
-        { a: "Famou-Agent 2.0", v: 1.307, s: "+1.307" },
-        { a: "CAIR MARS+", v: 1.428, s: "+1.428" }
+        { a: "Famou-Agent 2.0", v: 1.306, s: "+1.306" },
+        { a: "MLEvolve", v: 1.325, s: "+1.325" },
+        { a: "CAIR MARS+", v: 1.374, s: "+1.374" }
       ]
     }
   ];

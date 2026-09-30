@@ -1758,7 +1758,7 @@ table.bench-tbl {
   cursor: pointer;
   transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
 }
-.fe-schem-card:hover {
+a.fe-schem-card:hover {
   border-color: var(--accent);
   transform: translateY(-1.5px);
   box-shadow: var(--shadow-md);
@@ -2154,3 +2154,5 @@ table.bench-tbl {
     height: 580px;
   }
 }
+
+.fe-schem-card.is-static { cursor: default; }
