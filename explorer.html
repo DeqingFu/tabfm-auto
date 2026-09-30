@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ANK7UP1EPySP2XjXVB2bPDvpkUz9XJA57Qho39FfxfY='; style-src 'sha256-/U8j5iCps8OtwL71t/6sNNZYwB8dRJ9lXYaquX2q1uw='; font-src data:; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-rEMKNj6CrrIYQjKl6pNahDtQNLanYXu0auBYDhVLyZs='; style-src 'sha256-/U8j5iCps8OtwL71t/6sNNZYwB8dRJ9lXYaquX2q1uw='; font-src data:; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Interactive explorer for the 51 evolved TabFM-Auto pipelines across the TabArena benchmark (Regression, Binary, and Multiclass Classification).">
 <meta name="color-scheme" content="light dark">
@@ -1158,7 +1158,6 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
   const SORTS = [
     ["gain", "Sort: \u0394 \u2193"],
     ["name", "Sort: A\u2013Z"],
-    ["lines", "Sort: lines \u2193"],
   ];
   function matchQuery(t) {
     const q = state.query.trim().toLowerCase();
@@ -1179,7 +1178,6 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
     const key = state.sort;
     const val = (t) => {
       if (key === "gain") return t.gain_pct == null ? -Infinity : t.gain_pct;
-      if (key === "lines") return t.lines || 0;
       return 0;
     };
     const byName = (x, y) => x.t.name.localeCompare(y.t.name, undefined, { sensitivity: "base" });
@@ -1570,7 +1568,7 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
         type: "button",
         class: "hook-btn" + (selected ? " is-selected" : ""),
         "aria-pressed": selected ? "true" : "false",
-        title: "Show full pipeline.py (" + t.lines + " lines)",
+        title: "Show full pipeline.py",
         onclick: () => {
           state.hook = "all";
           renderPage();
@@ -1579,9 +1577,8 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
       }, "all code");
     }
     const active = (t.hooks_active || []).includes(key);
-    const r = (t.hook_ranges || {})[key];
     const hs = ((t.hook_helpers || {})[key]) || [];
-    let title = (active ? "Active hook" : "Pass-through hook") + (r ? " (lines " + r[0] + "\u2013" + r[1] + ")" : "");
+    let title = active ? "Active hook" : "Pass-through hook";
     if (hs.length) title += " \u00b7 includes helpers: " + hs.map((fn) => fn + "()").join(", ");
     const kids = [h("span", { text: key + "()" })];
     if (hs.length) kids.push(h("span", { class: "hook-sub", text: "+" + hs.length }));
@@ -1638,7 +1635,6 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
             h("b", { text: "def " + hook + "(...)" }),
             hs.length ? " \u00b7 calls " + hs.map((fn) => fn + "()").join(", ") : "",
           ]),
-          h("span", { class: "mono", text: "lines " + hLo + "\u2013" + hHi }),
         ])
       );
       appendRange(hLo, hHi);
@@ -1648,7 +1644,6 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
         frag.appendChild(
           h("div", { class: "code-sect", "data-fn": fn }, [
             h("span", null, ["Helper called by " + hook + "() \u00b7 ", h("b", { text: "def " + fn + "(...)" })]),
-            h("span", { class: "mono", text: "lines " + hr[0] + "\u2013" + hr[1] }),
           ])
         );
         appendRange(hr[0], hr[1]);
@@ -1672,7 +1667,7 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
           h("button", {
             type: "button",
             class: "helper-btn",
-            title: "Scroll to def " + fn + "()" + (hr ? " (lines " + hr[0] + "\u2013" + hr[1] + ")" : ""),
+            title: "Scroll to def " + fn + "()",
             onclick: () => {
               const target =
                 pre.querySelector('.code-sect[data-fn="' + fn + '"]') ||
@@ -1723,7 +1718,7 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
     return h("button", {
       type: "button",
       class: "ref-chip" + (r[1] === "pipeline.py" ? " is-pipe" : ""),
-      title: "Open " + r[1] + (r[2] ? " at line " + r[2] : ""),
+      title: "Open " + r[1],
       onclick: () => openFile(r[1], r[2]),
     }, r[0]);
   }
@@ -1784,13 +1779,13 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
             type: "button",
             class: "file-btn" + (cur && cur.path === f.path ? " is-selected" : ""),
             "aria-pressed": cur && cur.path === f.path ? "true" : "false",
-            title: f.path + " \u00b7 " + f.lines + " lines",
+            title: f.path,
             onclick: () => {
               state.file = f.path;
               renderPage();
               writeHash();
             },
-          }, [f.path.replace(/^build\//, ""), h("span", { class: "file-n", text: String(f.lines) })])
+          }, [f.path.replace(/^build\//, "")])
         ))),
       ]),
     ]);
@@ -1969,7 +1964,6 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
         case "name": return t.name;
         case "suite": return SUITE_SHORT[t.suite] || t.suite;
         case "gain": return t.gain_pct;
-        case "lines": return t.lines;
         case "hooks": return (t.hooks_active || []).length;
         default: return null;
       }
@@ -1982,7 +1976,6 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
       { key: "score", label: "Final Score", num: true, sortable: false },
       { key: "gain", label: "Error Reduction (\u0394)", num: true, title: "Error reduction vs. plain TabFM" },
       { key: "hooks", label: "Active Hooks", dir: -1 },
-      { key: "lines", label: "Lines", num: true },
     ];
     const body = rows.map((t) => {
       const hooks = t.hooks_active || [];
@@ -2003,7 +1996,6 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
             ? h("div", { class: "hook-pills" }, hooks.map((hk) => h("span", { class: "hook-tag", text: hk })))
             : h("span", { class: "suite-metric", text: "TABFM_KWARGS only" })
         ),
-        h("td", { class: "r mono", "data-label": "Lines", text: String(t.lines) }),
       ]);
       tr.addEventListener("click", (e) => {
         if (e.target.closest("button")) return;
@@ -2042,7 +2034,7 @@ html[data-embedded="1"] .brand-sub { font-weight: 600; color: var(--text-2); fon
       statTile("TabArena Datasets", String(TASKS.length), nReg + " Regression \u00b7 " + nBin + " Binary \u00b7 " + nMul + " Multiclass"),
       statTile("Median Error Reduction", pctP(medGain, 1), "Across all 51 TabArena datasets", signCls(medGain)),
       statTile("Datasets Improved", nImproved + " / " + TASKS.length, "Over zero-shot plain TabFM"),
-      statTile("Median Pipeline Size", fmtInt(median(TASKS.map((t) => t.lines))) + " lines", "Compact Python hooks & helpers"),
+      statTile("Overall TabArena Elo", "2013.0 (#1)", "+227.7 over plain TabFM \u00b7 +157.0 over TabFM+", "pos"),
     ]);
 
     return [
